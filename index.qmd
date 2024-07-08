@@ -1,0 +1,93 @@
+---
+title: Tree object detection using airborne images and LiDAR point clouds
+date: today
+author:
+  - name: Alexandre Bry
+    email: alexandre.bry.21@polytechnique.org
+    affiliation:
+      - name: École polytechnique
+        deparment: Département d'informatique
+        city: Palaiseau
+        country: France
+        url: https://portail.polytechnique.edu/informatique/fr/page-daccueil
+      - name: Geodan B.V.
+        department: Research
+        city: Amsterdam
+        country: Netherlands
+        url: https://research.geodan.nl/
+    roles: writing
+    corresponding: true
+abstract: |
+  This is the abstract.
+  It can be on multiple lines and containing **Markdown**.
+keywords: 
+  - tree detection
+  - deep learning
+bibliography: references.bib
+---
+
+## Introduction
+
+The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to perform instance segmentation of trees. The two types of data are indeed complementary, as point clouds capture the shape of the worlds, while images capture the colors. However, combining them into a format that allows a model to handle them simultaneously is not an easy task because they inherently have a very different spatial repartition and encoding.
+
+The second major topic of the internship was to acquire a proper dataset matching all the criteria required for the project. Most of the datasets containing tree annotations only used either RGB images or LiDAR point clouds, but not both. Therefore, I had to create such a dataset by myself, using the openly available images and point clouds in the Netherlands, by annotating trees by hand to properly train and evaluate the methods.
+
+## State-of-the-art
+
+### Datasets
+
+#### Requirements
+
+Before presenting the different promising datasets and the reasons why they were not fully usable for the project, let's enumerate the different conditions and requirements for the tree instance segmentation task:
+
+- Multiple types of data:
+  - Aerial RGB images
+  - LiDAR point clouds (preferably aerial)
+  - (Optional) Aerial infrared images
+- Tree crown annotations or bounding boxes
+- High-enough resolution:
+  - For images, about 25 cm
+  - For point clouds, about 10 cm
+
+Here are the explanations for these requirements. As for the types of data, RGB images and point clouds are required to experiment on the ability of the model to combine the two very different kinds of information they hold. Having infrared data as well could be beneficial, but it was not necessary. Regarding tree annotations, it was necessary to have a way to spatially identify them individually, using crown contours or simply bounding boxes. Since the model outputs bounding boxes, any kind of other format could easily be transformed to bounding boxes. Finally, the resolution had to be high enough to identify individual trees and be able to really use the data. For the point clouds especially, the whole idea was to see if and how the topology of the trees could be learnt, using at least the trunks and even the biggest branches if possible. Therefore, even if they are not really comparable, this is the reason why the required resolution is more precise for the point clouds.
+
+Unfortunately, none of the datasets that I found matched all these criteria. Furthermore, I didn't find any overlapping datasets that I could merge to create a dataset with all the required types of data. In the next parts, I will go through the different kinds of datasets that exist, the reasons why they did not really fit for the project and the ideas I got when searching for a way to use them.
+
+#### Existing tree datasets
+
+As explained above, there were quite a lot of requirements to fulfill to have a complete dataset usable for the task. This means that almost all the available datasets were missing something, as they were mainly focusing on using one kind of data and trying to make the most out of it, instead of trying to use all the types of data together.
+
+The most comprehensive list of tree annotations datasets was published in @OpenForest. Without enumerating all of them, there were multiple kinds of datasets that all have their own flaws regarding the requirements I was looking for.
+
+Firstly, there are the forest inventories. @TALLO is probably the most interesting one in this category, because it contains a lot of spatial information about almost 500K trees, with their locations, their crown radii and their heights. Therefore, everything needed to localize trees is in the dataset. However, I didn't manage to find RGB images or LiDAR point clouds of the areas where the trees are located, making it impossible to use these annotations to train tree detection.
+
+Secondly, there are the RGB datasets. @ReforesTree and @MillionTrees are two of them and the quality of their images are high. The only drawback of these datasets is obviously that they don't provide any kind of point cloud, which make them unsuitable for the task.
+
+Thirdly, there are the LiDAR datasets, such as @WildForest3D and @FOR-instance. Similarly to RGB datasets, they lack one of the data source for the task I worked on. But unlike them, they have the advantage that the missing data can be much easier to acquire from another source, since RGB aerial or satellite images are much more common than LiDAR point clouds. However, this solution was abandoned for two main reasons. First it is quite challenging to find the exact locations where the point clouds were acquired. Then, even when the location is known, it is often in the middle of a forest where the quality of satellite imagery is very low.
+
+
+
+- OpenForest @OpenForest: list of all the openly available forest monitoring datasets
+- FoMo-Bench @FoMo-Bench: benchmark for forest monitoring
+- NEON @NEON: LiDAR and RGB but quality was too low for me at the beginning
+- MDAS @MDAS: RGB, hyperspectral and DSM, no LiDAR.
+
+
+#### Things to talk about
+
+
+Difference between object detection and instance segmentation. The first on is easier to train because it only requires bounding boxes
+
+Open public tree datasets in several municipalities in France and in the Netherlands: sometimes no position 
+
+### Models
+
+## The dataset
+
+## The model
+
+## Results
+
+## Conclusion
+
+Blablabla

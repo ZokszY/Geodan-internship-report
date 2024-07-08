@@ -1,0 +1,26 @@
+project:
+  type: manuscript
+  # output-dir: output
+
+manuscript:
+  article: index.qmd
+
+format:
+  html:
+    comments:
+      hypothesis: true
+  docx: default
+  typst:
+    toc: true
+    section-numbering: 1.1.a
+    columns: 2
+  jats: default
+
+  # (other formats)
+  # pdf: default
+
+execute:
+  freeze: true
+
+
+
