@@ -12,11 +12,18 @@ format:
   docx: default
   typst:
     toc: true
+    number-sections: true
     columns: 2
+    output-file: "index_typst.pdf"
   jats: default
-
-  # (other formats)
-  # pdf: default
+  pdf:
+    documentclass: report
+    toc: true
+    number-sections: true
+    colorlinks: true
+    output-file: "index_pdf.pdf"
+    biblio-title: "Bibliography"
+    cite-method: biblatex
 
 execute:
-  freeze: true
+  freeze: auto
