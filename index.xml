@@ -318,7 +318,8 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       single tree located in a private area. Since public and private
       areas are obviously imbricated in all cities, it means that any
       area we try to train the model on would be missing all the private
-      trees, making the training process impossible.</p>
+      trees, making the training process impossible because we cannot
+      have only a partial annotation of images.</p>
     </sec>
     <sec id="dataset-augmentation-techniques">
       <title>Dataset augmentation techniques</title>
