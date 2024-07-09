@@ -1,6 +1,6 @@
 project:
   type: manuscript
-  # output-dir: output
+  # output-dir: docs
 
 manuscript:
   article: index.qmd
@@ -12,7 +12,6 @@ format:
   docx: default
   typst:
     toc: true
-    section-numbering: 1.1.a
     columns: 2
   jats: default
 
@@ -21,6 +20,3 @@ format:
 
 execute:
   freeze: true
-
-
-
