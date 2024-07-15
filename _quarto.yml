@@ -1,6 +1,6 @@
 project:
   type: manuscript
-  # output-dir: docs
+  # output-dir: _manuscript
 
 manuscript:
   article: index.qmd
@@ -15,6 +15,7 @@ format:
     number-sections: true
     columns: 2
     output-file: "index_typst.pdf"
+    number-offset: 1
   jats: default
   pdf:
     documentclass: report
@@ -24,6 +25,7 @@ format:
     output-file: "index_pdf.pdf"
     biblio-title: "Bibliography"
     cite-method: biblatex
+    number-offset: 1
 
 execute:
   freeze: auto

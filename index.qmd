@@ -27,7 +27,7 @@ bibliography: references.bib
 csl: chicago-author-date.csl
 ---
 
-## Introduction
+## Introduction {.unnumbered}
 
 The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to perform instance segmentation of trees. The two types of data are indeed complementary, as point clouds capture the shape of the worlds, while images capture the colors. However, combining them into a format that allows a model to handle them simultaneously is not an easy task because they inherently have a very different spatial repartition and encoding.
 
@@ -39,20 +39,20 @@ The second major topic of the internship was to acquire a proper dataset matchin
 
 Before talking about models and datasets, let's define properly the task that this project focused on, in the midst of all the various computer vision tasks, and specifically those related to tree detection.
 
-The first main differentiation between tree recognition tasks comes from the acquisition of the data. There are some very different tasks and methods using either ground data or aerial/satellite data. This is especially true when focusing on urban trees as shown in @urban_trees, since a lot of street view data is available.
+The first main differentiation between tree recognition tasks comes from the acquisition of the data. There are some very different tasks and methods using either ground data or aerial/satellite data. This is especially true when focusing on urban trees, since a lot of street view data is available [@urban-trees].
 
 This leads to the second variation, which is related to the kind of tree area that we are interested in. There are mainly three types of area, which among other things, influence the organization of the trees in space: urban areas, tree plantations and forests. This is important, because the tasks and the difficulty depends on the type of area. Tree plantations are much easier to work with than completely wild forests, while urban areas contain various levels of difficulty ranging from alignment trees to private and disorganized gardens and parks. For this project, we mainly focused on urban areas, but everything should still be applicable to tree plantations and forests.
 
-Then, the four fundamental computer vision tasks have their application when dealing with trees, as explained in @olive_tree:
+Then, the four fundamental computer vision tasks have their application when dealing with trees [@olive-tree]:
 
 - Classification, although this is quite rare for airborne tree applications since there are multiple trees on each image most of the time
 - Detection, which consists in detecting objects and placing boxes around them
 - Semantic segmentation, which consists in associating a label to every pixel of an image
 - Instance segmentation, which consists in adding a layer of complexity to semantic segmentation by also differentiating between the different instances of each class
 
-These generic tasks can be extended by trying to get more information about the trees. The most common information are the species and the height.
+These generic tasks can be extended by trying to get more information about the trees. The most common information are the species and the height, but some models also try to predict the health of the trees, or their carbon stock.
 
-<!-- TO BE CONTINUED -->
+In this paper, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used, without compromising the ability to experiment with different possible improvements of the model. The difficulties and the experiments are developed below.
 
 ### Datasets
 
@@ -77,17 +77,17 @@ Unfortunately, none of the datasets that I found matched all these criteria. Fur
 
 As explained above, there were quite a lot of requirements to fulfill to have a complete dataset usable for the task. This means that almost all the available datasets were missing something, as they were mainly focusing on using one kind of data and trying to make the most out of it, instead of trying to use all the types of data together.
 
-The most comprehensive list of tree annotations datasets was published in @OpenForest. @FoMo-Bench also lists several interesting datasets, even though most of them can also be found in @OpenForest. Without enumerating all of them, there were multiple kinds of datasets that all have their own flaws regarding the requirements I was looking for.
+The most comprehensive list of tree annotations datasets was published in OpenForest [@OpenForest]. FoMo-Bench [@FoMo-Bench] also lists several interesting datasets, even though most of them can also be found in OpenForest. Without enumerating all of them, there were multiple kinds of datasets that all have their own flaws regarding the requirements I was looking for.
 
-Firstly, there are the forest inventories. @TALLO is probably the most interesting one in this category, because it contains a lot of spatial information about almost 500K trees, with their locations, their crown radii and their heights. Therefore, everything needed to localize trees is in the dataset. However, I didn't manage to find RGB images or LiDAR point clouds of the areas where the trees are located, making it impossible to use these annotations to train tree detection.
+Firstly, there are the forest inventories. TALLO [@TALLO] is probably the most interesting one in this category, because it contains a lot of spatial information about almost 500K trees, with their locations, their crown radii and their heights. Therefore, everything needed to localize trees is in the dataset. However, I didn't manage to find RGB images or LiDAR point clouds of the areas where the trees are located, making it impossible to use these annotations to train tree detection.
 
-Secondly, there are the RGB datasets. @ReforesTree and @MillionTrees are two of them and the quality of their images are high. The only drawback of these datasets is obviously that they don't provide any kind of point cloud, which make them unsuitable for the task.
+Secondly, there are the RGB datasets. ReforesTree [@ReforesTree] and MillionTrees [@MillionTrees] are two of them and the quality of their images are high. The only drawback of these datasets is obviously that they don't provide any kind of point cloud, which make them unsuitable for the task.
 
-Thirdly, there are the LiDAR datasets, such as @WildForest3D and @FOR-instance. Similarly to RGB datasets, they lack one of the data source for the task I worked on. But unlike them, they have the advantage that the missing data could be much easier to acquire from another source, since RGB aerial or satellite images are much more common than LiDAR point clouds. However, this solution was abandoned for two main reasons. First it is quite challenging to find the exact locations where the point clouds were acquired. Then, even when the location is known, it is often in the middle of a forest where the quality of satellite imagery is very low.
+Thirdly, there are the LiDAR datasets, such as [@WildForest3D] and [@FOR-instance]. Similarly to RGB datasets, they lack one of the data source for the task I worked on. But unlike them, they have the advantage that the missing data could be much easier to acquire from another source, since RGB aerial or satellite images are much more common than LiDAR point clouds. However, this solution was abandoned for two main reasons. First it is quite challenging to find the exact locations where the point clouds were acquired. Then, even when the location is known, it is often in the middle of a forest where the quality of satellite imagery is very low.
 
-Finally, I also found two datasets that had RGB and LiDAR components. The first one is @MDAS. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There were however two major flaws. The obvious one was that this dataset was created with land semantic segmentation tasks in mind, so there was no tree annotations. The less obvious one was that a DSM is not a point cloud, even though it is some kind of 3D information and was often created using a LiDAR point cloud. As a consequence, I would have been very limited in my ability to use the point cloud.
+Finally, I also found two datasets that had RGB and LiDAR components. The first one is MDAS [@MDAS]. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There were however two major flaws. The obvious one was that this dataset was created with land semantic segmentation tasks in mind, so there was no tree annotations. The less obvious one was that a DSM is not a point cloud, even though it is some kind of 3D information and was often created using a LiDAR point cloud. As a consequence, I would have been very limited in my ability to use the point cloud.
 
-The only real dataset with RGB and LiDAR was @NEON. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about later. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.
+The only real dataset with RGB and LiDAR was NEON [@NEON]. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about later. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.
 
 #### Public data
 
@@ -99,13 +99,13 @@ For practical reasons, the two countries where I mostly searched for available d
 - LiDAR point clouds
 - Tree annotations
 
-These three types of data are available in similar ways in both countries, although the Netherlands have a small edge over France. RGB images are really easy to find in France (@IGN_BDORTHO) and in the Netherlands (@Luchtfotos), but the resolution is better in the Netherlands (8 cm vs 20 cm). Hyperspectral images are also available in both countries, although for those the resolution is only 25 cm in the Netherlands.
+These three types of data are available in similar ways in both countries, although the Netherlands have a small edge over France. RGB images are really easy to find in France with the BD ORTHO [@IGN_BDORTHO] and in the Netherlands with the Luchtfotos [@Luchtfotos], but the resolution is better in the Netherlands (8 cm vs 20 cm). Hyperspectral images are also available in both countries, although for those the resolution is only 25 cm in the Netherlands.
 
-As for LiDAR point clouds, the Netherlands have a small edge over France, because they are at their forth version covering the whole country with @AHN4, and are already working on the fifth version. In France, data acquisition for the first LiDAR point cloud covering the whole country (@IGN_LiDARHD) started a few years ago. It is not yet finished, even though data is already available for half of the country. The other advantage of the data from Netherlands regarding LiDAR point clouds is that all flights are performed during winter, which allows light beams to penetrate more deeply in trees and reach trunks and branches. This is not the case in France.
+As for LiDAR point clouds, the Netherlands have a small edge over France, because they have already completed their forth version covering the whole country with AHN4 [@AHN4], and are working on the fifth version. In France, data acquisition for the first LiDAR point cloud covering the whole country started a few years ago [@IGN_LiDARHD]. It is not yet finished, even though data is already available for half of the country. The other advantage of the data from Netherlands regarding LiDAR point clouds is that all flights are performed during winter, which allows light beams to penetrate more deeply in trees and reach trunks and branches. This is not the case in France.
 
-The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for @amsterdam_trees and @bordeaux_trees. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.
+The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for Amsterdam [@amsterdam_trees] and Bordeaux [@bordeaux_trees]. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.
 
-The other tree annotation source that we could have used is Boomregister(@boomregister). This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9 m heigh or have a crown diameter smaller than 4 m. Therefore, even it is a very impressive piece of work, we thought that it could not be used as training data for a deep learning models due to its biases and imperfections.
+The other tree annotation source that we could have used is Boomregister ([@boomregister]). This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9 m heigh or have a crown diameter smaller than 4 m. Therefore, even it is a very impressive piece of work, we thought that it could not be used as training data for a deep learning models due to its biases and imperfections.
 
 #### Dataset augmentation techniques
 
@@ -117,8 +117,8 @@ The other tree annotation source that we could have used is Boomregister(@boomre
 
 ## Results
 
-Beyond mAP: @BeyondMAP
+Beyond mAP: [@BeyondMAP].
 
-## Conclusion
+## Conclusion {.unnumbered}
 
 Blablabla
