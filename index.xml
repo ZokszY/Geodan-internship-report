@@ -108,14 +108,60 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
 </sec>
 <sec id="state-of-the-art">
   <title>State-of-the-art</title>
+  <sec id="computer-vision-tasks-related-to-trees">
+    <title>Computer vision tasks related to trees</title>
+    <p>Before talking about models and datasets, let’s define properly
+    the task that this project focused on, in the midst of all the
+    various computer vision tasks, and specifically those related to
+    tree detection.</p>
+    <p>The first main differentiation between tree recognition tasks
+    comes from the acquisition of the data. There are some very
+    different tasks and methods using either ground data or
+    aerial/satellite data. This is especially true when focusing on
+    urban trees as shown in Arevalo-Ramirez et al.
+    (<xref alt="2024" rid="ref-urban-trees" ref-type="bibr">2024</xref>),
+    since a lot of street view data is available.</p>
+    <p>This leads to the second variation, which is related to the kind
+    of tree area that we are interested in. There are mainly three types
+    of area, which among other things, influence the organization of the
+    trees in space: urban areas, tree plantations and forests. This is
+    important, because the tasks and the difficulty depends on the type
+    of area. Tree plantations are much easier to work with than
+    completely wild forests, while urban areas contain various levels of
+    difficulty ranging from alignment trees to private and disorganized
+    gardens and parks. For this project, we mainly focused on urban
+    areas, but everything should still be applicable to tree plantations
+    and forests.</p>
+    <p>Then, the four fundamental computer vision tasks have their
+    application when dealing with trees, as explained in
+    (<xref alt="Safonova et al. 2021" rid="ref-olive-tree" ref-type="bibr">Safonova
+    et al. 2021</xref>):</p>
+    <list list-type="bullet">
+      <list-item>
+        <p>Classification, although this is quite rare for airborne tree
+        applications since there are multiple trees on each image most
+        of the time</p>
+      </list-item>
+      <list-item>
+        <p>Detection, which consists in detecting objects and placing
+        boxes around them</p>
+      </list-item>
+      <list-item>
+        <p>Semantic segmentation, which consists in associating a label
+        to every pixel of an image</p>
+      </list-item>
+      <list-item>
+        <p>Instance segmentation, which consists in adding a layer of
+        complexity to semantic segmentation by also differentiating
+        between the different instances of each class</p>
+      </list-item>
+    </list>
+    <p>These generic tasks can be extended by trying to get more
+    information about the trees. The most common information are the
+    species and the height.</p>
+  </sec>
   <sec id="datasets">
     <title>Datasets</title>
-    <sec id="computer-vision-tasks">
-      <title>Computer vision tasks</title>
-      <p>Difference between object detection and instance segmentation.
-      The first on is easier to train because it only requires bounding
-      boxes</p>
-    </sec>
     <sec id="requirements">
       <title>Requirements</title>
       <p>Before presenting the different promising datasets and the
@@ -320,6 +366,17 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       area we try to train the model on would be missing all the private
       trees, making the training process impossible because we cannot
       have only a partial annotation of images.</p>
+      <p>The other tree annotation source that we could have used is
+      Boomregister(Coöperatief Boomregister U.A.
+      (<xref alt="2014" rid="ref-boomregister" ref-type="bibr">2014</xref>)).
+      This work covers the whole of the Netherlands, including public
+      and private trees. However, the precision of the masks is far from
+      perfect, and many trees are missing or incorrectly segmented,
+      especially when they are less than 9 m heigh or have a crown
+      diameter smaller than 4 m. Therefore, even it is a very impressive
+      piece of work, we thought that it could not be used as training
+      data for a deep learning models due to its biases and
+      imperfections.</p>
     </sec>
     <sec id="dataset-augmentation-techniques">
       <title>Dataset augmentation techniques</title>
@@ -338,7 +395,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
 <sec id="results">
   <title>Results</title>
   <p>Beyond mAP: Jena et al.
-  (<xref alt="2023" rid="ref-BeyondMAP" ref-type="bibr">2023</xref>)</p>
+  (<xref alt="2023" rid="ref-BeyondMAP" ref-type="bibr">2023</xref>).</p>
 </sec>
 <sec id="conclusion">
   <title>Conclusion</title>
@@ -683,6 +740,60 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <article-title>Patrimoine arboré de Bordeaux Métropole (Tree Heritage of Bordeaux Metropole)</article-title>
       <year iso-8601-date="2024">2024</year>
       <uri>https://opendata.bordeaux-metropole.fr/explore/dataset/ec_arbre_p/information/?disjunctive.insee</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-boomregister">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Coöperatief Boomregister U.A.</string-name>
+      </person-group>
+      <article-title>Boom Register (Tree Register)</article-title>
+      <year iso-8601-date="2014">2014</year>
+      <uri>https://boomregister.nl/</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-urban-trees">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Arevalo-Ramirez</surname><given-names>Tito</given-names></name>
+        <name><surname>Alfaro</surname><given-names>Anali</given-names></name>
+        <name><surname>Figueroa</surname><given-names>José</given-names></name>
+        <name><surname>Ponce-Donoso</surname><given-names>Mauricio</given-names></name>
+        <name><surname>Saavedra</surname><given-names>Jose M.</given-names></name>
+        <name><surname>Recabarren</surname><given-names>Matías</given-names></name>
+        <name><surname>Delpiano</surname><given-names>José</given-names></name>
+      </person-group>
+      <article-title>Challenges for computer vision as a tool for screening urban trees through street-view images</article-title>
+      <source>Urban Forestry &amp; Urban Greening</source>
+      <year iso-8601-date="2024">2024</year>
+      <volume>95</volume>
+      <issn>1618-8667</issn>
+      <uri>https://www.sciencedirect.com/science/article/pii/S1618866724001146</uri>
+      <pub-id pub-id-type="doi">https://doi.org/10.1016/j.ufug.2024.128316</pub-id>
+      <fpage>128316</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-olive-tree">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Safonova</surname><given-names>Anastasiia</given-names></name>
+        <name><surname>Guirado</surname><given-names>Emilio</given-names></name>
+        <name><surname>Maglinets</surname><given-names>Yuriy</given-names></name>
+        <name><surname>Alcaraz-Segura</surname><given-names>Domingo</given-names></name>
+        <name><surname>Tabik</surname><given-names>Siham</given-names></name>
+      </person-group>
+      <article-title>Olive tree biovolume from UAV multi-resolution image segmentation with mask r-CNN</article-title>
+      <source>Sensors</source>
+      <year iso-8601-date="2021">2021</year>
+      <volume>21</volume>
+      <issue>5</issue>
+      <issn>1424-8220</issn>
+      <uri>https://www.mdpi.com/1424-8220/21/5/1617</uri>
+      <pub-id pub-id-type="doi">10.3390/s21051617</pub-id>
+      <pub-id pub-id-type="pmid">33668984</pub-id>
+      <fpage>1617</fpage>
+      <lpage></lpage>
     </element-citation>
   </ref>
 </ref-list>

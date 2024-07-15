@@ -156,7 +156,7 @@
 \title{Tree object detection using airborne images and LiDAR point
 clouds}
 \author{Alexandre Bry}
-\date{2024-07-09}
+\date{2024-07-15}
 
 \begin{document}
 \maketitle
@@ -192,12 +192,56 @@ the methods.
 
 \chapter{State-of-the-art}\label{state-of-the-art}
 
+\section{Computer vision tasks related to
+trees}\label{computer-vision-tasks-related-to-trees}
+
+Before talking about models and datasets, let's define properly the task
+that this project focused on, in the midst of all the various computer
+vision tasks, and specifically those related to tree detection.
+
+The first main differentiation between tree recognition tasks comes from
+the acquisition of the data. There are some very different tasks and
+methods using either ground data or aerial/satellite data. This is
+especially true when focusing on urban trees as shown in
+\textcite{urban-trees}, since a lot of street view data is available.
+
+This leads to the second variation, which is related to the kind of tree
+area that we are interested in. There are mainly three types of area,
+which among other things, influence the organization of the trees in
+space: urban areas, tree plantations and forests. This is important,
+because the tasks and the difficulty depends on the type of area. Tree
+plantations are much easier to work with than completely wild forests,
+while urban areas contain various levels of difficulty ranging from
+alignment trees to private and disorganized gardens and parks. For this
+project, we mainly focused on urban areas, but everything should still
+be applicable to tree plantations and forests.
+
+Then, the four fundamental computer vision tasks have their application
+when dealing with trees, as explained in \autocite{olive-tree}:
+
+\begin{itemize}
+\tightlist
+\item
+  Classification, although this is quite rare for airborne tree
+  applications since there are multiple trees on each image most of the
+  time
+\item
+  Detection, which consists in detecting objects and placing boxes
+  around them
+\item
+  Semantic segmentation, which consists in associating a label to every
+  pixel of an image
+\item
+  Instance segmentation, which consists in adding a layer of complexity
+  to semantic segmentation by also differentiating between the different
+  instances of each class
+\end{itemize}
+
+These generic tasks can be extended by trying to get more information
+about the trees. The most common information are the species and the
+height.
+
 \section{Datasets}\label{datasets}
-
-\subsection{Computer vision tasks}\label{computer-vision-tasks}
-
-Difference between object detection and instance segmentation. The first
-on is easier to train because it only requires bounding boxes
 
 \subsection{Requirements}\label{requirements}
 
@@ -378,6 +422,16 @@ area we try to train the model on would be missing all the private
 trees, making the training process impossible because we cannot have
 only a partial annotation of images.
 
+The other tree annotation source that we could have used is
+Boomregister(\textcite{boomregister}). This work covers the whole of the
+Netherlands, including public and private trees. However, the precision
+of the masks is far from perfect, and many trees are missing or
+incorrectly segmented, especially when they are less than 9~m heigh or
+have a crown diameter smaller than 4~m. Therefore, even it is a very
+impressive piece of work, we thought that it could not be used as
+training data for a deep learning models due to its biases and
+imperfections.
+
 \subsection{Dataset augmentation
 techniques}\label{dataset-augmentation-techniques}
 
@@ -389,7 +443,7 @@ techniques}\label{dataset-augmentation-techniques}
 
 \chapter{Results}\label{results}
 
-Beyond mAP: \textcite{BeyondMAP}
+Beyond mAP: \textcite{BeyondMAP}.
 
 \chapter{Conclusion}\label{conclusion}
 
