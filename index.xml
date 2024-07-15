@@ -118,10 +118,9 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     comes from the acquisition of the data. There are some very
     different tasks and methods using either ground data or
     aerial/satellite data. This is especially true when focusing on
-    urban trees as shown in
+    urban trees, since a lot of street view data is available
     (<xref alt="Arevalo-Ramirez et al. 2024" rid="ref-urban-trees" ref-type="bibr">Arevalo-Ramirez
-    et al. 2024</xref>), since a lot of street view data is
-    available.</p>
+    et al. 2024</xref>).</p>
     <p>This leads to the second variation, which is related to the kind
     of tree area that we are interested in. There are mainly three types
     of area, which among other things, influence the organization of the
@@ -134,7 +133,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     areas, but everything should still be applicable to tree plantations
     and forests.</p>
     <p>Then, the four fundamental computer vision tasks have their
-    application when dealing with trees, as explained in
+    application when dealing with trees
     (<xref alt="Safonova et al. 2021" rid="ref-olive-tree" ref-type="bibr">Safonova
     et al. 2021</xref>):</p>
     <list list-type="bullet">
@@ -159,7 +158,18 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     </list>
     <p>These generic tasks can be extended by trying to get more
     information about the trees. The most common information are the
-    species and the height.</p>
+    species and the height, but some models also try to predict the
+    health of the trees, or their carbon stock.</p>
+    <p>In this paper, the task that is tackled is the detection of
+    trees, with a special classification between several labels related
+    to the discrepancies between the different kinds of data. The kind
+    of model that is used would also have allowed to focus on some more
+    advanced tasks, by replacing detection with instance segmentation
+    and asking the model to also predict the species. But due to the
+    difficulties regarding the dataset, a simpler task with a simpler
+    dataset was used, without compromising the ability to experiment
+    with different possible improvements of the model. The difficulties
+    and the experiments are developed below.</p>
   </sec>
   <sec id="datasets">
     <title>Datasets</title>
@@ -232,17 +242,16 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       make the most out of it, instead of trying to use all the types of
       data together.</p>
       <p>The most comprehensive list of tree annotations datasets was
-      published in
+      published in OpenForest
       (<xref alt="Ouaknine et al. 2023" rid="ref-OpenForest" ref-type="bibr">Ouaknine
-      et al. 2023</xref>).
+      et al. 2023</xref>). FoMo-Bench
       (<xref alt="Bountos, Ouaknine, and Rolnick 2023" rid="ref-FoMo-Bench" ref-type="bibr">Bountos,
       Ouaknine, and Rolnick 2023</xref>) also lists several interesting
       datasets, even though most of them can also be found in
-      (<xref alt="Ouaknine et al. 2023" rid="ref-OpenForest" ref-type="bibr">Ouaknine
-      et al. 2023</xref>). Without enumerating all of them, there were
-      multiple kinds of datasets that all have their own flaws regarding
-      the requirements I was looking for.</p>
-      <p>Firstly, there are the forest inventories.
+      OpenForest. Without enumerating all of them, there were multiple
+      kinds of datasets that all have their own flaws regarding the
+      requirements I was looking for.</p>
+      <p>Firstly, there are the forest inventories. TALLO
       (<xref alt="Jucker et al. 2022" rid="ref-TALLO" ref-type="bibr">Jucker
       et al. 2022</xref>) is probably the most interesting one in this
       category, because it contains a lot of spatial information about
@@ -252,9 +261,9 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       LiDAR point clouds of the areas where the trees are located,
       making it impossible to use these annotations to train tree
       detection.</p>
-      <p>Secondly, there are the RGB datasets.
+      <p>Secondly, there are the RGB datasets. ReforesTree
       (<xref alt="Reiersen et al. 2022" rid="ref-ReforesTree" ref-type="bibr">Reiersen
-      et al. 2022</xref>) and
+      et al. 2022</xref>) and MillionTrees
       (<xref alt="B. Weinstein 2023" rid="ref-MillionTrees" ref-type="bibr">B.
       Weinstein 2023</xref>) are two of them and the quality of their
       images are high. The only drawback of these datasets is obviously
@@ -275,7 +284,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       in the middle of a forest where the quality of satellite imagery
       is very low.</p>
       <p>Finally, I also found two datasets that had RGB and LiDAR
-      components. The first one is
+      components. The first one is MDAS
       (<xref alt="Hu et al. 2023" rid="ref-MDAS" ref-type="bibr">Hu et
       al. 2023</xref>). This benchmark dataset encompasses RGB images,
       hyperspectral images and Digital Surface Models (DSM). There were
@@ -286,7 +295,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       and was often created using a LiDAR point cloud. As a consequence,
       I would have been very limited in my ability to use the point
       cloud.</p>
-      <p>The only real dataset with RGB and LiDAR was
+      <p>The only real dataset with RGB and LiDAR was NEON
       (<xref alt="B. G. Weinstein et al. 2019" rid="ref-NEON" ref-type="bibr">B.
       G. Weinstein et al. 2019</xref>). This dataset contains exactly
       all the data I was looking for, with RGB images, hyperspectral
@@ -307,7 +316,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <p>After rejecting all the available datasets I had found, the
       only solution I had left was to create my own dataset. I won’t
       dive too much in this process that I will explain in
-      <xref alt="Section 3" rid="sec-dataset">Section 3</xref>. I just
+      <xref alt="Section 2" rid="sec-dataset">Section 2</xref>. I just
       want to mention all the publicly available datasets that I used or
       could have used to create this custom dataset.</p>
       <p>For practical reasons, the two countries where I mostly
@@ -326,36 +335,36 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       </list>
       <p>These three types of data are available in similar ways in both
       countries, although the Netherlands have a small edge over France.
-      RGB images are really easy to find in France
-      ((<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BDORTHO" ref-type="bibr">Institut
+      RGB images are really easy to find in France with the BD ORTHO
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BDORTHO" ref-type="bibr">Institut
       national de l’information géographique et forestière (IGN)
-      2021</xref>)) and in the Netherlands
-      ((<xref alt="Beeldmateriaal Nederland 2024" rid="ref-Luchtfotos" ref-type="bibr">Beeldmateriaal
-      Nederland 2024</xref>)), but the resolution is better in the
+      2021</xref>) and in the Netherlands with the Luchtfotos
+      (<xref alt="Beeldmateriaal Nederland 2024" rid="ref-Luchtfotos" ref-type="bibr">Beeldmateriaal
+      Nederland 2024</xref>), but the resolution is better in the
       Netherlands (8 cm vs 20 cm). Hyperspectral images are also
       available in both countries, although for those the resolution is
       only 25 cm in the Netherlands.</p>
       <p>As for LiDAR point clouds, the Netherlands have a small edge
-      over France, because they are at their forth version covering the
-      whole country with
+      over France, because they have already completed their forth
+      version covering the whole country with AHN4
       (<xref alt="Actueel Hoogtebestand Nederland 2020" rid="ref-AHN4" ref-type="bibr">Actueel
-      Hoogtebestand Nederland 2020</xref>), and are already working on
-      the fifth version. In France, data acquisition for the first LiDAR
-      point cloud covering the whole country
-      ((<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDARHD" ref-type="bibr">Institut
+      Hoogtebestand Nederland 2020</xref>), and are working on the fifth
+      version. In France, data acquisition for the first LiDAR point
+      cloud covering the whole country started a few years ago
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDARHD" ref-type="bibr">Institut
       national de l’information géographique et forestière (IGN)
-      2020</xref>)) started a few years ago. It is not yet finished,
-      even though data is already available for half of the country. The
-      other advantage of the data from Netherlands regarding LiDAR point
-      clouds is that all flights are performed during winter, which
-      allows light beams to penetrate more deeply in trees and reach
-      trunks and branches. This is not the case in France.</p>
+      2020</xref>). It is not yet finished, even though data is already
+      available for half of the country. The other advantage of the data
+      from Netherlands regarding LiDAR point clouds is that all flights
+      are performed during winter, which allows light beams to penetrate
+      more deeply in trees and reach trunks and branches. This is not
+      the case in France.</p>
       <p>The part that is missing in both countries is related to tree
       annotations. Many municipalities have datasets containing
       information about all the public trees they handle. This is for
-      example the case for
+      example the case for Amsterdam
       (<xref alt="Gemeente Amsterdam 2024" rid="ref-amsterdam_trees" ref-type="bibr">Gemeente
-      Amsterdam 2024</xref>) and
+      Amsterdam 2024</xref>) and Bordeaux
       (<xref alt="Bordeaux Métropole 2024" rid="ref-bordeaux_trees" ref-type="bibr">Bordeaux
       Métropole 2024</xref>). However, these datasets cannot really be
       used as ground truth for a custom dataset for several reasons.

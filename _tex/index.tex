@@ -172,7 +172,8 @@ This is the abstract. It can be on multiple lines and contain
 \tableofcontents
 }
 
-\chapter{Introduction}\label{introduction}
+\chapter*{Introduction}\label{introduction}
+\addcontentsline{toc}{chapter}{Introduction}
 
 The goal of the internship was to study the possibility of combining
 LiDAR point clouds and aerial images in a deep learning model to perform
@@ -202,8 +203,8 @@ vision tasks, and specifically those related to tree detection.
 The first main differentiation between tree recognition tasks comes from
 the acquisition of the data. There are some very different tasks and
 methods using either ground data or aerial/satellite data. This is
-especially true when focusing on urban trees as shown in
-\autocite{urban-trees}, since a lot of street view data is available.
+especially true when focusing on urban trees, since a lot of street view
+data is available \autocite{urban-trees}.
 
 This leads to the second variation, which is related to the kind of tree
 area that we are interested in. There are mainly three types of area,
@@ -217,7 +218,7 @@ project, we mainly focused on urban areas, but everything should still
 be applicable to tree plantations and forests.
 
 Then, the four fundamental computer vision tasks have their application
-when dealing with trees, as explained in \autocite{olive-tree}:
+when dealing with trees \autocite{olive-tree}:
 
 \begin{itemize}
 \tightlist
@@ -239,7 +240,19 @@ when dealing with trees, as explained in \autocite{olive-tree}:
 
 These generic tasks can be extended by trying to get more information
 about the trees. The most common information are the species and the
-height.
+height, but some models also try to predict the health of the trees, or
+their carbon stock.
+
+In this paper, the task that is tackled is the detection of trees, with
+a special classification between several labels related to the
+discrepancies between the different kinds of data. The kind of model
+that is used would also have allowed to focus on some more advanced
+tasks, by replacing detection with instance segmentation and asking the
+model to also predict the species. But due to the difficulties regarding
+the dataset, a simpler task with a simpler dataset was used, without
+compromising the ability to experiment with different possible
+improvements of the model. The difficulties and the experiments are
+developed below.
 
 \section{Datasets}\label{datasets}
 
@@ -310,25 +323,26 @@ focusing on using one kind of data and trying to make the most out of
 it, instead of trying to use all the types of data together.
 
 The most comprehensive list of tree annotations datasets was published
-in \autocite{OpenForest}. \autocite{FoMo-Bench} also lists several
-interesting datasets, even though most of them can also be found in
-\autocite{OpenForest}. Without enumerating all of them, there were
+in OpenForest \autocite{OpenForest}. FoMo-Bench \autocite{FoMo-Bench}
+also lists several interesting datasets, even though most of them can
+also be found in OpenForest. Without enumerating all of them, there were
 multiple kinds of datasets that all have their own flaws regarding the
 requirements I was looking for.
 
-Firstly, there are the forest inventories. \autocite{TALLO} is probably
-the most interesting one in this category, because it contains a lot of
-spatial information about almost 500K trees, with their locations, their
-crown radii and their heights. Therefore, everything needed to localize
-trees is in the dataset. However, I didn't manage to find RGB images or
-LiDAR point clouds of the areas where the trees are located, making it
-impossible to use these annotations to train tree detection.
+Firstly, there are the forest inventories. TALLO \autocite{TALLO} is
+probably the most interesting one in this category, because it contains
+a lot of spatial information about almost 500K trees, with their
+locations, their crown radii and their heights. Therefore, everything
+needed to localize trees is in the dataset. However, I didn't manage to
+find RGB images or LiDAR point clouds of the areas where the trees are
+located, making it impossible to use these annotations to train tree
+detection.
 
-Secondly, there are the RGB datasets. \autocite{ReforesTree} and
-\autocite{MillionTrees} are two of them and the quality of their images
-are high. The only drawback of these datasets is obviously that they
-don't provide any kind of point cloud, which make them unsuitable for
-the task.
+Secondly, there are the RGB datasets. ReforesTree \autocite{ReforesTree}
+and MillionTrees \autocite{MillionTrees} are two of them and the quality
+of their images are high. The only drawback of these datasets is
+obviously that they don't provide any kind of point cloud, which make
+them unsuitable for the task.
 
 Thirdly, there are the LiDAR datasets, such as \autocite{WildForest3D}
 and \autocite{FOR-instance}. Similarly to RGB datasets, they lack one of
@@ -342,16 +356,16 @@ location is known, it is often in the middle of a forest where the
 quality of satellite imagery is very low.
 
 Finally, I also found two datasets that had RGB and LiDAR components.
-The first one is \autocite{MDAS}. This benchmark dataset encompasses RGB
-images, hyperspectral images and Digital Surface Models (DSM). There
-were however two major flaws. The obvious one was that this dataset was
-created with land semantic segmentation tasks in mind, so there was no
-tree annotations. The less obvious one was that a DSM is not a point
-cloud, even though it is some kind of 3D information and was often
-created using a LiDAR point cloud. As a consequence, I would have been
-very limited in my ability to use the point cloud.
+The first one is MDAS \autocite{MDAS}. This benchmark dataset
+encompasses RGB images, hyperspectral images and Digital Surface Models
+(DSM). There were however two major flaws. The obvious one was that this
+dataset was created with land semantic segmentation tasks in mind, so
+there was no tree annotations. The less obvious one was that a DSM is
+not a point cloud, even though it is some kind of 3D information and was
+often created using a LiDAR point cloud. As a consequence, I would have
+been very limited in my ability to use the point cloud.
 
-The only real dataset with RGB and LiDAR was \autocite{NEON}. This
+The only real dataset with RGB and LiDAR was NEON \autocite{NEON}. This
 dataset contains exactly all the data I was looking for, with RGB
 images, hyperspectral images and LiDAR point clouds. With 30975 tree
 annotations, it is also a quite large dataset, spanning across multiple
@@ -389,38 +403,40 @@ different data types independently:
 
 These three types of data are available in similar ways in both
 countries, although the Netherlands have a small edge over France. RGB
-images are really easy to find in France (\autocite{IGN_BDORTHO}) and in
-the Netherlands (\autocite{Luchtfotos}), but the resolution is better in
-the Netherlands (8~cm vs 20~cm). Hyperspectral images are also available
-in both countries, although for those the resolution is only 25~cm in
-the Netherlands.
+images are really easy to find in France with the BD ORTHO
+\autocite{IGN_BDORTHO} and in the Netherlands with the Luchtfotos
+\autocite{Luchtfotos}, but the resolution is better in the Netherlands
+(8~cm vs 20~cm). Hyperspectral images are also available in both
+countries, although for those the resolution is only 25~cm in the
+Netherlands.
 
 As for LiDAR point clouds, the Netherlands have a small edge over
-France, because they are at their forth version covering the whole
-country with \autocite{AHN4}, and are already working on the fifth
-version. In France, data acquisition for the first LiDAR point cloud
-covering the whole country (\autocite{IGN_LiDARHD}) started a few years
-ago. It is not yet finished, even though data is already available for
-half of the country. The other advantage of the data from Netherlands
-regarding LiDAR point clouds is that all flights are performed during
-winter, which allows light beams to penetrate more deeply in trees and
-reach trunks and branches. This is not the case in France.
+France, because they have already completed their forth version covering
+the whole country with AHN4 \autocite{AHN4}, and are working on the
+fifth version. In France, data acquisition for the first LiDAR point
+cloud covering the whole country started a few years ago
+\autocite{IGN_LiDARHD}. It is not yet finished, even though data is
+already available for half of the country. The other advantage of the
+data from Netherlands regarding LiDAR point clouds is that all flights
+are performed during winter, which allows light beams to penetrate more
+deeply in trees and reach trunks and branches. This is not the case in
+France.
 
 The part that is missing in both countries is related to tree
 annotations. Many municipalities have datasets containing information
 about all the public trees they handle. This is for example the case for
-\autocite{amsterdam_trees} and \autocite{bordeaux_trees}. However, these
-datasets cannot really be used as ground truth for a custom dataset for
-several reasons. First, many of them do not contain coordinates
-indicating the position of each tree in the city. Then, even those that
-contain coordinates are most of the time missing any kind of information
-allowing to deduce a bounding box for the tree crowns. Finally, even if
-they did contain everything, they only focus on public trees, and are
-missing every single tree located in a private area. Since public and
-private areas are obviously imbricated in all cities, it means that any
-area we try to train the model on would be missing all the private
-trees, making the training process impossible because we cannot have
-only a partial annotation of images.
+Amsterdam \autocite{amsterdam_trees} and Bordeaux
+\autocite{bordeaux_trees}. However, these datasets cannot really be used
+as ground truth for a custom dataset for several reasons. First, many of
+them do not contain coordinates indicating the position of each tree in
+the city. Then, even those that contain coordinates are most of the time
+missing any kind of information allowing to deduce a bounding box for
+the tree crowns. Finally, even if they did contain everything, they only
+focus on public trees, and are missing every single tree located in a
+private area. Since public and private areas are obviously imbricated in
+all cities, it means that any area we try to train the model on would be
+missing all the private trees, making the training process impossible
+because we cannot have only a partial annotation of images.
 
 The other tree annotation source that we could have used is Boomregister
 (\autocite{boomregister}). This work covers the whole of the
@@ -445,7 +461,8 @@ techniques}\label{dataset-augmentation-techniques}
 
 Beyond mAP: \autocite{BeyondMAP}.
 
-\chapter{Conclusion}\label{conclusion}
+\chapter*{Conclusion}\label{conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
 
 Blablabla
 
