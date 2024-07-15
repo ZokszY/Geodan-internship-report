@@ -24,6 +24,7 @@ keywords:
   - tree detection
   - deep learning
 bibliography: references.bib
+csl: chicago-author-date.csl
 ---
 
 ## Introduction
