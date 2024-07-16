@@ -131,6 +131,10 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+\makeatletter
+\@ifpackageloaded{sidenotes}{}{\usepackage{sidenotes}}
+\@ifpackageloaded{marginnote}{}{\usepackage{marginnote}}
+\makeatother
 
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -156,7 +160,7 @@
 \title{Tree object detection using airborne images and LiDAR point
 clouds}
 \author{Alexandre Bry}
-\date{2024-07-15}
+\date{2024-07-16}
 
 \begin{document}
 \maketitle
@@ -255,6 +259,12 @@ improvements of the model. The difficulties and the experiments are
 developed below.
 
 \section{Datasets}\label{datasets}
+
+\subsection{Motivations}\label{motivations}
+
+\autocite{lidar_benchmark_2} shows that in forests, you can have up to
+more than 50\% of the trees which crowns are completely or partially
+covered by other trees.
 
 \subsection{Requirements}\label{requirements}
 
@@ -365,19 +375,19 @@ not a point cloud, even though it is some kind of 3D information and was
 often created using a LiDAR point cloud. As a consequence, I would have
 been very limited in my ability to use the point cloud.
 
-The only real dataset with RGB and LiDAR was NEON \autocite{NEON}. This
-dataset contains exactly all the data I was looking for, with RGB
-images, hyperspectral images and LiDAR point clouds. With 30975 tree
-annotations, it is also a quite large dataset, spanning across multiple
-various forests. The reason why I decided not to use it despite all this
-is that at the beginning of the project, I thought that the quality of
-the images and the point clouds was too low. Looking back on this
-decision, I think that I probably could have worked with this dataset
-and gotten great results. This would have saved me the time spent
-annotating the trees for my own dataset, which I will talk more about
-later. My decision was also influenced by the quality of the images and
-the point clouds available in the Netherlands, which I will talk about
-in the next section.
+The only real dataset with RGB and LiDAR came from NEON
+\autocite{NEONdata}. This dataset contains exactly all the data I was
+looking for, with RGB images, hyperspectral images and LiDAR point
+clouds. With 30975 tree annotations, it is also a quite large dataset,
+spanning across multiple various forests. The reason why I decided not
+to use it despite all this is that at the beginning of the project, I
+thought that the quality of the images and the point clouds was too low.
+Looking back on this decision, I think that I probably could have worked
+with this dataset and gotten great results. This would have saved me the
+time spent annotating the trees for my own dataset, which I will talk
+more about later. My decision was also influenced by the quality of the
+images and the point clouds available in the Netherlands, which I will
+talk about in the next section.
 
 \subsection{Public data}\label{public-data}
 
@@ -439,32 +449,206 @@ missing all the private trees, making the training process impossible
 because we cannot have only a partial annotation of images.
 
 The other tree annotation source that we could have used is Boomregister
-(\autocite{boomregister}). This work covers the whole of the
-Netherlands, including public and private trees. However, the precision
-of the masks is far from perfect, and many trees are missing or
-incorrectly segmented, especially when they are less than 9~m heigh or
-have a crown diameter smaller than 4~m. Therefore, even it is a very
-impressive piece of work, we thought that it could not be used as
-training data for a deep learning models due to its biases and
-imperfections.
+\autocite{boomregister}. This work covers the whole of the Netherlands,
+including public and private trees. However, the precision of the masks
+is far from perfect, and many trees are missing or incorrectly
+segmented, especially when they are less than 9~m heigh or have a crown
+diameter smaller than 4~m. Therefore, even it is a very impressive piece
+of work, we thought that it could not be used as training data for a
+deep learning models due to its biases and imperfections.
 
 \subsection{Dataset augmentation
 techniques}\label{dataset-augmentation-techniques}
 
-\section{Models}\label{models}
+When a dataset is too small to train a model, there are several ways of
+artificially enlarging it.
+
+The most common way to do it is to randomly apply deterministic or
+random transformations to the data, during the training process, to be
+able to generate several unique and different realistic data instances
+from one real data instance. There are a lot of different
+transformations that can be applied to images, divided into two
+categories: pixel-level and spatial-level \autocite{albumentations}.
+Pixel-level transformations modify the value of individual pixels, by
+applying different filters, such as random noise, color shifts and more
+complex effects like fog and sun flare. Spatial-level transformations
+modify the spatial arrangement of the image, without changing the pixel
+values. In other words, these transformations move the pixels in the
+image. The transformations range from simple rotations and croppings to
+complex spatial distortions. In the end, all these transformations are
+simply producing one artificial image out of one real image.
+
+Another way to enlarge a dataset is to instead generate completely new
+input data sharing the same properties as the initial dataset. This can
+be done using Generative Adversarial Networks (GAN). These models
+usually have two parts, a generator and a discriminator, which are
+trained in parallel. The generator learns to produce realistic
+artificial data, while the discriminator learns to identify real data
+and artificial data produced by the generator. If the training is
+successful, we can then use the generator and random seeds to generate
+random but realistic artificial data similar to the dataset. This method
+has for example been successfully used to generate artificial tree
+height maps \autocite{gan_data_augment}.
+
+\section{Models and methods}\label{models-and-methods}
+
+\subsection{Classical methods}\label{classical-methods}
+
+Besides machine and deep learning methods that are mentioned in the next
+sections, there exist several algorithmic methods that use the special
+shape of the trees to detect them individually. The most used is called
+the watershed algorithm, and even though it has many variants, its base
+principle is simple \autocite{watershed}. The idea of this algorithm is
+to find individual trees in three steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Identify the local treetops from a height map or from an RGB image,
+\item
+  Inverse the image so that local maxima (treetops) become local minima
+  (watersheds),
+\item
+  Fill the watersheds with water until different watersheds overflow and
+  merge, marking their boundaries.
+\end{enumerate}
+
+This algorithm works generally well, using the assumption that the
+overall shape of each individual tree crown si similar to a cone when
+seen from above. Due to its success and the different changes that
+further improved its results, this algorithm is still used today, even
+in complex pipelines using machine and deep learning methods to extract
+features before applying the watershed algorithm
+\autocite{Freudenberg2022,lidar_rgb_wst}.
+
+\subsection{LiDAR only}\label{lidar-only}
+
+Some of the methods to identify individual trees use LiDAR data only.
+There are a lot of different ways to use and analyze point clouds, but
+the one that is mostly used for trees is based on height maps, or Canopy
+Height Models (CHM).
+
+A CHM is a raster computed as the subtraction of the Digital Terrain
+Model (DTM) to the Digital Surface Model (DSM). What it means is that a
+CHM contains the height above ground of the highest point in the area
+corresponding to each pixel. This CHM can for example be used as the
+input raster for the watershed algorithm, as it contains the height
+values that can be used to determine local maxima
+\autocite{lidar_watershed}.
+
+\subsection{Images only}\label{images-only}
+
+\subsection{LiDAR and images}\label{lidar-and-images}
+
+Models to cite:
+
+\begin{itemize}
+\tightlist
+\item
+  AMF GD YOLOv8 \autocite{amf_gd_yolov8}: main source of inspiration,
+  combining RGB and LiDAR in an image model
+\item
+  Benchmark of 8 methods using LiDAR \autocite{lidar_benchmark}: no
+  machine learning method, but one of the methods uses multiple CHM
+  layers, computed iteratively by removing everything in the 0.5~m below
+  the previous CHM
+\item
+  Individual tree crown delineation in high-resolution remote sensing
+  images based on U-Net \autocite{Freudenberg2022}: multiple steps with
+  two models to predict masks, outlines and distance transform, and a
+  final step with the watershed algorithm
+\item
+  DeepForest: A Python package for RGB deep learning tree crown
+  delineation \autocite{DeepForest}: uses only RGB data to detect trees,
+  but uses LiDAR to create millions of annotations of moderate quality
+  to pre-train the model, before using around 10,000 hand-annotations to
+  finalize and specialize the training on a certain area.
+\item
+  International Benchmarking of the Individual Tree Detection Methods
+  for Modeling 3-D Canopy Structure for Silviculture and Forest Ecology
+  Using Airborne Laser Scanning \autocite{lidar_benchmark_2}: another
+  benchmark using LiDAR. They also try a method based on 3D voxels.
+\item
+  Deep Learning for LiDAR Point Cloud Classification in Remote Sensing
+  \autocite{lidar_classification}: overview of deep learning methods to
+  classify point clouds
+\item
+  Individual tree segmentation and tree species classification in
+  subtropical broadleaf forests using UAV-based LiDAR, hyperspectral,
+  and ultrahigh-resolution RGB data \autocite{lidar_rgb_wst}: use LiDAR,
+  RGB and hyperspectral data, watershed algorithm and random forests.
+\item
+  ACE R-CNN: An Attention Complementary and Edge Detection-Based
+  Instance Segmentation Algorithm for Individual Tree Species
+  Identification Using UAV RGB Images and LiDAR Data
+  \autocite{lidar_rgb_acnet}: use LiDAR and RGB data, Mask R-CNN model
+  with fusion, similar to AMF GD YOLOv8
+\end{itemize}
 
 \chapter{Dataset}\label{sec-dataset}
+
+The highest resolution of the CHM which keeps a high enough quality
+depends entirely on the density of the point cloud. Also, depending on
+the season when the point cloud is acquired, using a CHM might imply
+throwing away the majority of the information contained in the point
+cloud.
+
+\section{Definition and content}\label{definition-and-content}
+
+\section{Challenges}\label{challenges}
+
+\begin{itemize}
+\tightlist
+\item
+  Shift between RGB images, CIR images and LiDAR point clouds due to
+  images not being perfectly orthonormal
+\item
+  Variations of the trees over time, with new small trees being planted
+  and old trees being cut off
+\item
+  Not so easy to define what we consider as a tree and identify them.
+  Problems with bushes for example. This problem is also mentioned in
+  another paper \autocite{DeepForestBefore}.
+\end{itemize}
+
+\section{Augmentation methods}\label{augmentation-methods}
 
 \chapter{Model}\label{model}
 
 \chapter{Results}\label{results}
 
-Beyond mAP: \autocite{BeyondMAP}.
+sortedAP: \autocite{sortedAP}.
+
+\begin{figure*}[H]
+
+\centering{
+
+\includegraphics{index_files/figure-pdf/fig-training-parameters-output-1.pdf}
+
+}
+
+\caption{\label{fig-training-parameters}Results with different training
+parameters}
+
+\end{figure*}%
+
+\begin{figure*}
+
+\textsubscript{Source:
+\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+Notebook}}
+
+\end{figure*}%
 
 \chapter*{Conclusion}\label{conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
 Blablabla
+
+\textsubscript{Source:
+\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+Notebook}}
 
 
 \printbibliography[title=Bibliography]

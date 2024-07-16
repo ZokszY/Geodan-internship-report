@@ -173,6 +173,13 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
   </sec>
   <sec id="datasets">
     <title>Datasets</title>
+    <sec id="motivations">
+      <title>Motivations</title>
+      <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
+      et al. 2016</xref>) shows that in forests, you can have up to more
+      than 50% of the trees which crowns are completely or partially
+      covered by other trees.</p>
+    </sec>
     <sec id="requirements">
       <title>Requirements</title>
       <p>Before presenting the different promising datasets and the
@@ -295,21 +302,22 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       and was often created using a LiDAR point cloud. As a consequence,
       I would have been very limited in my ability to use the point
       cloud.</p>
-      <p>The only real dataset with RGB and LiDAR was NEON
-      (<xref alt="B. G. Weinstein et al. 2019" rid="ref-NEON" ref-type="bibr">B.
-      G. Weinstein et al. 2019</xref>). This dataset contains exactly
-      all the data I was looking for, with RGB images, hyperspectral
-      images and LiDAR point clouds. With 30975 tree annotations, it is
-      also a quite large dataset, spanning across multiple various
-      forests. The reason why I decided not to use it despite all this
-      is that at the beginning of the project, I thought that the
-      quality of the images and the point clouds was too low. Looking
-      back on this decision, I think that I probably could have worked
-      with this dataset and gotten great results. This would have saved
-      me the time spent annotating the trees for my own dataset, which I
-      will talk more about later. My decision was also influenced by the
-      quality of the images and the point clouds available in the
-      Netherlands, which I will talk about in the next section.</p>
+      <p>The only real dataset with RGB and LiDAR came from NEON
+      (<xref alt="B. Weinstein, Marconi, and White 2022" rid="ref-NEONdata" ref-type="bibr">B.
+      Weinstein, Marconi, and White 2022</xref>). This dataset contains
+      exactly all the data I was looking for, with RGB images,
+      hyperspectral images and LiDAR point clouds. With 30975 tree
+      annotations, it is also a quite large dataset, spanning across
+      multiple various forests. The reason why I decided not to use it
+      despite all this is that at the beginning of the project, I
+      thought that the quality of the images and the point clouds was
+      too low. Looking back on this decision, I think that I probably
+      could have worked with this dataset and gotten great results. This
+      would have saved me the time spent annotating the trees for my own
+      dataset, which I will talk more about later. My decision was also
+      influenced by the quality of the images and the point clouds
+      available in the Netherlands, which I will talk about in the next
+      section.</p>
     </sec>
     <sec id="public-data">
       <title>Public data</title>
@@ -381,8 +389,8 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       annotation of images.</p>
       <p>The other tree annotation source that we could have used is
       Boomregister
-      ((<xref alt="Coöperatief Boomregister U.A. 2014" rid="ref-boomregister" ref-type="bibr">Coöperatief
-      Boomregister U.A. 2014</xref>)). This work covers the whole of the
+      (<xref alt="Coöperatief Boomregister U.A. 2014" rid="ref-boomregister" ref-type="bibr">Coöperatief
+      Boomregister U.A. 2014</xref>). This work covers the whole of the
       Netherlands, including public and private trees. However, the
       precision of the masks is far from perfect, and many trees are
       missing or incorrectly segmented, especially when they are less
@@ -393,23 +401,217 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     </sec>
     <sec id="dataset-augmentation-techniques">
       <title>Dataset augmentation techniques</title>
+      <p>When a dataset is too small to train a model, there are several
+      ways of artificially enlarging it.</p>
+      <p>The most common way to do it is to randomly apply deterministic
+      or random transformations to the data, during the training
+      process, to be able to generate several unique and different
+      realistic data instances from one real data instance. There are a
+      lot of different transformations that can be applied to images,
+      divided into two categories: pixel-level and spatial-level
+      (<xref alt="Buslaev et al. 2020" rid="ref-albumentations" ref-type="bibr">Buslaev
+      et al. 2020</xref>). Pixel-level transformations modify the value
+      of individual pixels, by applying different filters, such as
+      random noise, color shifts and more complex effects like fog and
+      sun flare. Spatial-level transformations modify the spatial
+      arrangement of the image, without changing the pixel values. In
+      other words, these transformations move the pixels in the image.
+      The transformations range from simple rotations and croppings to
+      complex spatial distortions. In the end, all these transformations
+      are simply producing one artificial image out of one real
+      image.</p>
+      <p>Another way to enlarge a dataset is to instead generate
+      completely new input data sharing the same properties as the
+      initial dataset. This can be done using Generative Adversarial
+      Networks (GAN). These models usually have two parts, a generator
+      and a discriminator, which are trained in parallel. The generator
+      learns to produce realistic artificial data, while the
+      discriminator learns to identify real data and artificial data
+      produced by the generator. If the training is successful, we can
+      then use the generator and random seeds to generate random but
+      realistic artificial data similar to the dataset. This method has
+      for example been successfully used to generate artificial tree
+      height maps
+      (<xref alt="Sun et al. 2022" rid="ref-gan_data_augment" ref-type="bibr">Sun
+      et al. 2022</xref>).</p>
     </sec>
   </sec>
-  <sec id="models">
-    <title>Models</title>
+  <sec id="models-and-methods">
+    <title>Models and methods</title>
+    <sec id="classical-methods">
+      <title>Classical methods</title>
+      <p>Besides machine and deep learning methods that are mentioned in
+      the next sections, there exist several algorithmic methods that
+      use the special shape of the trees to detect them individually.
+      The most used is called the watershed algorithm, and even though
+      it has many variants, its base principle is simple
+      (<xref alt="Vincent and Soille 1991" rid="ref-watershed" ref-type="bibr">Vincent
+      and Soille 1991</xref>). The idea of this algorithm is to find
+      individual trees in three steps:</p>
+      <list list-type="order">
+        <list-item>
+          <p>Identify the local treetops from a height map or from an
+          RGB image,</p>
+        </list-item>
+        <list-item>
+          <p>Inverse the image so that local maxima (treetops) become
+          local minima (watersheds),</p>
+        </list-item>
+        <list-item>
+          <p>Fill the watersheds with water until different watersheds
+          overflow and merge, marking their boundaries.</p>
+        </list-item>
+      </list>
+      <p>This algorithm works generally well, using the assumption that
+      the overall shape of each individual tree crown si similar to a
+      cone when seen from above. Due to its success and the different
+      changes that further improved its results, this algorithm is still
+      used today, even in complex pipelines using machine and deep
+      learning methods to extract features before applying the watershed
+      algorithm
+      (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022" ref-type="bibr">Freudenberg,
+      Magdon, and Nölke 2022</xref>;
+      <xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst" ref-type="bibr">Qin
+      et al. 2022</xref>).</p>
+    </sec>
+    <sec id="lidar-only">
+      <title>LiDAR only</title>
+      <p>Some of the methods to identify individual trees use LiDAR data
+      only. There are a lot of different ways to use and analyze point
+      clouds, but the one that is mostly used for trees is based on
+      height maps, or Canopy Height Models (CHM).</p>
+      <p>A CHM is a raster computed as the subtraction of the Digital
+      Terrain Model (DTM) to the Digital Surface Model (DSM). What it
+      means is that a CHM contains the height above ground of the
+      highest point in the area corresponding to each pixel. This CHM
+      can for example be used as the input raster for the watershed
+      algorithm, as it contains the height values that can be used to
+      determine local maxima
+      (<xref alt="Kwak et al. 2007" rid="ref-lidar_watershed" ref-type="bibr">Kwak
+      et al. 2007</xref>).</p>
+    </sec>
+    <sec id="images-only">
+      <title>Images only</title>
+    </sec>
+    <sec id="lidar-and-images">
+      <title>LiDAR and images</title>
+      <p>Models to cite:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p>AMF GD YOLOv8
+          (<xref alt="Zhong et al. 2024" rid="ref-amf_gd_yolov8" ref-type="bibr">Zhong
+          et al. 2024</xref>): main source of inspiration, combining RGB
+          and LiDAR in an image model</p>
+        </list-item>
+        <list-item>
+          <p>Benchmark of 8 methods using LiDAR
+          (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark" ref-type="bibr">Eysn
+          et al. 2015</xref>): no machine learning method, but one of
+          the methods uses multiple CHM layers, computed iteratively by
+          removing everything in the 0.5 m below the previous CHM</p>
+        </list-item>
+        <list-item>
+          <p>Individual tree crown delineation in high-resolution remote
+          sensing images based on U-Net
+          (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022" ref-type="bibr">Freudenberg,
+          Magdon, and Nölke 2022</xref>): multiple steps with two models
+          to predict masks, outlines and distance transform, and a final
+          step with the watershed algorithm</p>
+        </list-item>
+        <list-item>
+          <p>DeepForest: A Python package for RGB deep learning tree
+          crown delineation
+          (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest" ref-type="bibr">B.
+          G. Weinstein et al. 2020</xref>): uses only RGB data to detect
+          trees, but uses LiDAR to create millions of annotations of
+          moderate quality to pre-train the model, before using around
+          10,000 hand-annotations to finalize and specialize the
+          training on a certain area.</p>
+        </list-item>
+        <list-item>
+          <p>International Benchmarking of the Individual Tree Detection
+          Methods for Modeling 3-D Canopy Structure for Silviculture and
+          Forest Ecology Using Airborne Laser Scanning
+          (<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
+          et al. 2016</xref>): another benchmark using LiDAR. They also
+          try a method based on 3D voxels.</p>
+        </list-item>
+        <list-item>
+          <p>Deep Learning for LiDAR Point Cloud Classification in
+          Remote Sensing
+          (<xref alt="Diab, Kashef, and Shaker 2022" rid="ref-lidar_classification" ref-type="bibr">Diab,
+          Kashef, and Shaker 2022</xref>): overview of deep learning
+          methods to classify point clouds</p>
+        </list-item>
+        <list-item>
+          <p>Individual tree segmentation and tree species
+          classification in subtropical broadleaf forests using
+          UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB
+          data
+          (<xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst" ref-type="bibr">Qin
+          et al. 2022</xref>): use LiDAR, RGB and hyperspectral data,
+          watershed algorithm and random forests.</p>
+        </list-item>
+        <list-item>
+          <p>ACE R-CNN: An Attention Complementary and Edge
+          Detection-Based Instance Segmentation Algorithm for Individual
+          Tree Species Identification Using UAV RGB Images and LiDAR
+          Data
+          (<xref alt="Li et al. 2022" rid="ref-lidar_rgb_acnet" ref-type="bibr">Li
+          et al. 2022</xref>): use LiDAR and RGB data, Mask R-CNN model
+          with fusion, similar to AMF GD YOLOv8</p>
+        </list-item>
+      </list>
+    </sec>
   </sec>
 </sec>
 <sec id="sec-dataset">
   <title>Dataset</title>
+  <p>The highest resolution of the CHM which keeps a high enough quality
+  depends entirely on the density of the point cloud. Also, depending on
+  the season when the point cloud is acquired, using a CHM might imply
+  throwing away the majority of the information contained in the point
+  cloud.</p>
+  <sec id="definition-and-content">
+    <title>Definition and content</title>
+  </sec>
+  <sec id="challenges">
+    <title>Challenges</title>
+    <list list-type="bullet">
+      <list-item>
+        <p>Shift between RGB images, CIR images and LiDAR point clouds
+        due to images not being perfectly orthonormal</p>
+      </list-item>
+      <list-item>
+        <p>Variations of the trees over time, with new small trees being
+        planted and old trees being cut off</p>
+      </list-item>
+      <list-item>
+        <p>Not so easy to define what we consider as a tree and identify
+        them. Problems with bushes for example. This problem is also
+        mentioned in another paper
+        (<xref alt="B. G. Weinstein et al. 2019" rid="ref-DeepForestBefore" ref-type="bibr">B.
+        G. Weinstein et al. 2019</xref>).</p>
+      </list-item>
+    </list>
+  </sec>
+  <sec id="augmentation-methods">
+    <title>Augmentation methods</title>
+  </sec>
 </sec>
 <sec id="model">
   <title>Model</title>
 </sec>
 <sec id="results">
   <title>Results</title>
-  <p>Beyond mAP:
-  (<xref alt="Jena et al. 2023" rid="ref-BeyondMAP" ref-type="bibr">Jena
+  <p>sortedAP:
+  (<xref alt="Chen et al. 2023" rid="ref-sortedAP" ref-type="bibr">Chen
   et al. 2023</xref>).</p>
+  <fig id="fig-training-parameters">
+    <caption><p>Figure 1: Results with different training
+    parameters</p></caption>
+    <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
+  </fig>
 </sec>
 <sec id="conclusion">
   <title>Conclusion</title>
@@ -446,7 +648,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <uri>https://arxiv.org/abs/2311.00277</uri>
     </element-citation>
   </ref>
-  <ref id="ref-NEON">
+  <ref id="ref-DeepForestBefore">
     <element-citation publication-type="article-journal">
       <person-group person-group-type="author">
         <name><surname>Weinstein</surname><given-names>Ben G.</given-names></name>
@@ -680,20 +882,20 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <uri>https://arxiv.org/abs/2204.11620</uri>
     </element-citation>
   </ref>
-  <ref id="ref-BeyondMAP">
-    <element-citation publication-type="article-journal">
+  <ref id="ref-sortedAP">
+    <element-citation publication-type="paper-conference">
       <person-group person-group-type="author">
-        <name><surname>Jena</surname><given-names>Rohit</given-names></name>
-        <name><surname>Zhornyak</surname><given-names>Lukas</given-names></name>
-        <name><surname>Doiphode</surname><given-names>Nehal</given-names></name>
-        <name><surname>Chaudhari</surname><given-names>Pratik</given-names></name>
-        <name><surname>Buch</surname><given-names>Vivek</given-names></name>
-        <name><surname>Gee</surname><given-names>James</given-names></name>
-        <name><surname>Shi</surname><given-names>Jianbo</given-names></name>
+        <name><surname>Chen</surname><given-names>Long</given-names></name>
+        <name><surname>Wu</surname><given-names>Yuli</given-names></name>
+        <name><surname>Stegmaier</surname><given-names>Johannes</given-names></name>
+        <name><surname>Merhof</surname><given-names>Dorit</given-names></name>
       </person-group>
-      <article-title>Beyond mAP: Towards better evaluation of instance segmentation</article-title>
-      <source>CVPR</source>
+      <article-title>SortedAP: Rethinking evaluation metrics for instance segmentation</article-title>
+      <source>Proceedings of the IEEE/CVF international conference on computer vision (ICCV) workshops</source>
       <year iso-8601-date="2023">2023</year>
+      <uri>https://openaccess.thecvf.com/content/ICCV2023W/BIC/html/Chen_SortedAP_Rethinking_Evaluation_Metrics_for_Instance_Segmentation_ICCVW_2023_paper.html</uri>
+      <fpage>3923</fpage>
+      <lpage>3929</lpage>
     </element-citation>
   </ref>
   <ref id="ref-AHN4">
@@ -810,9 +1012,1547 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <lpage></lpage>
     </element-citation>
   </ref>
+  <ref id="ref-amf_gd_yolov8">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Zhong</surname><given-names>Hao</given-names></name>
+        <name><surname>Zhang</surname><given-names>Zheyu</given-names></name>
+        <name><surname>Liu</surname><given-names>Haoran</given-names></name>
+        <name><surname>Wu</surname><given-names>Jinzhuo</given-names></name>
+        <name><surname>Lin</surname><given-names>Wenshu</given-names></name>
+      </person-group>
+      <article-title>Individual tree species identification for complex coniferous and broad-leaved mixed forests based on deep learning combined with UAV LiDAR data and RGB images</article-title>
+      <source>Forests</source>
+      <year iso-8601-date="2024">2024</year>
+      <volume>15</volume>
+      <issue>2</issue>
+      <issn>1999-4907</issn>
+      <uri>https://www.mdpi.com/1999-4907/15/2/293</uri>
+      <pub-id pub-id-type="doi">10.3390/f15020293</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_benchmark">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Eysn</surname><given-names>Lothar</given-names></name>
+        <name><surname>Hollaus</surname><given-names>Markus</given-names></name>
+        <name><surname>Lindberg</surname><given-names>Eva</given-names></name>
+        <name><surname>Berger</surname><given-names>Frédéric</given-names></name>
+        <name><surname>Monnet</surname><given-names>Jean-Matthieu</given-names></name>
+        <name><surname>Dalponte</surname><given-names>Michele</given-names></name>
+        <name><surname>Kobal</surname><given-names>Milan</given-names></name>
+        <name><surname>Pellegrini</surname><given-names>Marco</given-names></name>
+        <name><surname>Lingua</surname><given-names>Emanuele</given-names></name>
+        <name><surname>Mongus</surname><given-names>Domen</given-names></name>
+        <name><surname>Pfeifer</surname><given-names>Norbert</given-names></name>
+      </person-group>
+      <article-title>A benchmark of lidar-based single tree detection methods using heterogeneous forest data from the alpine space</article-title>
+      <source>Forests</source>
+      <year iso-8601-date="2015">2015</year>
+      <volume>6</volume>
+      <issue>5</issue>
+      <issn>1999-4907</issn>
+      <uri>https://www.mdpi.com/1999-4907/6/5/1721</uri>
+      <pub-id pub-id-type="doi">10.3390/f6051721</pub-id>
+      <fpage>1721</fpage>
+      <lpage>1747</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-Freudenberg2022">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Freudenberg</surname><given-names>Maximilian</given-names></name>
+        <name><surname>Magdon</surname><given-names>Paul</given-names></name>
+        <name><surname>Nölke</surname><given-names>Nils</given-names></name>
+      </person-group>
+      <article-title>Individual tree crown delineation in high-resolution remote sensing images based on u-net</article-title>
+      <source>Neural Computing and Applications</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>34</volume>
+      <issue>24</issue>
+      <issn>1433-3058</issn>
+      <uri>https://doi.org/10.1007/s00521-022-07640-4</uri>
+      <pub-id pub-id-type="doi">10.1007/s00521-022-07640-4</pub-id>
+      <fpage>22197</fpage>
+      <lpage>22207</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-DeepForest">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Weinstein</surname><given-names>Ben G.</given-names></name>
+        <name><surname>Marconi</surname><given-names>Sergio</given-names></name>
+        <name><surname>Aubry-Kientz</surname><given-names>Mélaine</given-names></name>
+        <name><surname>Vincent</surname><given-names>Gregoire</given-names></name>
+        <name><surname>Senyondo</surname><given-names>Henry</given-names></name>
+        <name><surname>White</surname><given-names>Ethan P.</given-names></name>
+      </person-group>
+      <article-title>DeepForest: A python package for RGB deep learning tree crown delineation</article-title>
+      <source>Methods in Ecology and Evolution</source>
+      <year iso-8601-date="2020">2020</year>
+      <volume>11</volume>
+      <issue>12</issue>
+      <uri>https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13472</uri>
+      <pub-id pub-id-type="doi">10.1111/2041-210X.13472</pub-id>
+      <fpage>1743</fpage>
+      <lpage>1751</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-NEONdata">
+    <element-citation>
+      <person-group person-group-type="author">
+        <name><surname>Weinstein</surname><given-names>Ben</given-names></name>
+        <name><surname>Marconi</surname><given-names>Sergio</given-names></name>
+        <name><surname>White</surname><given-names>Ethan</given-names></name>
+      </person-group>
+      <article-title>Data for the NeonTreeEvaluation benchmark (0.2.2)</article-title>
+      <publisher-name>Zenodo</publisher-name>
+      <year iso-8601-date="2022">2022</year>
+      <uri>https://doi.org/10.5281/zenodo.5914554</uri>
+      <pub-id pub-id-type="doi">10.5281/zenodo.5914554</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_benchmark_2">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Wang</surname><given-names>Yunsheng</given-names></name>
+        <name><surname>Hyyppä</surname><given-names>Juha</given-names></name>
+        <name><surname>Liang</surname><given-names>Xinlian</given-names></name>
+        <name><surname>Kaartinen</surname><given-names>Harri</given-names></name>
+        <name><surname>Yu</surname><given-names>Xiaowei</given-names></name>
+        <name><surname>Lindberg</surname><given-names>Eva</given-names></name>
+        <name><surname>Holmgren</surname><given-names>Johan</given-names></name>
+        <name><surname>Qin</surname><given-names>Yuchu</given-names></name>
+        <name><surname>Mallet</surname><given-names>Clément</given-names></name>
+        <name><surname>Ferraz</surname><given-names>António</given-names></name>
+        <name><surname>Torabzadeh</surname><given-names>Hossein</given-names></name>
+        <name><surname>Morsdorf</surname><given-names>Felix</given-names></name>
+        <name><surname>Zhu</surname><given-names>Lingli</given-names></name>
+        <name><surname>Liu</surname><given-names>Jingbin</given-names></name>
+        <name><surname>Alho</surname><given-names>Petteri</given-names></name>
+      </person-group>
+      <article-title>International benchmarking of the individual tree detection methods for modeling 3-d canopy structure for silviculture and forest ecology using airborne laser scanning</article-title>
+      <source>IEEE Transactions on Geoscience and Remote Sensing</source>
+      <year iso-8601-date="2016">2016</year>
+      <volume>54</volume>
+      <issue>9</issue>
+      <pub-id pub-id-type="doi">10.1109/TGRS.2016.2543225</pub-id>
+      <fpage>5011</fpage>
+      <lpage>5027</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-gan_data_augment">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Sun</surname><given-names>Chenxin</given-names></name>
+        <name><surname>Huang</surname><given-names>Chengwei</given-names></name>
+        <name><surname>Zhang</surname><given-names>Huaiqing</given-names></name>
+        <name><surname>Chen</surname><given-names>Bangqian</given-names></name>
+        <name><surname>An</surname><given-names>Feng</given-names></name>
+        <name><surname>Wang</surname><given-names>Liwen</given-names></name>
+        <name><surname>Yun</surname><given-names>Ting</given-names></name>
+      </person-group>
+      <article-title>Individual tree crown segmentation and crown width extraction from a heightmap derived from aerial laser scanning data using a deep learning framework</article-title>
+      <source>Frontiers in Plant Science</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>13</volume>
+      <issn>1664-462X</issn>
+      <uri>https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2022.914974</uri>
+      <pub-id pub-id-type="doi">10.3389/fpls.2022.914974</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-albumentations">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Buslaev</surname><given-names>Alexander</given-names></name>
+        <name><surname>Iglovikov</surname><given-names>Vladimir I.</given-names></name>
+        <name><surname>Khvedchenya</surname><given-names>Eugene</given-names></name>
+        <name><surname>Parinov</surname><given-names>Alex</given-names></name>
+        <name><surname>Druzhinin</surname><given-names>Mikhail</given-names></name>
+        <name><surname>Kalinin</surname><given-names>Alexandr A.</given-names></name>
+      </person-group>
+      <article-title>Albumentations: Fast and flexible image augmentations</article-title>
+      <source>Information</source>
+      <year iso-8601-date="2020">2020</year>
+      <volume>11</volume>
+      <issue>2</issue>
+      <issn>2078-2489</issn>
+      <uri>https://www.mdpi.com/2078-2489/11/2/125</uri>
+      <pub-id pub-id-type="doi">10.3390/info11020125</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_classification">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Diab</surname><given-names>Ahmed</given-names></name>
+        <name><surname>Kashef</surname><given-names>Rasha</given-names></name>
+        <name><surname>Shaker</surname><given-names>Ahmed</given-names></name>
+      </person-group>
+      <article-title>Deep learning for LiDAR point cloud classification in remote sensing</article-title>
+      <source>Sensors (Basel)</source>
+      <year iso-8601-date="2022-10">2022</year><month>10</month>
+      <volume>22</volume>
+      <issue>20</issue>
+      <pub-id pub-id-type="doi">10.3390/s22207868</pub-id>
+      <pub-id pub-id-type="pmid">36298220</pub-id>
+      <fpage>7868</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_rgb_wst">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Qin</surname><given-names>Haiming</given-names></name>
+        <name><surname>Zhou</surname><given-names>Weiqi</given-names></name>
+        <name><surname>Yao</surname><given-names>Yang</given-names></name>
+        <name><surname>Wang</surname><given-names>Weimin</given-names></name>
+      </person-group>
+      <article-title>Individual tree segmentation and tree species classification in subtropical broadleaf forests using UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB data</article-title>
+      <source>Remote Sensing of Environment</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>280</volume>
+      <issn>0034-4257</issn>
+      <uri>https://www.sciencedirect.com/science/article/pii/S0034425722002577</uri>
+      <pub-id pub-id-type="doi">https://doi.org/10.1016/j.rse.2022.113143</pub-id>
+      <fpage>113143</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_rgb_acnet">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Li</surname><given-names>Yingbo</given-names></name>
+        <name><surname>Chai</surname><given-names>Guoqi</given-names></name>
+        <name><surname>Wang</surname><given-names>Yueting</given-names></name>
+        <name><surname>Lei</surname><given-names>Lingting</given-names></name>
+        <name><surname>Zhang</surname><given-names>Xiaoli</given-names></name>
+      </person-group>
+      <article-title>ACE r-CNN: An attention complementary and edge detection-based instance segmentation algorithm for individual tree species identification using UAV RGB images and LiDAR data</article-title>
+      <source>Remote Sensing</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>14</volume>
+      <issue>13</issue>
+      <issn>2072-4292</issn>
+      <uri>https://www.mdpi.com/2072-4292/14/13/3035</uri>
+      <pub-id pub-id-type="doi">10.3390/rs14133035</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-watershed">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Vincent</surname><given-names>L.</given-names></name>
+        <name><surname>Soille</surname><given-names>P.</given-names></name>
+      </person-group>
+      <article-title>Watersheds in digital spaces: An efficient algorithm based on immersion simulations</article-title>
+      <source>IEEE Transactions on Pattern Analysis and Machine Intelligence</source>
+      <year iso-8601-date="1991">1991</year>
+      <volume>13</volume>
+      <issue>6</issue>
+      <pub-id pub-id-type="doi">10.1109/34.87344</pub-id>
+      <fpage>583</fpage>
+      <lpage>598</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_watershed">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Kwak</surname><given-names>Doo-Ahn</given-names></name>
+        <name><surname>Lee</surname><given-names>Woo-Kyun</given-names></name>
+        <name><surname>Lee</surname><given-names>Jun-Hak</given-names></name>
+        <name><surname>Biging</surname><given-names>Greg S.</given-names></name>
+        <name><surname>Gong</surname><given-names>Peng</given-names></name>
+      </person-group>
+      <article-title>Detection of individual trees and estimation of tree height using LiDAR data</article-title>
+      <source>Journal of Forest Research</source>
+      <year iso-8601-date="2007">2007</year>
+      <volume>12</volume>
+      <issue>6</issue>
+      <issn>1610-7403</issn>
+      <uri>https://doi.org/10.1007/s10310-007-0041-9</uri>
+      <pub-id pub-id-type="doi">10.1007/s10310-007-0041-9</pub-id>
+      <fpage>425</fpage>
+      <lpage>434</lpage>
+    </element-citation>
+  </ref>
+</ref-list>
+</back>
+
+<sub-article article-type="notebook" id="nb-2-nb-article">
+<front-stub>
+<title-group>
+<article-title>Tree object detection using airborne images and LiDAR
+point clouds</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" corresp="yes">
+<name>
+<surname>Bry</surname>
+<given-names>Alexandre</given-names>
+</name>
+<string-name>Alexandre Bry</string-name>
+
+<email>alexandre.bry.21@polytechnique.org</email>
+<role vocab="https://credit.niso.org" vocab-term="writing – original
+draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">writing</role>
+<xref ref-type="aff" rid="aff-1-nb-article">a</xref>
+<xref ref-type="aff" rid="aff-2-nb-article">b</xref>
+<xref ref-type="corresp" rid="cor-1-nb-article">&#x002A;</xref>
+</contrib>
+</contrib-group>
+<aff id="aff-1-nb-article">
+<institution-wrap>
+<institution>École polytechnique</institution>
+</institution-wrap>
+
+<city>Palaiseau</city>
+
+<country>France</country>
+
+
+<ext-link ext-link-type="uri" xlink:href="https://portail.polytechnique.edu/informatique/fr/page-daccueil">https://portail.polytechnique.edu/informatique/fr/page-daccueil</ext-link>
+</aff>
+<aff id="aff-2-nb-article">
+<institution content-type="dept">Research</institution>
+<institution-wrap>
+<institution>Geodan B.V.</institution>
+</institution-wrap>
+
+<city>Amsterdam</city>
+
+<country>Netherlands</country>
+
+
+<ext-link ext-link-type="uri" xlink:href="https://research.geodan.nl/">https://research.geodan.nl/</ext-link>
+</aff>
+<author-notes>
+<corresp id="cor-1-nb-article">alexandre.bry.21@polytechnique.org</corresp>
+</author-notes>
+<abstract>
+<p>This is the abstract. It can be on multiple lines and contain
+<bold>Markdown</bold>.</p>
+</abstract>
+</front-stub>
+
+<body>
+<sec id="introduction-nb-article">
+  <title>Introduction</title>
+  <p>The goal of the internship was to study the possibility of
+  combining LiDAR point clouds and aerial images in a deep learning
+  model to perform instance segmentation of trees. The two types of data
+  are indeed complementary, as point clouds capture the shape of the
+  worlds, while images capture the colors. However, combining them into
+  a format that allows a model to handle them simultaneously is not an
+  easy task because they inherently have a very different spatial
+  repartition and encoding.</p>
+  <p>The second major topic of the internship was to acquire a proper
+  dataset matching all the criteria required for the project. Most of
+  the datasets containing tree annotations only used either RGB images
+  or LiDAR point clouds, but not both. Therefore, I had to create such a
+  dataset by myself, using the openly available images and point clouds
+  in the Netherlands, by annotating trees by hand to properly train and
+  evaluate the methods.</p>
+</sec>
+<sec id="state-of-the-art-nb-article">
+  <title>State-of-the-art</title>
+  <sec id="computer-vision-tasks-related-to-trees-nb-article">
+    <title>Computer vision tasks related to trees</title>
+    <p>Before talking about models and datasets, let’s define properly
+    the task that this project focused on, in the midst of all the
+    various computer vision tasks, and specifically those related to
+    tree detection.</p>
+    <p>The first main differentiation between tree recognition tasks
+    comes from the acquisition of the data. There are some very
+    different tasks and methods using either ground data or
+    aerial/satellite data. This is especially true when focusing on
+    urban trees, since a lot of street view data is available
+    (<xref alt="Arevalo-Ramirez et al. 2024" rid="ref-urban-trees-nb-article" ref-type="bibr">Arevalo-Ramirez
+    et al. 2024</xref>).</p>
+    <p>This leads to the second variation, which is related to the kind
+    of tree area that we are interested in. There are mainly three types
+    of area, which among other things, influence the organization of the
+    trees in space: urban areas, tree plantations and forests. This is
+    important, because the tasks and the difficulty depends on the type
+    of area. Tree plantations are much easier to work with than
+    completely wild forests, while urban areas contain various levels of
+    difficulty ranging from alignment trees to private and disorganized
+    gardens and parks. For this project, we mainly focused on urban
+    areas, but everything should still be applicable to tree plantations
+    and forests.</p>
+    <p>Then, the four fundamental computer vision tasks have their
+    application when dealing with trees
+    (<xref alt="Safonova et al. 2021" rid="ref-olive-tree-nb-article" ref-type="bibr">Safonova
+    et al. 2021</xref>):</p>
+    <list list-type="bullet">
+      <list-item>
+        <p>Classification, although this is quite rare for airborne tree
+        applications since there are multiple trees on each image most
+        of the time</p>
+      </list-item>
+      <list-item>
+        <p>Detection, which consists in detecting objects and placing
+        boxes around them</p>
+      </list-item>
+      <list-item>
+        <p>Semantic segmentation, which consists in associating a label
+        to every pixel of an image</p>
+      </list-item>
+      <list-item>
+        <p>Instance segmentation, which consists in adding a layer of
+        complexity to semantic segmentation by also differentiating
+        between the different instances of each class</p>
+      </list-item>
+    </list>
+    <p>These generic tasks can be extended by trying to get more
+    information about the trees. The most common information are the
+    species and the height, but some models also try to predict the
+    health of the trees, or their carbon stock.</p>
+    <p>In this paper, the task that is tackled is the detection of
+    trees, with a special classification between several labels related
+    to the discrepancies between the different kinds of data. The kind
+    of model that is used would also have allowed to focus on some more
+    advanced tasks, by replacing detection with instance segmentation
+    and asking the model to also predict the species. But due to the
+    difficulties regarding the dataset, a simpler task with a simpler
+    dataset was used, without compromising the ability to experiment
+    with different possible improvements of the model. The difficulties
+    and the experiments are developed below.</p>
+  </sec>
+  <sec id="datasets-nb-article">
+    <title>Datasets</title>
+    <sec id="motivations-nb-article">
+      <title>Motivations</title>
+      <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
+      et al. 2016</xref>) shows that in forests, you can have up to more
+      than 50% of the trees which crowns are completely or partially
+      covered by other trees.</p>
+    </sec>
+    <sec id="requirements-nb-article">
+      <title>Requirements</title>
+      <p>Before presenting the different promising datasets and the
+      reasons why they were not fully usable for the project, let’s
+      enumerate the different conditions and requirements for the tree
+      instance segmentation task:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p>Multiple types of data:</p>
+          <list list-type="bullet">
+            <list-item>
+              <p>Aerial RGB images</p>
+            </list-item>
+            <list-item>
+              <p>LiDAR point clouds (preferably aerial)</p>
+            </list-item>
+            <list-item>
+              <p>(Optional) Aerial infrared images</p>
+            </list-item>
+          </list>
+        </list-item>
+        <list-item>
+          <p>Tree crown annotations or bounding boxes</p>
+        </list-item>
+        <list-item>
+          <p>High-enough resolution:</p>
+          <list list-type="bullet">
+            <list-item>
+              <p>For images, about 25 cm</p>
+            </list-item>
+            <list-item>
+              <p>For point clouds, about 10 cm</p>
+            </list-item>
+          </list>
+        </list-item>
+      </list>
+      <p>Here are the explanations for these requirements. As for the
+      types of data, RGB images and point clouds are required to
+      experiment on the ability of the model to combine the two very
+      different kinds of information they hold. Having infrared data as
+      well could be beneficial, but it was not necessary. Regarding tree
+      annotations, it was necessary to have a way to spatially identify
+      them individually, using crown contours or simply bounding boxes.
+      Since the model outputs bounding boxes, any kind of other format
+      could easily be transformed to bounding boxes. Finally, the
+      resolution had to be high enough to identify individual trees and
+      be able to really use the data. For the point clouds especially,
+      the whole idea was to see if and how the topology of the trees
+      could be learnt, using at least the trunks and even the biggest
+      branches if possible. Therefore, even if they are not really
+      comparable, this is the reason why the required resolution is more
+      precise for the point clouds.</p>
+      <p>Unfortunately, none of the datasets that I found matched all
+      these criteria. Furthermore, I didn’t find any overlapping
+      datasets that I could merge to create a dataset with all the
+      required types of data. In the next parts, I will go through the
+      different kinds of datasets that exist, the reasons why they did
+      not really fit for the project and the ideas I got when searching
+      for a way to use them.</p>
+    </sec>
+    <sec id="existing-tree-datasets-nb-article">
+      <title>Existing tree datasets</title>
+      <p>As explained above, there were quite a lot of requirements to
+      fulfill to have a complete dataset usable for the task. This means
+      that almost all the available datasets were missing something, as
+      they were mainly focusing on using one kind of data and trying to
+      make the most out of it, instead of trying to use all the types of
+      data together.</p>
+      <p>The most comprehensive list of tree annotations datasets was
+      published in OpenForest
+      (<xref alt="Ouaknine et al. 2023" rid="ref-OpenForest-nb-article" ref-type="bibr">Ouaknine
+      et al. 2023</xref>). FoMo-Bench
+      (<xref alt="Bountos, Ouaknine, and Rolnick 2023" rid="ref-FoMo-Bench-nb-article" ref-type="bibr">Bountos,
+      Ouaknine, and Rolnick 2023</xref>) also lists several interesting
+      datasets, even though most of them can also be found in
+      OpenForest. Without enumerating all of them, there were multiple
+      kinds of datasets that all have their own flaws regarding the
+      requirements I was looking for.</p>
+      <p>Firstly, there are the forest inventories. TALLO
+      (<xref alt="Jucker et al. 2022" rid="ref-TALLO-nb-article" ref-type="bibr">Jucker
+      et al. 2022</xref>) is probably the most interesting one in this
+      category, because it contains a lot of spatial information about
+      almost 500K trees, with their locations, their crown radii and
+      their heights. Therefore, everything needed to localize trees is
+      in the dataset. However, I didn’t manage to find RGB images or
+      LiDAR point clouds of the areas where the trees are located,
+      making it impossible to use these annotations to train tree
+      detection.</p>
+      <p>Secondly, there are the RGB datasets. ReforesTree
+      (<xref alt="Reiersen et al. 2022" rid="ref-ReforesTree-nb-article" ref-type="bibr">Reiersen
+      et al. 2022</xref>) and MillionTrees
+      (<xref alt="B. Weinstein 2023" rid="ref-MillionTrees-nb-article" ref-type="bibr">B.
+      Weinstein 2023</xref>) are two of them and the quality of their
+      images are high. The only drawback of these datasets is obviously
+      that they don’t provide any kind of point cloud, which make them
+      unsuitable for the task.</p>
+      <p>Thirdly, there are the LiDAR datasets, such as
+      (<xref alt="Kalinicheva et al. 2022" rid="ref-WildForest3D-nb-article" ref-type="bibr">Kalinicheva
+      et al. 2022</xref>) and
+      (<xref alt="Puliti et al. 2023" rid="ref-FOR-instance-nb-article" ref-type="bibr">Puliti
+      et al. 2023</xref>). Similarly to RGB datasets, they lack one of
+      the data source for the task I worked on. But unlike them, they
+      have the advantage that the missing data could be much easier to
+      acquire from another source, since RGB aerial or satellite images
+      are much more common than LiDAR point clouds. However, this
+      solution was abandoned for two main reasons. First it is quite
+      challenging to find the exact locations where the point clouds
+      were acquired. Then, even when the location is known, it is often
+      in the middle of a forest where the quality of satellite imagery
+      is very low.</p>
+      <p>Finally, I also found two datasets that had RGB and LiDAR
+      components. The first one is MDAS
+      (<xref alt="Hu et al. 2023" rid="ref-MDAS-nb-article" ref-type="bibr">Hu et
+      al. 2023</xref>). This benchmark dataset encompasses RGB images,
+      hyperspectral images and Digital Surface Models (DSM). There were
+      however two major flaws. The obvious one was that this dataset was
+      created with land semantic segmentation tasks in mind, so there
+      was no tree annotations. The less obvious one was that a DSM is
+      not a point cloud, even though it is some kind of 3D information
+      and was often created using a LiDAR point cloud. As a consequence,
+      I would have been very limited in my ability to use the point
+      cloud.</p>
+      <p>The only real dataset with RGB and LiDAR came from NEON
+      (<xref alt="B. Weinstein, Marconi, and White 2022" rid="ref-NEONdata-nb-article" ref-type="bibr">B.
+      Weinstein, Marconi, and White 2022</xref>). This dataset contains
+      exactly all the data I was looking for, with RGB images,
+      hyperspectral images and LiDAR point clouds. With 30975 tree
+      annotations, it is also a quite large dataset, spanning across
+      multiple various forests. The reason why I decided not to use it
+      despite all this is that at the beginning of the project, I
+      thought that the quality of the images and the point clouds was
+      too low. Looking back on this decision, I think that I probably
+      could have worked with this dataset and gotten great results. This
+      would have saved me the time spent annotating the trees for my own
+      dataset, which I will talk more about later. My decision was also
+      influenced by the quality of the images and the point clouds
+      available in the Netherlands, which I will talk about in the next
+      section.</p>
+    </sec>
+    <sec id="public-data-nb-article">
+      <title>Public data</title>
+      <p>After rejecting all the available datasets I had found, the
+      only solution I had left was to create my own dataset. I won’t
+      dive too much in this process that I will explain in
+      <xref alt="Section 2" rid="sec-dataset-nb-article">Section 2</xref>. I just
+      want to mention all the publicly available datasets that I used or
+      could have used to create this custom dataset.</p>
+      <p>For practical reasons, the two countries where I mostly
+      searched for available data are France and the Netherlands. I was
+      looking for three different data types independently:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p>RGB (and eventually infrared) images</p>
+        </list-item>
+        <list-item>
+          <p>LiDAR point clouds</p>
+        </list-item>
+        <list-item>
+          <p>Tree annotations</p>
+        </list-item>
+      </list>
+      <p>These three types of data are available in similar ways in both
+      countries, although the Netherlands have a small edge over France.
+      RGB images are really easy to find in France with the BD ORTHO
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BDORTHO-nb-article" ref-type="bibr">Institut
+      national de l’information géographique et forestière (IGN)
+      2021</xref>) and in the Netherlands with the Luchtfotos
+      (<xref alt="Beeldmateriaal Nederland 2024" rid="ref-Luchtfotos-nb-article" ref-type="bibr">Beeldmateriaal
+      Nederland 2024</xref>), but the resolution is better in the
+      Netherlands (8 cm vs 20 cm). Hyperspectral images are also
+      available in both countries, although for those the resolution is
+      only 25 cm in the Netherlands.</p>
+      <p>As for LiDAR point clouds, the Netherlands have a small edge
+      over France, because they have already completed their forth
+      version covering the whole country with AHN4
+      (<xref alt="Actueel Hoogtebestand Nederland 2020" rid="ref-AHN4-nb-article" ref-type="bibr">Actueel
+      Hoogtebestand Nederland 2020</xref>), and are working on the fifth
+      version. In France, data acquisition for the first LiDAR point
+      cloud covering the whole country started a few years ago
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDARHD-nb-article" ref-type="bibr">Institut
+      national de l’information géographique et forestière (IGN)
+      2020</xref>). It is not yet finished, even though data is already
+      available for half of the country. The other advantage of the data
+      from Netherlands regarding LiDAR point clouds is that all flights
+      are performed during winter, which allows light beams to penetrate
+      more deeply in trees and reach trunks and branches. This is not
+      the case in France.</p>
+      <p>The part that is missing in both countries is related to tree
+      annotations. Many municipalities have datasets containing
+      information about all the public trees they handle. This is for
+      example the case for Amsterdam
+      (<xref alt="Gemeente Amsterdam 2024" rid="ref-amsterdam_trees-nb-article" ref-type="bibr">Gemeente
+      Amsterdam 2024</xref>) and Bordeaux
+      (<xref alt="Bordeaux Métropole 2024" rid="ref-bordeaux_trees-nb-article" ref-type="bibr">Bordeaux
+      Métropole 2024</xref>). However, these datasets cannot really be
+      used as ground truth for a custom dataset for several reasons.
+      First, many of them do not contain coordinates indicating the
+      position of each tree in the city. Then, even those that contain
+      coordinates are most of the time missing any kind of information
+      allowing to deduce a bounding box for the tree crowns. Finally,
+      even if they did contain everything, they only focus on public
+      trees, and are missing every single tree located in a private
+      area. Since public and private areas are obviously imbricated in
+      all cities, it means that any area we try to train the model on
+      would be missing all the private trees, making the training
+      process impossible because we cannot have only a partial
+      annotation of images.</p>
+      <p>The other tree annotation source that we could have used is
+      Boomregister
+      (<xref alt="Coöperatief Boomregister U.A. 2014" rid="ref-boomregister-nb-article" ref-type="bibr">Coöperatief
+      Boomregister U.A. 2014</xref>). This work covers the whole of the
+      Netherlands, including public and private trees. However, the
+      precision of the masks is far from perfect, and many trees are
+      missing or incorrectly segmented, especially when they are less
+      than 9 m heigh or have a crown diameter smaller than 4 m.
+      Therefore, even it is a very impressive piece of work, we thought
+      that it could not be used as training data for a deep learning
+      models due to its biases and imperfections.</p>
+    </sec>
+    <sec id="dataset-augmentation-techniques-nb-article">
+      <title>Dataset augmentation techniques</title>
+      <p>When a dataset is too small to train a model, there are several
+      ways of artificially enlarging it.</p>
+      <p>The most common way to do it is to randomly apply deterministic
+      or random transformations to the data, during the training
+      process, to be able to generate several unique and different
+      realistic data instances from one real data instance. There are a
+      lot of different transformations that can be applied to images,
+      divided into two categories: pixel-level and spatial-level
+      (<xref alt="Buslaev et al. 2020" rid="ref-albumentations-nb-article" ref-type="bibr">Buslaev
+      et al. 2020</xref>). Pixel-level transformations modify the value
+      of individual pixels, by applying different filters, such as
+      random noise, color shifts and more complex effects like fog and
+      sun flare. Spatial-level transformations modify the spatial
+      arrangement of the image, without changing the pixel values. In
+      other words, these transformations move the pixels in the image.
+      The transformations range from simple rotations and croppings to
+      complex spatial distortions. In the end, all these transformations
+      are simply producing one artificial image out of one real
+      image.</p>
+      <p>Another way to enlarge a dataset is to instead generate
+      completely new input data sharing the same properties as the
+      initial dataset. This can be done using Generative Adversarial
+      Networks (GAN). These models usually have two parts, a generator
+      and a discriminator, which are trained in parallel. The generator
+      learns to produce realistic artificial data, while the
+      discriminator learns to identify real data and artificial data
+      produced by the generator. If the training is successful, we can
+      then use the generator and random seeds to generate random but
+      realistic artificial data similar to the dataset. This method has
+      for example been successfully used to generate artificial tree
+      height maps
+      (<xref alt="Sun et al. 2022" rid="ref-gan_data_augment-nb-article" ref-type="bibr">Sun
+      et al. 2022</xref>).</p>
+    </sec>
+  </sec>
+  <sec id="models-and-methods-nb-article">
+    <title>Models and methods</title>
+    <sec id="classical-methods-nb-article">
+      <title>Classical methods</title>
+      <p>Besides machine and deep learning methods that are mentioned in
+      the next sections, there exist several algorithmic methods that
+      use the special shape of the trees to detect them individually.
+      The most used is called the watershed algorithm, and even though
+      it has many variants, its base principle is simple
+      (<xref alt="Vincent and Soille 1991" rid="ref-watershed-nb-article" ref-type="bibr">Vincent
+      and Soille 1991</xref>). The idea of this algorithm is to find
+      individual trees in three steps:</p>
+      <list list-type="order">
+        <list-item>
+          <p>Identify the local treetops from a height map or from an
+          RGB image,</p>
+        </list-item>
+        <list-item>
+          <p>Inverse the image so that local maxima (treetops) become
+          local minima (watersheds),</p>
+        </list-item>
+        <list-item>
+          <p>Fill the watersheds with water until different watersheds
+          overflow and merge, marking their boundaries.</p>
+        </list-item>
+      </list>
+      <p>This algorithm works generally well, using the assumption that
+      the overall shape of each individual tree crown si similar to a
+      cone when seen from above. Due to its success and the different
+      changes that further improved its results, this algorithm is still
+      used today, even in complex pipelines using machine and deep
+      learning methods to extract features before applying the watershed
+      algorithm
+      (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022-nb-article" ref-type="bibr">Freudenberg,
+      Magdon, and Nölke 2022</xref>;
+      <xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst-nb-article" ref-type="bibr">Qin
+      et al. 2022</xref>).</p>
+    </sec>
+    <sec id="lidar-only-nb-article">
+      <title>LiDAR only</title>
+      <p>Some of the methods to identify individual trees use LiDAR data
+      only. There are a lot of different ways to use and analyze point
+      clouds, but the one that is mostly used for trees is based on
+      height maps, or Canopy Height Models (CHM).</p>
+      <p>A CHM is a raster computed as the subtraction of the Digital
+      Terrain Model (DTM) to the Digital Surface Model (DSM). What it
+      means is that a CHM contains the height above ground of the
+      highest point in the area corresponding to each pixel. This CHM
+      can for example be used as the input raster for the watershed
+      algorithm, as it contains the height values that can be used to
+      determine local maxima
+      (<xref alt="Kwak et al. 2007" rid="ref-lidar_watershed-nb-article" ref-type="bibr">Kwak
+      et al. 2007</xref>).</p>
+    </sec>
+    <sec id="images-only-nb-article">
+      <title>Images only</title>
+    </sec>
+    <sec id="lidar-and-images-nb-article">
+      <title>LiDAR and images</title>
+      <p>Models to cite:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p>AMF GD YOLOv8
+          (<xref alt="Zhong et al. 2024" rid="ref-amf_gd_yolov8-nb-article" ref-type="bibr">Zhong
+          et al. 2024</xref>): main source of inspiration, combining RGB
+          and LiDAR in an image model</p>
+        </list-item>
+        <list-item>
+          <p>Benchmark of 8 methods using LiDAR
+          (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark-nb-article" ref-type="bibr">Eysn
+          et al. 2015</xref>): no machine learning method, but one of
+          the methods uses multiple CHM layers, computed iteratively by
+          removing everything in the 0.5 m below the previous CHM</p>
+        </list-item>
+        <list-item>
+          <p>Individual tree crown delineation in high-resolution remote
+          sensing images based on U-Net
+          (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022-nb-article" ref-type="bibr">Freudenberg,
+          Magdon, and Nölke 2022</xref>): multiple steps with two models
+          to predict masks, outlines and distance transform, and a final
+          step with the watershed algorithm</p>
+        </list-item>
+        <list-item>
+          <p>DeepForest: A Python package for RGB deep learning tree
+          crown delineation
+          (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest-nb-article" ref-type="bibr">B.
+          G. Weinstein et al. 2020</xref>): uses only RGB data to detect
+          trees, but uses LiDAR to create millions of annotations of
+          moderate quality to pre-train the model, before using around
+          10,000 hand-annotations to finalize and specialize the
+          training on a certain area.</p>
+        </list-item>
+        <list-item>
+          <p>International Benchmarking of the Individual Tree Detection
+          Methods for Modeling 3-D Canopy Structure for Silviculture and
+          Forest Ecology Using Airborne Laser Scanning
+          (<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
+          et al. 2016</xref>): another benchmark using LiDAR. They also
+          try a method based on 3D voxels.</p>
+        </list-item>
+        <list-item>
+          <p>Deep Learning for LiDAR Point Cloud Classification in
+          Remote Sensing
+          (<xref alt="Diab, Kashef, and Shaker 2022" rid="ref-lidar_classification-nb-article" ref-type="bibr">Diab,
+          Kashef, and Shaker 2022</xref>): overview of deep learning
+          methods to classify point clouds</p>
+        </list-item>
+        <list-item>
+          <p>Individual tree segmentation and tree species
+          classification in subtropical broadleaf forests using
+          UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB
+          data
+          (<xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst-nb-article" ref-type="bibr">Qin
+          et al. 2022</xref>): use LiDAR, RGB and hyperspectral data,
+          watershed algorithm and random forests.</p>
+        </list-item>
+        <list-item>
+          <p>ACE R-CNN: An Attention Complementary and Edge
+          Detection-Based Instance Segmentation Algorithm for Individual
+          Tree Species Identification Using UAV RGB Images and LiDAR
+          Data
+          (<xref alt="Li et al. 2022" rid="ref-lidar_rgb_acnet-nb-article" ref-type="bibr">Li
+          et al. 2022</xref>): use LiDAR and RGB data, Mask R-CNN model
+          with fusion, similar to AMF GD YOLOv8</p>
+        </list-item>
+      </list>
+    </sec>
+  </sec>
+</sec>
+<sec id="sec-dataset-nb-article">
+  <title>Dataset</title>
+  <p>The highest resolution of the CHM which keeps a high enough quality
+  depends entirely on the density of the point cloud. Also, depending on
+  the season when the point cloud is acquired, using a CHM might imply
+  throwing away the majority of the information contained in the point
+  cloud.</p>
+  <sec id="definition-and-content-nb-article">
+    <title>Definition and content</title>
+  </sec>
+  <sec id="challenges-nb-article">
+    <title>Challenges</title>
+    <list list-type="bullet">
+      <list-item>
+        <p>Shift between RGB images, CIR images and LiDAR point clouds
+        due to images not being perfectly orthonormal</p>
+      </list-item>
+      <list-item>
+        <p>Variations of the trees over time, with new small trees being
+        planted and old trees being cut off</p>
+      </list-item>
+      <list-item>
+        <p>Not so easy to define what we consider as a tree and identify
+        them. Problems with bushes for example. This problem is also
+        mentioned in another paper
+        (<xref alt="B. G. Weinstein et al. 2019" rid="ref-DeepForestBefore-nb-article" ref-type="bibr">B.
+        G. Weinstein et al. 2019</xref>).</p>
+      </list-item>
+    </list>
+  </sec>
+  <sec id="augmentation-methods-nb-article">
+    <title>Augmentation methods</title>
+  </sec>
+</sec>
+<sec id="model-nb-article">
+  <title>Model</title>
+</sec>
+<sec id="results-nb-article">
+  <title>Results</title>
+  <p>sortedAP:
+  (<xref alt="Chen et al. 2023" rid="ref-sortedAP-nb-article" ref-type="bibr">Chen
+  et al. 2023</xref>).</p>
+  <sec id="cell-fig-training-parameters-nb-article" specific-use="notebook-content">
+  <code language="python">import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv(&quot;data/training_params_experiment.csv&quot;)
+df.sort_values(
+    by=[&quot;proba_drop_chm&quot;, &quot;Data used for evaluation&quot;],
+    inplace=True,
+)
+sns.set_style(&quot;ticks&quot;, {&quot;axes.grid&quot;: True})
+sns.catplot(
+    data=df,
+    kind=&quot;swarm&quot;,
+    x=&quot;accumulate&quot;,
+    y=&quot;Best sortedAP&quot;,
+    hue=&quot;Data used for evaluation&quot;,
+    col=&quot;lr&quot;,
+    row=&quot;proba_drop_chm&quot;,
+    margin_titles=True,
+    height=2,
+    aspect=1,
+)</code>
+  <boxed-text>
+    <fig id="fig-training-parameters-nb-article">
+      <caption><p>Figure 1: Results with different training
+      parameters</p></caption>
+      <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
+    </fig>
+  </boxed-text>
+  </sec>
+  <sec id="cell-43f2591f-nb-article" specific-use="notebook-content">
+</sec>
+<sec id="conclusion-nb-article">
+  <title>Conclusion</title>
+  <p>Blablabla</p>
+  </sec>
+</sec>
+</body>
+
+
+
+<back>
+<ref-list>
+  <title></title>
+  <ref id="ref-FoMo-Bench-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Bountos</surname><given-names>Nikolaos Ioannis</given-names></name>
+        <name><surname>Ouaknine</surname><given-names>Arthur</given-names></name>
+        <name><surname>Rolnick</surname><given-names>David</given-names></name>
+      </person-group>
+      <article-title>FoMo-bench: A multi-modal, multi-scale and multi-task forest monitoring benchmark for remote sensing foundation models</article-title>
+      <source>arXiv preprint arXiv:2312.10114</source>
+      <year iso-8601-date="2023">2023</year>
+      <uri>https://arxiv.org/abs/2312.10114</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-OpenForest-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <name><surname>Ouaknine</surname><given-names>Arthur</given-names></name>
+        <name><surname>Kattenborn</surname><given-names>Teja</given-names></name>
+        <name><surname>Laliberté</surname><given-names>Etienne</given-names></name>
+        <name><surname>Rolnick</surname><given-names>David</given-names></name>
+      </person-group>
+      <article-title>OpenForest: A data catalogue for machine learning in forest monitoring</article-title>
+      <year iso-8601-date="2023">2023</year>
+      <uri>https://arxiv.org/abs/2311.00277</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-DeepForestBefore-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Weinstein</surname><given-names>Ben G.</given-names></name>
+        <name><surname>Marconi</surname><given-names>Sergio</given-names></name>
+        <name><surname>Bohlman</surname><given-names>Stephanie</given-names></name>
+        <name><surname>Zare</surname><given-names>Alina</given-names></name>
+        <name><surname>White</surname><given-names>Ethan</given-names></name>
+      </person-group>
+      <article-title>Individual tree-crown detection in RGB imagery using semi-supervised deep learning neural networks</article-title>
+      <source>Remote Sensing</source>
+      <year iso-8601-date="2019">2019</year>
+      <volume>11</volume>
+      <issue>11</issue>
+      <issn>2072-4292</issn>
+      <uri>https://www.mdpi.com/2072-4292/11/11/1309</uri>
+      <pub-id pub-id-type="doi">10.3390/rs11111309</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-ReforesTree-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <name><surname>Reiersen</surname><given-names>Gyri</given-names></name>
+        <name><surname>Dao</surname><given-names>David</given-names></name>
+        <name><surname>Lütjens</surname><given-names>Björn</given-names></name>
+        <name><surname>Klemmer</surname><given-names>Konstantin</given-names></name>
+        <name><surname>Amara</surname><given-names>Kenza</given-names></name>
+        <name><surname>Steinegger</surname><given-names>Attila</given-names></name>
+        <name><surname>Zhang</surname><given-names>Ce</given-names></name>
+        <name><surname>Zhu</surname><given-names>Xiaoxiang</given-names></name>
+      </person-group>
+      <article-title>ReforesTree: A dataset for estimating tropical forest carbon stock with deep learning and aerial imagery</article-title>
+      <year iso-8601-date="2022">2022</year>
+      <uri>https://arxiv.org/abs/2201.11192</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-FOR-instance-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <name><surname>Puliti</surname><given-names>Stefano</given-names></name>
+        <name><surname>Pearse</surname><given-names>Grant</given-names></name>
+        <name><surname>Surový</surname><given-names>Peter</given-names></name>
+        <name><surname>Wallace</surname><given-names>Luke</given-names></name>
+        <name><surname>Hollaus</surname><given-names>Markus</given-names></name>
+        <name><surname>Wielgosz</surname><given-names>Maciej</given-names></name>
+        <name><surname>Astrup</surname><given-names>Rasmus</given-names></name>
+      </person-group>
+      <article-title>FOR-instance: A UAV laser scanning benchmark dataset for semantic and instance segmentation of individual trees</article-title>
+      <year iso-8601-date="2023">2023</year>
+      <uri>https://arxiv.org/abs/2309.01279</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-MDAS-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Hu</surname><given-names>J.</given-names></name>
+        <name><surname>Liu</surname><given-names>R.</given-names></name>
+        <name><surname>Hong</surname><given-names>D.</given-names></name>
+        <name><surname>Camero</surname><given-names>A.</given-names></name>
+        <name><surname>Yao</surname><given-names>J.</given-names></name>
+        <name><surname>Schneider</surname><given-names>M.</given-names></name>
+        <name><surname>Kurz</surname><given-names>F.</given-names></name>
+        <name><surname>Segl</surname><given-names>K.</given-names></name>
+        <name><surname>Zhu</surname><given-names>X. X.</given-names></name>
+      </person-group>
+      <article-title>MDAS: A new multimodal benchmark dataset for remote sensing</article-title>
+      <source>Earth System Science Data</source>
+      <year iso-8601-date="2023">2023</year>
+      <volume>15</volume>
+      <issue>1</issue>
+      <uri>https://essd.copernicus.org/articles/15/113/2023/</uri>
+      <pub-id pub-id-type="doi">10.5194/essd-15-113-2023</pub-id>
+      <fpage>113</fpage>
+      <lpage>131</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-TALLO-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Jucker</surname><given-names>Tommaso</given-names></name>
+        <name><surname>Fischer</surname><given-names>Fabian Jörg</given-names></name>
+        <name><surname>Chave</surname><given-names>Jérôme</given-names></name>
+        <name><surname>Coomes</surname><given-names>David A.</given-names></name>
+        <name><surname>Caspersen</surname><given-names>John</given-names></name>
+        <name><surname>Ali</surname><given-names>Arshad</given-names></name>
+        <name><surname>Loubota Panzou</surname><given-names>Grace Jopaul</given-names></name>
+        <name><surname>Feldpausch</surname><given-names>Ted R.</given-names></name>
+        <name><surname>Falster</surname><given-names>Daniel</given-names></name>
+        <name><surname>Usoltsev</surname><given-names>Vladimir A.</given-names></name>
+        <name><surname>Adu-Bredu</surname><given-names>Stephen</given-names></name>
+        <name><surname>Alves</surname><given-names>Luciana F.</given-names></name>
+        <name><surname>Aminpour</surname><given-names>Mohammad</given-names></name>
+        <name><surname>Angoboy</surname><given-names>Ilondea B.</given-names></name>
+        <name><surname>Anten</surname><given-names>Niels P. R.</given-names></name>
+        <name><surname>Antin</surname><given-names>Cécile</given-names></name>
+        <name><surname>Askari</surname><given-names>Yousef</given-names></name>
+        <name><surname>Muñoz</surname><given-names>Rodrigo</given-names></name>
+        <name><surname>Ayyappan</surname><given-names>Narayanan</given-names></name>
+        <name><surname>Balvanera</surname><given-names>Patricia</given-names></name>
+        <name><surname>Banin</surname><given-names>Lindsay</given-names></name>
+        <name><surname>Barbier</surname><given-names>Nicolas</given-names></name>
+        <name><surname>Battles</surname><given-names>John J.</given-names></name>
+        <name><surname>Beeckman</surname><given-names>Hans</given-names></name>
+        <name><surname>Bocko</surname><given-names>Yannick E.</given-names></name>
+        <name><surname>Bond-Lamberty</surname><given-names>Ben</given-names></name>
+        <name><surname>Bongers</surname><given-names>Frans</given-names></name>
+        <name><surname>Bowers</surname><given-names>Samuel</given-names></name>
+        <name><surname>Brade</surname><given-names>Thomas</given-names></name>
+        <name><surname>Breugel</surname><given-names>Michiel van</given-names></name>
+        <name><surname>Chantrain</surname><given-names>Arthur</given-names></name>
+        <name><surname>Chaudhary</surname><given-names>Rajeev</given-names></name>
+        <name><surname>Dai</surname><given-names>Jingyu</given-names></name>
+        <name><surname>Dalponte</surname><given-names>Michele</given-names></name>
+        <name><surname>Dimobe</surname><given-names>Kangbéni</given-names></name>
+        <name><surname>Domec</surname><given-names>Jean-Christophe</given-names></name>
+        <name><surname>Doucet</surname><given-names>Jean-Louis</given-names></name>
+        <name><surname>Duursma</surname><given-names>Remko A.</given-names></name>
+        <name><surname>Enríquez</surname><given-names>Moisés</given-names></name>
+        <name><surname>Ewijk</surname><given-names>Karin Y. van</given-names></name>
+        <name><surname>Farfán-Rios</surname><given-names>William</given-names></name>
+        <name><surname>Fayolle</surname><given-names>Adeline</given-names></name>
+        <name><surname>Forni</surname><given-names>Eric</given-names></name>
+        <name><surname>Forrester</surname><given-names>David I.</given-names></name>
+        <name><surname>Gilani</surname><given-names>Hammad</given-names></name>
+        <name><surname>Godlee</surname><given-names>John L.</given-names></name>
+        <name><surname>Gourlet-Fleury</surname><given-names>Sylvie</given-names></name>
+        <name><surname>Haeni</surname><given-names>Matthias</given-names></name>
+        <name><surname>Hall</surname><given-names>Jefferson S.</given-names></name>
+        <name><surname>He</surname><given-names>Jie-Kun</given-names></name>
+        <name><surname>Hemp</surname><given-names>Andreas</given-names></name>
+        <name><surname>Hernández-Stefanoni</surname><given-names>José L.</given-names></name>
+        <name><surname>Higgins</surname><given-names>Steven I.</given-names></name>
+        <name><surname>Holdaway</surname><given-names>Robert J.</given-names></name>
+        <name><surname>Hussain</surname><given-names>Kiramat</given-names></name>
+        <name><surname>Hutley</surname><given-names>Lindsay B.</given-names></name>
+        <name><surname>Ichie</surname><given-names>Tomoaki</given-names></name>
+        <name><surname>Iida</surname><given-names>Yoshiko</given-names></name>
+        <name><surname>Jiang</surname><given-names>Hai-sheng</given-names></name>
+        <name><surname>Joshi</surname><given-names>Puspa Raj</given-names></name>
+        <name><surname>Kaboli</surname><given-names>Hasan</given-names></name>
+        <name><surname>Larsary</surname><given-names>Maryam Kazempour</given-names></name>
+        <name><surname>Kenzo</surname><given-names>Tanaka</given-names></name>
+        <name><surname>Kloeppel</surname><given-names>Brian D.</given-names></name>
+        <name><surname>Kohyama</surname><given-names>Takashi</given-names></name>
+        <name><surname>Kunwar</surname><given-names>Suwash</given-names></name>
+        <name><surname>Kuyah</surname><given-names>Shem</given-names></name>
+        <name><surname>Kvasnica</surname><given-names>Jakub</given-names></name>
+        <name><surname>Lin</surname><given-names>Siliang</given-names></name>
+        <name><surname>Lines</surname><given-names>Emily R.</given-names></name>
+        <name><surname>Liu</surname><given-names>Hongyan</given-names></name>
+        <name><surname>Lorimer</surname><given-names>Craig</given-names></name>
+        <name><surname>Loumeto</surname><given-names>Jean-Joël</given-names></name>
+        <name><surname>Malhi</surname><given-names>Yadvinder</given-names></name>
+        <name><surname>Marshall</surname><given-names>Peter L.</given-names></name>
+        <name><surname>Mattsson</surname><given-names>Eskil</given-names></name>
+        <name><surname>Matula</surname><given-names>Radim</given-names></name>
+        <name><surname>Meave</surname><given-names>Jorge A.</given-names></name>
+        <name><surname>Mensah</surname><given-names>Sylvanus</given-names></name>
+        <name><surname>Mi</surname><given-names>Xiangcheng</given-names></name>
+        <name><surname>Momo</surname><given-names>Stéphane</given-names></name>
+        <name><surname>Moncrieff</surname><given-names>Glenn R.</given-names></name>
+        <name><surname>Mora</surname><given-names>Francisco</given-names></name>
+        <name><surname>Nissanka</surname><given-names>Sarath P.</given-names></name>
+        <name><surname>O’Hara</surname><given-names>Kevin L.</given-names></name>
+        <name><surname>Pearce</surname><given-names>Steven</given-names></name>
+        <name><surname>Pelissier</surname><given-names>Raphaël</given-names></name>
+        <name><surname>Peri</surname><given-names>Pablo L.</given-names></name>
+        <name><surname>Ploton</surname><given-names>Pierre</given-names></name>
+        <name><surname>Poorter</surname><given-names>Lourens</given-names></name>
+        <name><surname>Pour</surname><given-names>Mohsen Javanmiri</given-names></name>
+        <name><surname>Pourbabaei</surname><given-names>Hassan</given-names></name>
+        <name><surname>Dupuy-Rada</surname><given-names>Juan Manuel</given-names></name>
+        <name><surname>Ribeiro</surname><given-names>Sabina C.</given-names></name>
+        <name><surname>Ryan</surname><given-names>Casey</given-names></name>
+        <name><surname>Sanaei</surname><given-names>Anvar</given-names></name>
+        <name><surname>Sanger</surname><given-names>Jennifer</given-names></name>
+        <name><surname>Schlund</surname><given-names>Michael</given-names></name>
+        <name><surname>Sellan</surname><given-names>Giacomo</given-names></name>
+        <name><surname>Shenkin</surname><given-names>Alexander</given-names></name>
+        <name><surname>Sonké</surname><given-names>Bonaventure</given-names></name>
+        <name><surname>Sterck</surname><given-names>Frank J.</given-names></name>
+        <name><surname>Svátek</surname><given-names>Martin</given-names></name>
+        <name><surname>Takagi</surname><given-names>Kentaro</given-names></name>
+        <name><surname>Trugman</surname><given-names>Anna T.</given-names></name>
+        <name><surname>Ullah</surname><given-names>Farman</given-names></name>
+        <name><surname>Vadeboncoeur</surname><given-names>Matthew A.</given-names></name>
+        <name><surname>Valipour</surname><given-names>Ahmad</given-names></name>
+        <name><surname>Vanderwel</surname><given-names>Mark C.</given-names></name>
+        <name><surname>Vovides</surname><given-names>Alejandra G.</given-names></name>
+        <name><surname>Wang</surname><given-names>Weiwei</given-names></name>
+        <name><surname>Wang</surname><given-names>Li-Qiu</given-names></name>
+        <name><surname>Wirth</surname><given-names>Christian</given-names></name>
+        <name><surname>Woods</surname><given-names>Murray</given-names></name>
+        <name><surname>Xiang</surname><given-names>Wenhua</given-names></name>
+        <name><surname>Ximenes</surname><given-names>Fabiano de Aquino</given-names></name>
+        <name><surname>Xu</surname><given-names>Yaozhan</given-names></name>
+        <name><surname>Yamada</surname><given-names>Toshihiro</given-names></name>
+        <name><surname>Zavala</surname><given-names>Miguel A.</given-names></name>
+      </person-group>
+      <article-title>Tallo: A global tree allometry and crown architecture database</article-title>
+      <source>Global Change Biology</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>28</volume>
+      <issue>17</issue>
+      <uri>https://onlinelibrary.wiley.com/doi/abs/10.1111/gcb.16302</uri>
+      <pub-id pub-id-type="doi">https://doi.org/10.1111/gcb.16302</pub-id>
+      <fpage>5254</fpage>
+      <lpage>5268</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-MillionTrees-nb-article">
+    <element-citation publication-type="webpage">
+      <person-group person-group-type="author">
+        <name><surname>Weinstein</surname><given-names>Ben</given-names></name>
+      </person-group>
+      <article-title>MillionTrees</article-title>
+      <year iso-8601-date="2023">2023</year>
+      <date-in-citation content-type="access-date"><year iso-8601-date="2024-07-08">2024</year><month>07</month><day>08</day></date-in-citation>
+      <uri>https://milliontrees.idtrees.org/</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-WildForest3D-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <name><surname>Kalinicheva</surname><given-names>Ekaterina</given-names></name>
+        <name><surname>Landrieu</surname><given-names>Loic</given-names></name>
+        <name><surname>Mallet</surname><given-names>Clément</given-names></name>
+        <name><surname>Chehata</surname><given-names>Nesrine</given-names></name>
+      </person-group>
+      <article-title>Multi-layer modeling of dense vegetation from aerial LiDAR scans</article-title>
+      <year iso-8601-date="2022">2022</year>
+      <uri>https://arxiv.org/abs/2204.11620</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-sortedAP-nb-article">
+    <element-citation publication-type="paper-conference">
+      <person-group person-group-type="author">
+        <name><surname>Chen</surname><given-names>Long</given-names></name>
+        <name><surname>Wu</surname><given-names>Yuli</given-names></name>
+        <name><surname>Stegmaier</surname><given-names>Johannes</given-names></name>
+        <name><surname>Merhof</surname><given-names>Dorit</given-names></name>
+      </person-group>
+      <article-title>SortedAP: Rethinking evaluation metrics for instance segmentation</article-title>
+      <source>Proceedings of the IEEE/CVF international conference on computer vision (ICCV) workshops</source>
+      <year iso-8601-date="2023">2023</year>
+      <uri>https://openaccess.thecvf.com/content/ICCV2023W/BIC/html/Chen_SortedAP_Rethinking_Evaluation_Metrics_for_Instance_Segmentation_ICCVW_2023_paper.html</uri>
+      <fpage>3923</fpage>
+      <lpage>3929</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-AHN4-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Actueel Hoogtebestand Nederland</string-name>
+      </person-group>
+      <article-title>AHN4 - Actual Height Model of the Netherlands</article-title>
+      <year iso-8601-date="2020">2020</year>
+      <uri>https://www.ahn.nl/</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-Luchtfotos-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Beeldmateriaal Nederland</string-name>
+      </person-group>
+      <article-title>Luchtfoto’s (Aerial Photographs)</article-title>
+      <year iso-8601-date="2024">2024</year>
+      <uri>https://www.beeldmateriaal.nl/luchtfotos</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-IGN_LiDARHD-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Institut national de l’information géographique et forestière (IGN)</string-name>
+      </person-group>
+      <article-title>LiDAR HD</article-title>
+      <year iso-8601-date="2020">2020</year>
+      <uri>https://geoservices.ign.fr/lidarhd</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-IGN_BDORTHO-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Institut national de l’information géographique et forestière (IGN)</string-name>
+      </person-group>
+      <article-title>BD ORTHO</article-title>
+      <year iso-8601-date="2021">2021</year>
+      <uri>https://geoservices.ign.fr/bdortho</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-amsterdam_trees-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Gemeente Amsterdam</string-name>
+      </person-group>
+      <article-title>Bomenbestand Amsterdam (Amsterdam Tree Dataset)</article-title>
+      <year iso-8601-date="2024">2024</year>
+      <uri>https://maps.amsterdam.nl/open_geodata/?k=505</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-bordeaux_trees-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Bordeaux Métropole</string-name>
+      </person-group>
+      <article-title>Patrimoine arboré de Bordeaux Métropole (Tree Heritage of Bordeaux Metropole)</article-title>
+      <year iso-8601-date="2024">2024</year>
+      <uri>https://opendata.bordeaux-metropole.fr/explore/dataset/ec_arbre_p/information/?disjunctive.insee</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-boomregister-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Coöperatief Boomregister U.A.</string-name>
+      </person-group>
+      <article-title>Boom Register (Tree Register)</article-title>
+      <year iso-8601-date="2014">2014</year>
+      <uri>https://boomregister.nl/</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-urban-trees-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Arevalo-Ramirez</surname><given-names>Tito</given-names></name>
+        <name><surname>Alfaro</surname><given-names>Anali</given-names></name>
+        <name><surname>Figueroa</surname><given-names>José</given-names></name>
+        <name><surname>Ponce-Donoso</surname><given-names>Mauricio</given-names></name>
+        <name><surname>Saavedra</surname><given-names>Jose M.</given-names></name>
+        <name><surname>Recabarren</surname><given-names>Matías</given-names></name>
+        <name><surname>Delpiano</surname><given-names>José</given-names></name>
+      </person-group>
+      <article-title>Challenges for computer vision as a tool for screening urban trees through street-view images</article-title>
+      <source>Urban Forestry &amp; Urban Greening</source>
+      <year iso-8601-date="2024">2024</year>
+      <volume>95</volume>
+      <issn>1618-8667</issn>
+      <uri>https://www.sciencedirect.com/science/article/pii/S1618866724001146</uri>
+      <pub-id pub-id-type="doi">10.1016/j.ufug.2024.128316</pub-id>
+      <fpage>128316</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-olive-tree-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Safonova</surname><given-names>Anastasiia</given-names></name>
+        <name><surname>Guirado</surname><given-names>Emilio</given-names></name>
+        <name><surname>Maglinets</surname><given-names>Yuriy</given-names></name>
+        <name><surname>Alcaraz-Segura</surname><given-names>Domingo</given-names></name>
+        <name><surname>Tabik</surname><given-names>Siham</given-names></name>
+      </person-group>
+      <article-title>Olive tree biovolume from UAV multi-resolution image segmentation with mask r-CNN</article-title>
+      <source>Sensors</source>
+      <year iso-8601-date="2021">2021</year>
+      <volume>21</volume>
+      <issue>5</issue>
+      <issn>1424-8220</issn>
+      <uri>https://www.mdpi.com/1424-8220/21/5/1617</uri>
+      <pub-id pub-id-type="doi">10.3390/s21051617</pub-id>
+      <pub-id pub-id-type="pmid">33668984</pub-id>
+      <fpage>1617</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-amf_gd_yolov8-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Zhong</surname><given-names>Hao</given-names></name>
+        <name><surname>Zhang</surname><given-names>Zheyu</given-names></name>
+        <name><surname>Liu</surname><given-names>Haoran</given-names></name>
+        <name><surname>Wu</surname><given-names>Jinzhuo</given-names></name>
+        <name><surname>Lin</surname><given-names>Wenshu</given-names></name>
+      </person-group>
+      <article-title>Individual tree species identification for complex coniferous and broad-leaved mixed forests based on deep learning combined with UAV LiDAR data and RGB images</article-title>
+      <source>Forests</source>
+      <year iso-8601-date="2024">2024</year>
+      <volume>15</volume>
+      <issue>2</issue>
+      <issn>1999-4907</issn>
+      <uri>https://www.mdpi.com/1999-4907/15/2/293</uri>
+      <pub-id pub-id-type="doi">10.3390/f15020293</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_benchmark-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Eysn</surname><given-names>Lothar</given-names></name>
+        <name><surname>Hollaus</surname><given-names>Markus</given-names></name>
+        <name><surname>Lindberg</surname><given-names>Eva</given-names></name>
+        <name><surname>Berger</surname><given-names>Frédéric</given-names></name>
+        <name><surname>Monnet</surname><given-names>Jean-Matthieu</given-names></name>
+        <name><surname>Dalponte</surname><given-names>Michele</given-names></name>
+        <name><surname>Kobal</surname><given-names>Milan</given-names></name>
+        <name><surname>Pellegrini</surname><given-names>Marco</given-names></name>
+        <name><surname>Lingua</surname><given-names>Emanuele</given-names></name>
+        <name><surname>Mongus</surname><given-names>Domen</given-names></name>
+        <name><surname>Pfeifer</surname><given-names>Norbert</given-names></name>
+      </person-group>
+      <article-title>A benchmark of lidar-based single tree detection methods using heterogeneous forest data from the alpine space</article-title>
+      <source>Forests</source>
+      <year iso-8601-date="2015">2015</year>
+      <volume>6</volume>
+      <issue>5</issue>
+      <issn>1999-4907</issn>
+      <uri>https://www.mdpi.com/1999-4907/6/5/1721</uri>
+      <pub-id pub-id-type="doi">10.3390/f6051721</pub-id>
+      <fpage>1721</fpage>
+      <lpage>1747</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-Freudenberg2022-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Freudenberg</surname><given-names>Maximilian</given-names></name>
+        <name><surname>Magdon</surname><given-names>Paul</given-names></name>
+        <name><surname>Nölke</surname><given-names>Nils</given-names></name>
+      </person-group>
+      <article-title>Individual tree crown delineation in high-resolution remote sensing images based on u-net</article-title>
+      <source>Neural Computing and Applications</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>34</volume>
+      <issue>24</issue>
+      <issn>1433-3058</issn>
+      <uri>https://doi.org/10.1007/s00521-022-07640-4</uri>
+      <pub-id pub-id-type="doi">10.1007/s00521-022-07640-4</pub-id>
+      <fpage>22197</fpage>
+      <lpage>22207</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-DeepForest-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Weinstein</surname><given-names>Ben G.</given-names></name>
+        <name><surname>Marconi</surname><given-names>Sergio</given-names></name>
+        <name><surname>Aubry-Kientz</surname><given-names>Mélaine</given-names></name>
+        <name><surname>Vincent</surname><given-names>Gregoire</given-names></name>
+        <name><surname>Senyondo</surname><given-names>Henry</given-names></name>
+        <name><surname>White</surname><given-names>Ethan P.</given-names></name>
+      </person-group>
+      <article-title>DeepForest: A python package for RGB deep learning tree crown delineation</article-title>
+      <source>Methods in Ecology and Evolution</source>
+      <year iso-8601-date="2020">2020</year>
+      <volume>11</volume>
+      <issue>12</issue>
+      <uri>https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13472</uri>
+      <pub-id pub-id-type="doi">10.1111/2041-210X.13472</pub-id>
+      <fpage>1743</fpage>
+      <lpage>1751</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-NEONdata-nb-article">
+    <element-citation>
+      <person-group person-group-type="author">
+        <name><surname>Weinstein</surname><given-names>Ben</given-names></name>
+        <name><surname>Marconi</surname><given-names>Sergio</given-names></name>
+        <name><surname>White</surname><given-names>Ethan</given-names></name>
+      </person-group>
+      <article-title>Data for the NeonTreeEvaluation benchmark (0.2.2)</article-title>
+      <publisher-name>Zenodo</publisher-name>
+      <year iso-8601-date="2022">2022</year>
+      <uri>https://doi.org/10.5281/zenodo.5914554</uri>
+      <pub-id pub-id-type="doi">10.5281/zenodo.5914554</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_benchmark_2-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Wang</surname><given-names>Yunsheng</given-names></name>
+        <name><surname>Hyyppä</surname><given-names>Juha</given-names></name>
+        <name><surname>Liang</surname><given-names>Xinlian</given-names></name>
+        <name><surname>Kaartinen</surname><given-names>Harri</given-names></name>
+        <name><surname>Yu</surname><given-names>Xiaowei</given-names></name>
+        <name><surname>Lindberg</surname><given-names>Eva</given-names></name>
+        <name><surname>Holmgren</surname><given-names>Johan</given-names></name>
+        <name><surname>Qin</surname><given-names>Yuchu</given-names></name>
+        <name><surname>Mallet</surname><given-names>Clément</given-names></name>
+        <name><surname>Ferraz</surname><given-names>António</given-names></name>
+        <name><surname>Torabzadeh</surname><given-names>Hossein</given-names></name>
+        <name><surname>Morsdorf</surname><given-names>Felix</given-names></name>
+        <name><surname>Zhu</surname><given-names>Lingli</given-names></name>
+        <name><surname>Liu</surname><given-names>Jingbin</given-names></name>
+        <name><surname>Alho</surname><given-names>Petteri</given-names></name>
+      </person-group>
+      <article-title>International benchmarking of the individual tree detection methods for modeling 3-d canopy structure for silviculture and forest ecology using airborne laser scanning</article-title>
+      <source>IEEE Transactions on Geoscience and Remote Sensing</source>
+      <year iso-8601-date="2016">2016</year>
+      <volume>54</volume>
+      <issue>9</issue>
+      <pub-id pub-id-type="doi">10.1109/TGRS.2016.2543225</pub-id>
+      <fpage>5011</fpage>
+      <lpage>5027</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-gan_data_augment-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Sun</surname><given-names>Chenxin</given-names></name>
+        <name><surname>Huang</surname><given-names>Chengwei</given-names></name>
+        <name><surname>Zhang</surname><given-names>Huaiqing</given-names></name>
+        <name><surname>Chen</surname><given-names>Bangqian</given-names></name>
+        <name><surname>An</surname><given-names>Feng</given-names></name>
+        <name><surname>Wang</surname><given-names>Liwen</given-names></name>
+        <name><surname>Yun</surname><given-names>Ting</given-names></name>
+      </person-group>
+      <article-title>Individual tree crown segmentation and crown width extraction from a heightmap derived from aerial laser scanning data using a deep learning framework</article-title>
+      <source>Frontiers in Plant Science</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>13</volume>
+      <issn>1664-462X</issn>
+      <uri>https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2022.914974</uri>
+      <pub-id pub-id-type="doi">10.3389/fpls.2022.914974</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-albumentations-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Buslaev</surname><given-names>Alexander</given-names></name>
+        <name><surname>Iglovikov</surname><given-names>Vladimir I.</given-names></name>
+        <name><surname>Khvedchenya</surname><given-names>Eugene</given-names></name>
+        <name><surname>Parinov</surname><given-names>Alex</given-names></name>
+        <name><surname>Druzhinin</surname><given-names>Mikhail</given-names></name>
+        <name><surname>Kalinin</surname><given-names>Alexandr A.</given-names></name>
+      </person-group>
+      <article-title>Albumentations: Fast and flexible image augmentations</article-title>
+      <source>Information</source>
+      <year iso-8601-date="2020">2020</year>
+      <volume>11</volume>
+      <issue>2</issue>
+      <issn>2078-2489</issn>
+      <uri>https://www.mdpi.com/2078-2489/11/2/125</uri>
+      <pub-id pub-id-type="doi">10.3390/info11020125</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_classification-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Diab</surname><given-names>Ahmed</given-names></name>
+        <name><surname>Kashef</surname><given-names>Rasha</given-names></name>
+        <name><surname>Shaker</surname><given-names>Ahmed</given-names></name>
+      </person-group>
+      <article-title>Deep learning for LiDAR point cloud classification in remote sensing</article-title>
+      <source>Sensors (Basel)</source>
+      <year iso-8601-date="2022-10">2022</year><month>10</month>
+      <volume>22</volume>
+      <issue>20</issue>
+      <pub-id pub-id-type="doi">10.3390/s22207868</pub-id>
+      <pub-id pub-id-type="pmid">36298220</pub-id>
+      <fpage>7868</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_rgb_wst-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Qin</surname><given-names>Haiming</given-names></name>
+        <name><surname>Zhou</surname><given-names>Weiqi</given-names></name>
+        <name><surname>Yao</surname><given-names>Yang</given-names></name>
+        <name><surname>Wang</surname><given-names>Weimin</given-names></name>
+      </person-group>
+      <article-title>Individual tree segmentation and tree species classification in subtropical broadleaf forests using UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB data</article-title>
+      <source>Remote Sensing of Environment</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>280</volume>
+      <issn>0034-4257</issn>
+      <uri>https://www.sciencedirect.com/science/article/pii/S0034425722002577</uri>
+      <pub-id pub-id-type="doi">https://doi.org/10.1016/j.rse.2022.113143</pub-id>
+      <fpage>113143</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_rgb_acnet-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Li</surname><given-names>Yingbo</given-names></name>
+        <name><surname>Chai</surname><given-names>Guoqi</given-names></name>
+        <name><surname>Wang</surname><given-names>Yueting</given-names></name>
+        <name><surname>Lei</surname><given-names>Lingting</given-names></name>
+        <name><surname>Zhang</surname><given-names>Xiaoli</given-names></name>
+      </person-group>
+      <article-title>ACE r-CNN: An attention complementary and edge detection-based instance segmentation algorithm for individual tree species identification using UAV RGB images and LiDAR data</article-title>
+      <source>Remote Sensing</source>
+      <year iso-8601-date="2022">2022</year>
+      <volume>14</volume>
+      <issue>13</issue>
+      <issn>2072-4292</issn>
+      <uri>https://www.mdpi.com/2072-4292/14/13/3035</uri>
+      <pub-id pub-id-type="doi">10.3390/rs14133035</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-watershed-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Vincent</surname><given-names>L.</given-names></name>
+        <name><surname>Soille</surname><given-names>P.</given-names></name>
+      </person-group>
+      <article-title>Watersheds in digital spaces: An efficient algorithm based on immersion simulations</article-title>
+      <source>IEEE Transactions on Pattern Analysis and Machine Intelligence</source>
+      <year iso-8601-date="1991">1991</year>
+      <volume>13</volume>
+      <issue>6</issue>
+      <pub-id pub-id-type="doi">10.1109/34.87344</pub-id>
+      <fpage>583</fpage>
+      <lpage>598</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-lidar_watershed-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Kwak</surname><given-names>Doo-Ahn</given-names></name>
+        <name><surname>Lee</surname><given-names>Woo-Kyun</given-names></name>
+        <name><surname>Lee</surname><given-names>Jun-Hak</given-names></name>
+        <name><surname>Biging</surname><given-names>Greg S.</given-names></name>
+        <name><surname>Gong</surname><given-names>Peng</given-names></name>
+      </person-group>
+      <article-title>Detection of individual trees and estimation of tree height using LiDAR data</article-title>
+      <source>Journal of Forest Research</source>
+      <year iso-8601-date="2007">2007</year>
+      <volume>12</volume>
+      <issue>6</issue>
+      <issn>1610-7403</issn>
+      <uri>https://doi.org/10.1007/s10310-007-0041-9</uri>
+      <pub-id pub-id-type="doi">10.1007/s10310-007-0041-9</pub-id>
+      <fpage>425</fpage>
+      <lpage>434</lpage>
+    </element-citation>
+  </ref>
 </ref-list>
 </back>
 
 
+</sub-article>
 
 </article>
