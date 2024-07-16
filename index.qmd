@@ -25,6 +25,8 @@ keywords:
   - deep learning
 bibliography: references.bib
 csl: chicago-author-date.csl
+execute: 
+  code-fold: true
 ---
 
 ## Introduction {.unnumbered}
@@ -55,6 +57,10 @@ These generic tasks can be extended by trying to get more information about the 
 In this paper, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used, without compromising the ability to experiment with different possible improvements of the model. The difficulties and the experiments are developed below.
 
 ### Datasets
+
+#### Motivations
+
+[@lidar_benchmark_2] shows that in forests, you can have up to more than 50% of the trees which crowns are completely or partially covered by other trees.
 
 #### Requirements
 
@@ -87,7 +93,7 @@ Thirdly, there are the LiDAR datasets, such as [@WildForest3D] and [@FOR-instanc
 
 Finally, I also found two datasets that had RGB and LiDAR components. The first one is MDAS [@MDAS]. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There were however two major flaws. The obvious one was that this dataset was created with land semantic segmentation tasks in mind, so there was no tree annotations. The less obvious one was that a DSM is not a point cloud, even though it is some kind of 3D information and was often created using a LiDAR point cloud. As a consequence, I would have been very limited in my ability to use the point cloud.
 
-The only real dataset with RGB and LiDAR was NEON [@NEON]. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about later. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.
+The only real dataset with RGB and LiDAR came from NEON [@NEONdata]. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about later. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.
 
 #### Public data
 
@@ -105,19 +111,98 @@ As for LiDAR point clouds, the Netherlands have a small edge over France, becaus
 
 The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for Amsterdam [@amsterdam_trees] and Bordeaux [@bordeaux_trees]. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.
 
-The other tree annotation source that we could have used is Boomregister ([@boomregister]). This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9 m heigh or have a crown diameter smaller than 4 m. Therefore, even it is a very impressive piece of work, we thought that it could not be used as training data for a deep learning models due to its biases and imperfections.
+The other tree annotation source that we could have used is Boomregister [@boomregister]. This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9 m heigh or have a crown diameter smaller than 4 m. Therefore, even it is a very impressive piece of work, we thought that it could not be used as training data for a deep learning models due to its biases and imperfections.
 
 #### Dataset augmentation techniques
 
-### Models
+When a dataset is too small to train a model, there are several ways of artificially enlarging it.
+
+The most common way to do it is to randomly apply deterministic or random transformations to the data, during the training process, to be able to generate several unique and different realistic data instances from one real data instance. There are a lot of different transformations that can be applied to images, divided into two categories: pixel-level and spatial-level [@albumentations]. Pixel-level transformations modify the value of individual pixels, by applying different filters, such as random noise, color shifts and more complex effects like fog and sun flare. Spatial-level transformations modify the spatial arrangement of the image, without changing the pixel values. In other words, these transformations move the pixels in the image. The transformations range from simple rotations and croppings to complex spatial distortions. In the end, all these transformations are simply producing one artificial image out of one real image.
+
+Another way to enlarge a dataset is to instead generate completely new input data sharing the same properties as the initial dataset. This can be done using Generative Adversarial Networks (GAN). These models usually have two parts, a generator and a discriminator, which are trained in parallel. The generator learns to produce realistic artificial data, while the discriminator learns to identify real data and artificial data produced by the generator. If the training is successful, we can then use the generator and random seeds to generate random but realistic artificial data similar to the dataset. This method has for example been successfully used to generate artificial tree height maps [@gan_data_augment]. 
+
+### Models and methods
+
+#### Classical methods
+
+Besides machine and deep learning methods that are mentioned in the next sections, there exist several algorithmic methods that use the special shape of the trees to detect them individually. The most used is called the watershed algorithm, and even though it has many variants, its base principle is simple [@watershed]. The idea of this algorithm is to find individual trees in three steps:
+
+1. Identify the local treetops from a height map or from an RGB image,
+2. Inverse the image so that local maxima (treetops) become local minima (watersheds),
+3. Fill the watersheds with water until different watersheds overflow and merge, marking their boundaries.
+
+This algorithm works generally well, using the assumption that the overall shape of each individual tree crown si similar to a cone when seen from above. Due to its success and the different changes that further improved its results, this algorithm is still used today, even in complex pipelines using machine and deep learning methods to extract features before applying the watershed algorithm [@Freudenberg2022; @lidar_rgb_wst].
+
+#### LiDAR only
+
+Some of the methods to identify individual trees use LiDAR data only. There are a lot of different ways to use and analyze point clouds, but the one that is mostly used for trees is based on height maps, or Canopy Height Models (CHM).
+
+A CHM is a raster computed as the subtraction of the Digital Terrain Model (DTM) to the Digital Surface Model (DSM). What it means is that a CHM contains the height above ground of the highest point in the area corresponding to each pixel. This CHM can for example be used as the input raster for the watershed algorithm, as it contains the height values that can be used to determine local maxima [@lidar_watershed].
+
+#### Images only
+
+
+#### LiDAR and images
+
+Models to cite:
+
+- AMF GD YOLOv8 [@amf_gd_yolov8]: main source of inspiration, combining RGB and LiDAR in an image model
+- Benchmark of 8 methods using LiDAR [@lidar_benchmark]: no machine learning method, but one of the methods uses multiple CHM layers, computed iteratively by removing everything in the 0.5 m below the previous CHM
+- Individual tree crown delineation in high-resolution remote sensing images based on U-Net [@Freudenberg2022]: multiple steps with two models to predict masks, outlines and distance transform, and a final step with the watershed algorithm
+- DeepForest: A Python package for RGB deep learning tree crown delineation [@DeepForest]: uses only RGB data to detect trees, but uses LiDAR to create millions of annotations of moderate quality to pre-train the model, before using around 10,000 hand-annotations to finalize and specialize the training on a certain area.
+- International Benchmarking of the Individual Tree Detection Methods for Modeling 3-D Canopy Structure for Silviculture and Forest Ecology Using Airborne Laser Scanning [@lidar_benchmark_2]: another benchmark using LiDAR. They also try a method based on 3D voxels.
+- Deep Learning for LiDAR Point Cloud Classification in Remote Sensing [@lidar_classification]: overview of deep learning methods to classify point clouds
+- Individual tree segmentation and tree species classification in subtropical broadleaf forests using UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB data [@lidar_rgb_wst]: use LiDAR, RGB and hyperspectral data, watershed algorithm and random forests.
+- ACE R-CNN: An Attention Complementary and Edge Detection-Based Instance Segmentation Algorithm for Individual Tree Species Identification Using UAV RGB Images and LiDAR Data [@lidar_rgb_acnet]: use LiDAR and RGB data, Mask R-CNN model with fusion, similar to AMF GD YOLOv8
 
 ## Dataset {#sec-dataset}
+
+The highest resolution of the CHM which keeps a high enough quality depends entirely on the density of the point cloud. Also, depending on the season when the point cloud is acquired, using a CHM might imply throwing away the majority of the information contained in the point cloud. 
+
+### Definition and content
+
+### Challenges
+
+- Shift between RGB images, CIR images and LiDAR point clouds due to images not being perfectly orthonormal
+- Variations of the trees over time, with new small trees being planted and old trees being cut off
+- Not so easy to define what we consider as a tree and identify them. Problems with bushes for example. This problem is also mentioned in another paper [@DeepForestBefore].
+
+### Augmentation methods
 
 ## Model
 
 ## Results
 
-Beyond mAP: [@BeyondMAP].
+sortedAP: [@sortedAP].
+
+
+
+```{python}
+#| label: fig-training-parameters
+#| fig-cap: "Results with different training parameters"
+#| column: page-right
+import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv("data/training_params_experiment.csv")
+df.sort_values(
+    by=["proba_drop_chm", "Data used for evaluation"],
+    inplace=True,
+)
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="accumulate",
+    y="Best sortedAP",
+    hue="Data used for evaluation",
+    col="lr",
+    row="proba_drop_chm",
+    margin_titles=True,
+    height=2,
+    aspect=1,
+)
+```
 
 ## Conclusion {.unnumbered}
 

@@ -1,2 +1,6 @@
 jupyter==1.0.0
 matplotlib>=3.7
+bokeh
+altair
+vega_datasets
+seaborn
