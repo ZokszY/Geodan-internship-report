@@ -121,7 +121,7 @@
   note         = {Accessed: 2024-07-09}
 }
 
-@misc{IGN_LiDARHD,
+@misc{IGN_LiDAR_HD,
   author       = {{Institut national de l'information géographique et forestière (IGN)}},
   title        = {{LiDAR HD}},
   year         = 2020,
@@ -129,7 +129,7 @@
   note         = {Accessed: 2024-07-09}
 }
 
-@misc{IGN_BDORTHO,
+@misc{IGN_BD_ORTHO,
   author       = {{Institut national de l'information géographique et forestière (IGN)}},
   title        = {{BD ORTHO}},
   year         = 2021,
@@ -219,7 +219,7 @@ ABSTRACT = {In this study, eight airborne laser scanning (ALS)-based single tree
 DOI = {10.3390/f6051721}
 }
 
-@article{Freudenberg2022,
+@article{rgb-dl-watershed,
   author    = {Maximilian Freudenberg and Paul Magdon and Nils Nölke},
   title     = {Individual tree crown delineation in high-resolution remote sensing images based on U-Net},
   journal   = {Neural Computing and Applications},
@@ -314,7 +314,7 @@ year = {2020}
   pages = {113143},
   year = {2022},
   issn = {0034-4257},
-  doi = {https://doi.org/10.1016/j.rse.2022.113143},
+  doi = {10.1016/j.rse.2022.113143},
   url = {https://www.sciencedirect.com/science/article/pii/S0034425722002577},
   author = {Haiming Qin and Weiqi Zhou and Yang Yao and Weimin Wang},
   keywords = {Hyperspectral data, LiDAR data, Ultrahigh-resolution RGB imagery, Individual tree segmentation, Tree species classification, Subtropical broadleaf forests},
@@ -359,4 +359,53 @@ year = {2020}
   url       = {https://doi.org/10.1007/s10310-007-0041-9},
   issn      = {1610-7403},
   abstract  = {For estimation of tree parameters at the single-tree level using light detection and ranging (LiDAR), detection and delineation of individual trees is an important starting point. This paper presents an approach for delineating individual trees and estimating tree heights using LiDAR in coniferous (Pinus koraiensis, Larix leptolepis) and deciduous (Quercus spp.) forests in South Korea. To detect tree tops, the extended maxima transformation of morphological image-analysis methods was applied to the digital canopy model (DCM). In order to monitor spurious local maxima in the DCM, which cause false tree tops, different h values in the extended maxima transformation were explored. For delineation of individual trees, watershed segmentation was applied to the distance-transformed image from the detected tree tops. The tree heights were extracted using the maximum value within the segmented crown boundary. Thereafter, individual tree data estimated by LiDAR were compared to the field measurement data under five categories (correct delineation, satisfied delineation, merged tree, split tree, and not found). In our study, P. koraiensis, L. leptolepis, and Quercus spp. had the best detection accuracies of 68.1\% at h = 0.18, 86.7\% at h = 0.12, and 67.4\% at h = 0.02, respectively. The coefficients of determination for tree height estimation were 0.77, 0.80, and 0.74 for P. koraiensis, L. leptolepis, and Quercus spp., respectively.}
+}
+
+@incollection{rgb_analytical,
+  author = {Marilia Ferreira Gomes and Philippe Maillard},
+  title = {Detection of Tree Crowns in Very High Spatial Resolution Images},
+  booktitle = {Environmental Applications of Remote Sensing},
+  publisher = {IntechOpen},
+  address = {Rijeka},
+  year = {2016},
+  editor = {Maged Marghany},
+  chapter = {2},
+  doi = {10.5772/62122},
+  url = {https://doi.org/10.5772/62122}
+}
+
+@article{local-maximum,
+  title = {Local Maximum Filtering for the Extraction of Tree Locations and Basal Area from High Spatial Resolution Imagery},
+  journal = {Remote Sensing of Environment},
+  volume = {73},
+  number = {1},
+  pages = {103-114},
+  year = {2000},
+  issn = {0034-4257},
+  doi = {10.1016/S0034-4257(00)00101-2},
+  url = {https://www.sciencedirect.com/science/article/pii/S0034425700001012},
+  author = {Mike Wulder and K.Olaf Niemann and David G. Goodenough},
+  abstract = {In this study we investigate the use of local maximum (LM) filtering to locate trees on high spatial resolution (1-m) imagery. Results are considered in terms of commission error (falsely indicated trees) and omission error (missed trees). Tree isolation accuracy is also considered as a function of tree crown size. The success of LM filtering in locating trees depends on the size and distribution of trees in relation to the image spatial resolution. A static-sized 3×3 pixel LM filter provides an indication of the maximum number of trees that may be found in the imagery, yet high errors of commission reduce the integrity of the results. Variable window-size techniques may be applied to reduce both the errors of commission and omission, especially for larger trees. The distribution of the error by tree size is important since the large trees account for a greater proportion of the stand basal area than the smaller trees. An investigation of the success of tree identification by tree crown radius demonstrates the relationship between image spatial resolution and LM filtering success. At an image spatial resolution of 1 m, a tree crown radius of 1.5 m appears to be the minimum size for reliable identification of tree locations using LM filtering.}
+}
+
+@inproceedings{valley-following,
+  title={Automatic individual tree crown delineation using a valley-following algorithm and rule-based system},
+  author={Gougeon, Fran{\c{c}}ois A and others},
+  booktitle={Proc. International Forum on Automated Interpretation of High Spatial Resolution Digital Imagery for Forestry, Victoria, British Columbia, Canada},
+  pages={11--23},
+  year={1998},
+  organization={Citeseer},
+  url={https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf}
+}
+
+@phdthesis{template-matching,
+  author = {Pollock, Richard James},
+  advisor = {Woodham, Robert J.},
+  title = {The automatic recognition of individual trees in aerial images of forests based on a synthetic tree crown image model},
+  year = {1996},
+  isbn = {0612148157},
+  publisher = {The University of British Columbia (Canada)},
+  abstract = {The thesis of this work is that individual tree crowns can be automatically recognized in monocular high spatial resolution optical images of scenes containing boreal or cool temperate forests in a leaved state. The thesis was advanced by developing and testing an automatic tree crown recognition procedure that is based on a model of the image formation process at the scale of an individual tree. This model provides a means of applying specific scene and image formation knowledge to the recognition task. The procedure associates instances of a three-dimensional shape description with locations in a scene image such that the descriptions estimate the visible scene extent of tree crowns that existed at the corresponding scene locations when the image was acquired. This provides an estimate of the average horizontal diameter of the vertical projection of individual recognized tree crowns, and a basis for species classification. This work makes a contribution to the overall effort to increase the level of automation in forest type mapping. This work also introduces and demonstrates the use of a pre-defined image model to support the manual acquisition of a sample of unmodelled tree crown image properties, and the use of constraints related to the spatial relationships among multiple neighbouring candidate recognition instances to resolve image interpretation conflicts.The procedure was tested with a scene of mixed uneven-aged forests in which the trees represent a wide variety of species, size, and growing conditions. The results were assessed on the basis of ground reference data and compared to those produced by human interpreters. The scene represented a greater level of difficulty than that which has been addressed by previous attempts at automating the tree crown recognition task. The test results show that the procedure was able to largely accommodate the variation represented by the test scene, but that human interpreters were better able to accommodate irregularities in tree crown form and irradiance that were caused by tight vertical and horizontal spacing of the crowns.},
+  note = {AAINN14815},
+  url = {https://dx.doi.org/10.14288/1.0051597}
 }
