@@ -28,6 +28,148 @@ bibliography: references.bib
 
 ## Introduction
 
+```{python}
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+
+# Sample data
+np.random.seed(42)
+df = pd.DataFrame({
+    'category': np.random.choice(['A', 'B', 'C'], size=100),
+    'value1': np.random.randn(100),
+    'value2': np.random.randn(100) * 50 + 50,
+    'value3': np.random.randn(100) * 100 + 100
+})
+
+# Create jitter for the x-values
+df['jittered_category'] = df['category'].apply(lambda x: np.random.normal(loc={'A': 0, 'B': 1, 'C': 2}[x], scale=0.1))
+
+# Create the initial figure
+fig = go.Figure()
+
+# Add initial trace (for value1 by default)
+fig.add_trace(go.Scatter(
+    x=df['jittered_category'],
+    y=df['value1'],
+    mode='markers',
+    name='value1',
+    marker=dict(size=7, opacity=0.6)
+))
+
+# Create the dropdown menus
+dropdown_buttons_x = [
+    {
+        'label': 'Category',
+        'method': 'update',
+        'args': [{'x': [df['jittered_category']]}]
+    },
+    {
+        'label': 'value1',
+        'method': 'update',
+        'args': [{'x': [df['value1']]}]
+    },
+    {
+        'label': 'value2',
+        'method': 'update',
+        'args': [{'x': [df['value2']]}]
+    },
+    {
+        'label': 'value3',
+        'method': 'update',
+        'args': [{'x': [df['value3']]}]
+    }
+]
+
+dropdown_buttons_y = [
+    {
+        'label': 'value1',
+        'method': 'update',
+        'args': [{'y': [df['value1']]}]
+    },
+    {
+        'label': 'value2',
+        'method': 'update',
+        'args': [{'y': [df['value2']]}]
+    },
+    {
+        'label': 'value3',
+        'method': 'update',
+        'args': [{'y': [df['value3']]}]
+    }
+]
+
+# Update layout with dropdowns
+fig.update_layout(
+    title="Interactive Swarm Plot",
+    xaxis_title="Category",
+    yaxis_title="Value",
+    updatemenus=[
+        {
+            'buttons': dropdown_buttons_x,
+            'direction': 'down',
+            'showactive': True,
+            'x': 0.17,
+            'xanchor': 'left',
+            'y': 1.15,
+            'yanchor': 'top'
+        },
+        {
+            'buttons': dropdown_buttons_y,
+            'direction': 'down',
+            'showactive': True,
+            'x': 0.83,
+            'xanchor': 'right',
+            'y': 1.15,
+            'yanchor': 'top'
+        }
+    ]
+)
+
+fig.update_xaxes(tickvals=[0, 1, 2], ticktext=['A', 'B', 'C'])
+
+fig.show()
+
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+
+# Sample data
+np.random.seed(42)
+df = pd.DataFrame({
+    'category': np.random.choice(['A', 'B', 'C'], size=100),
+    'value1': np.random.randn(100),
+    'value2': np.random.randn(100) * 50 + 50,
+    'value3': np.random.randn(100) * 100 + 100
+})
+
+def create_swarm_plot(y_column):
+    # Create jitter for the x-values
+    df['jittered_category'] = df['category'].apply(lambda x: np.random.normal(loc={'A': 0, 'B': 1, 'C': 2}[x], scale=0.1))
+    
+    fig = px.scatter(
+        df, x='jittered_category', y=y_column, color='category', 
+        title=f'Swarm Plot of {y_column}',
+        labels={'jittered_category': 'Category'},
+        category_orders={'category': ['A', 'B', 'C']}
+    )
+
+    fig.update_traces(marker=dict(size=7, opacity=0.6))
+    fig.update_xaxes(tickvals=[0, 1, 2], ticktext=['A', 'B', 'C'])
+    fig.show()
+
+create_swarm_plot('value1')
+
+# Create dropdown for interactivity
+from ipywidgets import interact
+
+interact(create_swarm_plot, y_column=['value1', 'value2', 'value3'])
+```
+
 The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to perform instance segmentation of trees. The two types of data are indeed complementary, as point clouds capture the shape of the worlds, while images capture the colors. However, combining them into a format that allows a model to handle them simultaneously is not an easy task because they inherently have a very different spatial repartition and encoding.
 
 The second major topic of the internship was to acquire a proper dataset matching all the criteria required for the project. Most of the datasets containing tree annotations only used either RGB images or LiDAR point clouds, but not both. Therefore, I had to create such a dataset by myself, using the openly available images and point clouds in the Netherlands, by annotating trees by hand to properly train and evaluate the methods.
