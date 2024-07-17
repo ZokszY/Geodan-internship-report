@@ -32,6 +32,8 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
 </contrib>
 </contrib-group>
 <aff id="aff-1">
+<institution content-type="dept">Département
+d’informatique</institution>
 <institution-wrap>
 <institution>École polytechnique</institution>
 </institution-wrap>
@@ -92,19 +94,17 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
   <title>Introduction</title>
   <p>The goal of the internship was to study the possibility of
   combining LiDAR point clouds and aerial images in a deep learning
-  model to perform instance segmentation of trees. The two types of data
-  are indeed complementary, as point clouds capture the shape of the
-  worlds, while images capture the colors. However, combining them into
-  a format that allows a model to handle them simultaneously is not an
-  easy task because they inherently have a very different spatial
-  repartition and encoding.</p>
-  <p>The second major topic of the internship was to acquire a proper
-  dataset matching all the criteria required for the project. Most of
-  the datasets containing tree annotations only used either RGB images
-  or LiDAR point clouds, but not both. Therefore, I had to create such a
-  dataset by myself, using the openly available images and point clouds
-  in the Netherlands, by annotating trees by hand to properly train and
-  evaluate the methods.</p>
+  model to identify individual trees. The two types of data are indeed
+  complementary, as point clouds capture geometric shapes, while images
+  capture colors. However, combining them into a format that allows a
+  model to handle them simultaneously is not a straightforward task
+  because they inherently have a very different spatial repartition and
+  encoding.</p>
+  <p>In this work, I focused on one specific deep learning model, and
+  tried to improve it by using more information from the LiDAR point
+  cloud. To do this, I had to create my own tree annotations dataset,
+  with which I also tried to study the ability of this new model to
+  detect trees that are covered by other trees.</p>
 </sec>
 <sec id="state-of-the-art">
   <title>State-of-the-art</title>
@@ -122,16 +122,16 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     (<xref alt="Arevalo-Ramirez et al. 2024" rid="ref-urban-trees" ref-type="bibr">Arevalo-Ramirez
     et al. 2024</xref>).</p>
     <p>This leads to the second variation, which is related to the kind
-    of tree area that we are interested in. There are mainly three types
-    of area, which among other things, influence the organization of the
-    trees in space: urban areas, tree plantations and forests. This is
-    important, because the tasks and the difficulty depends on the type
-    of area. Tree plantations are much easier to work with than
-    completely wild forests, while urban areas contain various levels of
-    difficulty ranging from alignment trees to private and disorganized
-    gardens and parks. For this project, we mainly focused on urban
-    areas, but everything should still be applicable to tree plantations
-    and forests.</p>
+    of environment that we are interested in. There are mainly three
+    types of environments, which among other things, influence the
+    organization of the trees in space: urban areas, tree plantations
+    and forests. This is important, because the tasks and the difficulty
+    depends on the type of environment. Tree plantations are much easier
+    to work with than completely wild forests, while urban areas contain
+    various levels of difficulty ranging from alignment trees to private
+    and disorganized gardens and parks. For this project, we mainly
+    focused on urban areas, but everything should still be applicable to
+    tree plantations and forests.</p>
     <p>Then, the four fundamental computer vision tasks have their
     application when dealing with trees
     (<xref alt="Safonova et al. 2021" rid="ref-olive-tree" ref-type="bibr">Safonova
@@ -160,26 +160,19 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     information about the trees. The most common information are the
     species and the height, but some models also try to predict the
     health of the trees, or their carbon stock.</p>
-    <p>In this paper, the task that is tackled is the detection of
-    trees, with a special classification between several labels related
-    to the discrepancies between the different kinds of data. The kind
-    of model that is used would also have allowed to focus on some more
-    advanced tasks, by replacing detection with instance segmentation
-    and asking the model to also predict the species. But due to the
-    difficulties regarding the dataset, a simpler task with a simpler
-    dataset was used, without compromising the ability to experiment
-    with different possible improvements of the model. The difficulties
-    and the experiments are developed below.</p>
+    <p>In this work, the task that is tackled is the detection of trees,
+    with a special classification between several labels related to the
+    discrepancies between the different kinds of data. The kind of model
+    that is used would also have allowed to focus on some more advanced
+    tasks, by replacing detection with instance segmentation and asking
+    the model to also predict the species. But due to the difficulties
+    regarding the dataset, a simpler task with a simpler dataset was
+    used, without compromising the ability to experiment with different
+    possible improvements of the model. The difficulties and the
+    experiments are developed below.</p>
   </sec>
   <sec id="datasets">
     <title>Datasets</title>
-    <sec id="motivations">
-      <title>Motivations</title>
-      <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
-      et al. 2016</xref>) shows that in forests, you can have up to more
-      than 50% of the trees which crowns are completely or partially
-      covered by other trees.</p>
-    </sec>
     <sec id="requirements">
       <title>Requirements</title>
       <p>Before presenting the different promising datasets and the
@@ -324,7 +317,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <p>After rejecting all the available datasets I had found, the
       only solution I had left was to create my own dataset. I won’t
       dive too much in this process that I will explain in
-      <xref alt="Section 2" rid="sec-dataset">Section 2</xref>. I just
+      <xref alt="Section 3" rid="sec-dataset">Section 3</xref>. I just
       want to mention all the publicly available datasets that I used or
       could have used to create this custom dataset.</p>
       <p>For practical reasons, the two countries where I mostly
@@ -344,7 +337,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <p>These three types of data are available in similar ways in both
       countries, although the Netherlands have a small edge over France.
       RGB images are really easy to find in France with the BD ORTHO
-      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BDORTHO" ref-type="bibr">Institut
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BD_ORTHO" ref-type="bibr">Institut
       national de l’information géographique et forestière (IGN)
       2021</xref>) and in the Netherlands with the Luchtfotos
       (<xref alt="Beeldmateriaal Nederland 2024" rid="ref-Luchtfotos" ref-type="bibr">Beeldmateriaal
@@ -359,7 +352,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       Hoogtebestand Nederland 2020</xref>), and are working on the fifth
       version. In France, data acquisition for the first LiDAR point
       cloud covering the whole country started a few years ago
-      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDARHD" ref-type="bibr">Institut
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDAR_HD" ref-type="bibr">Institut
       national de l’information géographique et forestière (IGN)
       2020</xref>). It is not yet finished, even though data is already
       available for half of the country. The other advantage of the data
@@ -436,43 +429,52 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       et al. 2022</xref>).</p>
     </sec>
   </sec>
-  <sec id="models-and-methods">
-    <title>Models and methods</title>
-    <sec id="classical-methods">
-      <title>Classical methods</title>
-      <p>Besides machine and deep learning methods that are mentioned in
-      the next sections, there exist several algorithmic methods that
-      use the special shape of the trees to detect them individually.
-      The most used is called the watershed algorithm, and even though
-      it has many variants, its base principle is simple
+  <sec id="algorithms-and-models">
+    <title>Algorithms and models</title>
+    <p>In this section, the different algorithms and methods are grouped
+    according to the type of data they use as input.</p>
+    <sec id="images-only">
+      <title>Images only</title>
+      <p>Then, there are methods that perform tree detection using only
+      visible or hyperspectral images or both. Several different
+      algorithms have been developed to analytically delineate tree
+      crowns from RGB images, by using the particular shape of the trees
+      and its effect on images
+      (<xref alt="Gomes and Maillard 2016" rid="ref-rgb_analytical" ref-type="bibr">Gomes
+      and Maillard 2016</xref>). Without diving into the details, here
+      are a few of them. The watershed algorithm identifies trees to
+      inverted watersheds in the grey-scale image and tree crowns
+      frontiers are found by incrementally flooding the watersheds
       (<xref alt="Vincent and Soille 1991" rid="ref-watershed" ref-type="bibr">Vincent
-      and Soille 1991</xref>). The idea of this algorithm is to find
-      individual trees in three steps:</p>
-      <list list-type="order">
-        <list-item>
-          <p>Identify the local treetops from a height map or from an
-          RGB image,</p>
-        </list-item>
-        <list-item>
-          <p>Inverse the image so that local maxima (treetops) become
-          local minima (watersheds),</p>
-        </list-item>
-        <list-item>
-          <p>Fill the watersheds with water until different watersheds
-          overflow and merge, marking their boundaries.</p>
-        </list-item>
-      </list>
-      <p>This algorithm works generally well, using the assumption that
-      the overall shape of each individual tree crown si similar to a
-      cone when seen from above. Due to its success and the different
-      changes that further improved its results, this algorithm is still
-      used today, even in complex pipelines using machine and deep
-      learning methods to extract features before applying the watershed
-      algorithm
-      (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022" ref-type="bibr">Freudenberg,
-      Magdon, and Nölke 2022</xref>;
-      <xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst" ref-type="bibr">Qin
-      et al. 2022</xref>).</p>
+      and Soille 1991</xref>). The local maxima filtering uses the
+      intensity of the pixels in the grey-scale image to identify the
+      brightest points locally and use them as treetops
+      (<xref alt="Wulder, Niemann, and Goodenough 2000" rid="ref-local-maximum" ref-type="bibr">Wulder,
+      Niemann, and Goodenough 2000</xref>). Reversely, the
+      valley-following algorithm uses the darkest pixels which are
+      considered as the junctions between the trees since shaded areas
+      are the lower part of the tree crowns
+      (<xref alt="Gougeon et al. 1998" rid="ref-valley-following" ref-type="bibr">Gougeon
+      et al. 1998</xref>). Another interesting algorithm is template
+      matching. This algorithm simulates the appearance of simple tree
+      templates with the light effects, and tries to identify similar
+      patterns in the grey-scale image
+      (<xref alt="Pollock 1996" rid="ref-template-matching" ref-type="bibr">Pollock
+      1996</xref>). Combinations of these techniques and others have
+      also been proposed.</p>
+      <p>But with the recent developments of deep learning in image
+      analysis, deep learning models are increasingly used to detect
+      trees using RGB images. In some cases, deep learning is used to
+      extract features that can then be the input of one of the
+      algorithms described above. One example is the use of two neural
+      networks to predict masks, outlines and distance transforms which
+      can then be the input of a watershed algorithm
+      (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-rgb-dl-watershed" ref-type="bibr">Freudenberg,
+      Magdon, and Nölke 2022</xref>). In other cases, a deep learning
+      model is responsible of directly detecting tree masks or bounding
+      boxes, often using CNNs, given the images
+      (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest" ref-type="bibr">B.
+      G. Weinstein et al. 2020</xref>).</p>
     </sec>
     <sec id="lidar-only">
       <title>LiDAR only</title>
@@ -488,85 +490,88 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       algorithm, as it contains the height values that can be used to
       determine local maxima
       (<xref alt="Kwak et al. 2007" rid="ref-lidar_watershed" ref-type="bibr">Kwak
-      et al. 2007</xref>).</p>
-    </sec>
-    <sec id="images-only">
-      <title>Images only</title>
+      et al. 2007</xref>). A lot of different analytical methods and
+      variations of the simple CHM were proposed to perform individual
+      tree detection, but in the end, most of them still the concept of
+      local maxima
+      (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark" ref-type="bibr">Eysn
+      et al. 2015</xref>;
+      <xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
+      et al. 2016</xref>). A CHM can also be used as the input of any
+      kind of convolutional neural network (CNN) because it is shaped
+      exactly like any image. This allows to use a lot of different
+      techniques usually applied to object detection in images.</p>
+      <p>Then, even though I finally used an approach similar to the
+      CHM, I want to mention other kinds of deep learning techniques
+      that exist and could potentially leverage all the information
+      contained in a point cloud. These techniques can be divided in two
+      categories: projection-based and point-based methods
+      (<xref alt="Diab, Kashef, and Shaker 2022" rid="ref-lidar_classification" ref-type="bibr">Diab,
+      Kashef, and Shaker 2022</xref>). The main difference between the
+      two is that projection-based techniques are based on grids while
+      point-based methods take unstructured point clouds as input. Among
+      projection-based methods, the most basic method is 2D CNN, which
+      is how CHM can be processed. Then, multiview representation tries
+      to tackle the 3D aspect by projecting the point cloud in multiple
+      directions before merging them together. To really deal with 3D
+      data, volumetric grid representation consists in using 3D
+      occupancy grids, which are processed using 3D CNNs. Among
+      point-based methods, there are methods based on PointNet, which
+      are able to extract features and perform the classical computer
+      vision tasks by taking point clouds as input. Finally,
+      Convolutional Point Networks use a continuous generalization of
+      convolutions to apply convolution kernels to arbitrarily
+      distributed point clouds.</p>
     </sec>
     <sec id="lidar-and-images">
       <title>LiDAR and images</title>
-      <p>Models to cite:</p>
-      <list list-type="bullet">
-        <list-item>
-          <p>AMF GD YOLOv8
-          (<xref alt="Zhong et al. 2024" rid="ref-amf_gd_yolov8" ref-type="bibr">Zhong
-          et al. 2024</xref>): main source of inspiration, combining RGB
-          and LiDAR in an image model</p>
-        </list-item>
-        <list-item>
-          <p>Benchmark of 8 methods using LiDAR
-          (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark" ref-type="bibr">Eysn
-          et al. 2015</xref>): no machine learning method, but one of
-          the methods uses multiple CHM layers, computed iteratively by
-          removing everything in the 0.5 m below the previous CHM</p>
-        </list-item>
-        <list-item>
-          <p>Individual tree crown delineation in high-resolution remote
-          sensing images based on U-Net
-          (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022" ref-type="bibr">Freudenberg,
-          Magdon, and Nölke 2022</xref>): multiple steps with two models
-          to predict masks, outlines and distance transform, and a final
-          step with the watershed algorithm</p>
-        </list-item>
-        <list-item>
-          <p>DeepForest: A Python package for RGB deep learning tree
-          crown delineation
-          (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest" ref-type="bibr">B.
-          G. Weinstein et al. 2020</xref>): uses only RGB data to detect
-          trees, but uses LiDAR to create millions of annotations of
-          moderate quality to pre-train the model, before using around
-          10,000 hand-annotations to finalize and specialize the
-          training on a certain area.</p>
-        </list-item>
-        <list-item>
-          <p>International Benchmarking of the Individual Tree Detection
-          Methods for Modeling 3-D Canopy Structure for Silviculture and
-          Forest Ecology Using Airborne Laser Scanning
-          (<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
-          et al. 2016</xref>): another benchmark using LiDAR. They also
-          try a method based on 3D voxels.</p>
-        </list-item>
-        <list-item>
-          <p>Deep Learning for LiDAR Point Cloud Classification in
-          Remote Sensing
-          (<xref alt="Diab, Kashef, and Shaker 2022" rid="ref-lidar_classification" ref-type="bibr">Diab,
-          Kashef, and Shaker 2022</xref>): overview of deep learning
-          methods to classify point clouds</p>
-        </list-item>
-        <list-item>
-          <p>Individual tree segmentation and tree species
-          classification in subtropical broadleaf forests using
-          UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB
-          data
-          (<xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst" ref-type="bibr">Qin
-          et al. 2022</xref>): use LiDAR, RGB and hyperspectral data,
-          watershed algorithm and random forests.</p>
-        </list-item>
-        <list-item>
-          <p>ACE R-CNN: An Attention Complementary and Edge
-          Detection-Based Instance Segmentation Algorithm for Individual
-          Tree Species Identification Using UAV RGB Images and LiDAR
-          Data
-          (<xref alt="Li et al. 2022" rid="ref-lidar_rgb_acnet" ref-type="bibr">Li
-          et al. 2022</xref>): use LiDAR and RGB data, Mask R-CNN model
-          with fusion, similar to AMF GD YOLOv8</p>
-        </list-item>
-      </list>
+      <p>Let’s now talk about the models of interest for this work,
+      which are machine learning pipelines using both LiDAR point cloud
+      data and RGB images.</p>
+      <p>The first pipeline
+      (<xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst" ref-type="bibr">Qin
+      et al. 2022</xref>) uses a watershed algorithm to extract crown
+      boundaries, before extracting individual tree features from the
+      LiDAR point cloud, hyperspectral and RGB images. These features
+      are then used by a random forest classifier to identify which
+      species the tree belongs to. This pipeline therefore makes the
+      most out of all data to identify species, but sticks to an
+      improved variant of the watershed for individual tree
+      segmentation, which only uses a CHM raster.</p>
+      <p>Other works focused on using only one model that is able to
+      take both the CHM and the RGB data as input and combine them to
+      make the most out of all the available data. Among other models,
+      there are for example ACE R-CNN
+      (<xref alt="Li et al. 2022" rid="ref-lidar_rgb_acnet" ref-type="bibr">Li
+      et al. 2022</xref>), an evolution of Mask region-based convolution
+      neural network (Mask R-CNN) and AMF GD YOLOv8
+      (<xref alt="Zhong et al. 2024" rid="ref-amf_gd_yolov8" ref-type="bibr">Zhong
+      et al. 2024</xref>), an evolution of YOLOv8. These two models have
+      proven to give much better results when using both the images and
+      the LiDAR data as a CHM thant when using only one of them.</p>
     </sec>
   </sec>
 </sec>
+<sec id="objectives-and-motivations">
+  <title>Objectives and motivations</title>
+  <sec id="multiple-layers-of-chm">
+    <title>Multiple layers of CHM</title>
+    <p>Benchmark of 8 methods using LiDAR
+    (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark" ref-type="bibr">Eysn
+    et al. 2015</xref>): one of the methods uses multiple CHM layers,
+    computed iteratively by removing everything in the 0.5 m below the
+    previous CHM</p>
+  </sec>
+  <sec id="hidden-trees">
+    <title>Hidden trees</title>
+    <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
+    et al. 2016</xref>) shows that in forests, you can have up to more
+    than 50% of the trees which crowns are completely or partially
+    covered by other trees.</p>
+  </sec>
+</sec>
 <sec id="sec-dataset">
-  <title>Dataset</title>
+  <title>Dataset creation</title>
   <p>The highest resolution of the CHM which keeps a high enough quality
   depends entirely on the density of the point cloud. Also, depending on
   the season when the point cloud is acquired, using a CHM might imply
@@ -575,8 +580,8 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
   <sec id="definition-and-content">
     <title>Definition and content</title>
   </sec>
-  <sec id="challenges">
-    <title>Challenges</title>
+  <sec id="challenges-and-solutions">
+    <title>Challenges and solutions</title>
     <list list-type="bullet">
       <list-item>
         <p>Shift between RGB images, CIR images and LiDAR point clouds
@@ -599,19 +604,61 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     <title>Augmentation methods</title>
   </sec>
 </sec>
-<sec id="model">
-  <title>Model</title>
+<sec id="deep-learning-model">
+  <title>Deep learning model</title>
+  <sec id="architecture">
+    <title>Architecture</title>
+  </sec>
+  <sec id="training-loop">
+    <title>Training loop</title>
+  </sec>
 </sec>
 <sec id="results">
   <title>Results</title>
-  <p>sortedAP:
-  (<xref alt="Chen et al. 2023" rid="ref-sortedAP" ref-type="bibr">Chen
-  et al. 2023</xref>).</p>
-  <fig id="fig-training-parameters">
-    <caption><p>Figure 1: Results with different training
-    parameters</p></caption>
-    <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
-  </fig>
+  <sec id="evaluation-method">
+    <title>Evaluation method</title>
+    <p>sortedAP:
+    (<xref alt="Chen et al. 2023" rid="ref-sortedAP" ref-type="bibr">Chen
+    et al. 2023</xref>)</p>
+  </sec>
+  <sec id="training-parameters">
+    <title>Training parameters</title>
+    <fig id="fig-training-parameters">
+      <caption><p>Figure 1: Results with different training
+      parameters</p></caption>
+      <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
+    </fig>
+  </sec>
+  <sec id="data-used">
+    <title>Data used</title>
+  </sec>
+  <sec id="chm-layers">
+    <title>CHM layers</title>
+  </sec>
+  <sec id="hard-trees">
+    <title>Hard trees</title>
+  </sec>
+</sec>
+<sec id="discussion">
+  <title>Discussion</title>
+  <sec id="dataset">
+    <title>Dataset</title>
+    <list list-type="bullet">
+      <list-item>
+        <p>DeepForest: A Python package for RGB deep learning tree crown
+        delineation
+        (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest" ref-type="bibr">B.
+        G. Weinstein et al. 2020</xref>): uses only RGB data to detect
+        trees, but uses LiDAR to create millions of annotations of
+        moderate quality to pre-train the model, before using around
+        10,000 hand-annotations to finalize and specialize the training
+        on a certain area.</p>
+      </list-item>
+    </list>
+  </sec>
+  <sec id="combination-of-data-types">
+    <title>Combination of data types</title>
+  </sec>
 </sec>
 <sec id="conclusion">
   <title>Conclusion</title>
@@ -918,7 +965,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <uri>https://www.beeldmateriaal.nl/luchtfotos</uri>
     </element-citation>
   </ref>
-  <ref id="ref-IGN_LiDARHD">
+  <ref id="ref-IGN_LiDAR_HD">
     <element-citation>
       <person-group person-group-type="author">
         <string-name>Institut national de l’information géographique et forestière (IGN)</string-name>
@@ -928,7 +975,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <uri>https://geoservices.ign.fr/lidarhd</uri>
     </element-citation>
   </ref>
-  <ref id="ref-IGN_BDORTHO">
+  <ref id="ref-IGN_BD_ORTHO">
     <element-citation>
       <person-group person-group-type="author">
         <string-name>Institut national de l’information géographique et forestière (IGN)</string-name>
@@ -1058,7 +1105,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <lpage>1747</lpage>
     </element-citation>
   </ref>
-  <ref id="ref-Freudenberg2022">
+  <ref id="ref-rgb-dl-watershed">
     <element-citation publication-type="article-journal">
       <person-group person-group-type="author">
         <name><surname>Freudenberg</surname><given-names>Maximilian</given-names></name>
@@ -1213,7 +1260,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <volume>280</volume>
       <issn>0034-4257</issn>
       <uri>https://www.sciencedirect.com/science/article/pii/S0034425722002577</uri>
-      <pub-id pub-id-type="doi">https://doi.org/10.1016/j.rse.2022.113143</pub-id>
+      <pub-id pub-id-type="doi">10.1016/j.rse.2022.113143</pub-id>
       <fpage>113143</fpage>
       <lpage></lpage>
     </element-citation>
@@ -1274,10 +1321,74 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <lpage>434</lpage>
     </element-citation>
   </ref>
+  <ref id="ref-rgb_analytical">
+    <element-citation publication-type="chapter">
+      <person-group person-group-type="author">
+        <name><surname>Gomes</surname><given-names>Marilia Ferreira</given-names></name>
+        <name><surname>Maillard</surname><given-names>Philippe</given-names></name>
+      </person-group>
+      <article-title>Detection of tree crowns in very high spatial resolution images</article-title>
+      <source>Environmental applications of remote sensing</source>
+      <person-group person-group-type="editor">
+        <name><surname>Marghany</surname><given-names>Maged</given-names></name>
+      </person-group>
+      <publisher-name>IntechOpen</publisher-name>
+      <publisher-loc>Rijeka</publisher-loc>
+      <year iso-8601-date="2016">2016</year>
+      <uri>https://doi.org/10.5772/62122</uri>
+      <pub-id pub-id-type="doi">10.5772/62122</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-local-maximum">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Wulder</surname><given-names>Mike</given-names></name>
+        <name><surname>Niemann</surname><given-names>K.Olaf</given-names></name>
+        <name><surname>Goodenough</surname><given-names>David G.</given-names></name>
+      </person-group>
+      <article-title>Local maximum filtering for the extraction of tree locations and basal area from high spatial resolution imagery</article-title>
+      <source>Remote Sensing of Environment</source>
+      <year iso-8601-date="2000">2000</year>
+      <volume>73</volume>
+      <issue>1</issue>
+      <issn>0034-4257</issn>
+      <uri>https://www.sciencedirect.com/science/article/pii/S0034425700001012</uri>
+      <pub-id pub-id-type="doi">10.1016/S0034-4257(00)00101-2</pub-id>
+      <fpage>103</fpage>
+      <lpage>114</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-valley-following">
+    <element-citation publication-type="paper-conference">
+      <person-group person-group-type="author">
+        <name><surname>Gougeon</surname><given-names>François A</given-names></name>
+        <etal/>
+      </person-group>
+      <article-title>Automatic individual tree crown delineation using a valley-following algorithm and rule-based system</article-title>
+      <source>Proc. International forum on automated interpretation of high spatial resolution digital imagery for forestry, victoria, british columbia, canada</source>
+      <publisher-name>Citeseer</publisher-name>
+      <year iso-8601-date="1998">1998</year>
+      <uri>https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf</uri>
+      <fpage>11</fpage>
+      <lpage>23</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-template-matching">
+    <element-citation publication-type="thesis">
+      <person-group person-group-type="author">
+        <name><surname>Pollock</surname><given-names>Richard James</given-names></name>
+      </person-group>
+      <article-title>The automatic recognition of individual trees in aerial images of forests based on a synthetic tree crown image model</article-title>
+      <publisher-name>The University of British Columbia (Canada)</publisher-name>
+      <year iso-8601-date="1996">1996</year>
+      <isbn>0612148157</isbn>
+      <uri>https://dx.doi.org/10.14288/1.0051597</uri>
+    </element-citation>
+  </ref>
 </ref-list>
 </back>
 
-<sub-article article-type="notebook" id="nb-2-nb-article">
+<sub-article article-type="notebook" id="nb-4-nb-article">
 <front-stub>
 <title-group>
 <article-title>Tree object detection using airborne images and LiDAR
@@ -1300,6 +1411,8 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
 </contrib>
 </contrib-group>
 <aff id="aff-1-nb-article">
+<institution content-type="dept">Département
+d’informatique</institution>
 <institution-wrap>
 <institution>École polytechnique</institution>
 </institution-wrap>
@@ -1338,19 +1451,17 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
   <title>Introduction</title>
   <p>The goal of the internship was to study the possibility of
   combining LiDAR point clouds and aerial images in a deep learning
-  model to perform instance segmentation of trees. The two types of data
-  are indeed complementary, as point clouds capture the shape of the
-  worlds, while images capture the colors. However, combining them into
-  a format that allows a model to handle them simultaneously is not an
-  easy task because they inherently have a very different spatial
-  repartition and encoding.</p>
-  <p>The second major topic of the internship was to acquire a proper
-  dataset matching all the criteria required for the project. Most of
-  the datasets containing tree annotations only used either RGB images
-  or LiDAR point clouds, but not both. Therefore, I had to create such a
-  dataset by myself, using the openly available images and point clouds
-  in the Netherlands, by annotating trees by hand to properly train and
-  evaluate the methods.</p>
+  model to identify individual trees. The two types of data are indeed
+  complementary, as point clouds capture geometric shapes, while images
+  capture colors. However, combining them into a format that allows a
+  model to handle them simultaneously is not a straightforward task
+  because they inherently have a very different spatial repartition and
+  encoding.</p>
+  <p>In this work, I focused on one specific deep learning model, and
+  tried to improve it by using more information from the LiDAR point
+  cloud. To do this, I had to create my own tree annotations dataset,
+  with which I also tried to study the ability of this new model to
+  detect trees that are covered by other trees.</p>
 </sec>
 <sec id="state-of-the-art-nb-article">
   <title>State-of-the-art</title>
@@ -1368,16 +1479,16 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     (<xref alt="Arevalo-Ramirez et al. 2024" rid="ref-urban-trees-nb-article" ref-type="bibr">Arevalo-Ramirez
     et al. 2024</xref>).</p>
     <p>This leads to the second variation, which is related to the kind
-    of tree area that we are interested in. There are mainly three types
-    of area, which among other things, influence the organization of the
-    trees in space: urban areas, tree plantations and forests. This is
-    important, because the tasks and the difficulty depends on the type
-    of area. Tree plantations are much easier to work with than
-    completely wild forests, while urban areas contain various levels of
-    difficulty ranging from alignment trees to private and disorganized
-    gardens and parks. For this project, we mainly focused on urban
-    areas, but everything should still be applicable to tree plantations
-    and forests.</p>
+    of environment that we are interested in. There are mainly three
+    types of environments, which among other things, influence the
+    organization of the trees in space: urban areas, tree plantations
+    and forests. This is important, because the tasks and the difficulty
+    depends on the type of environment. Tree plantations are much easier
+    to work with than completely wild forests, while urban areas contain
+    various levels of difficulty ranging from alignment trees to private
+    and disorganized gardens and parks. For this project, we mainly
+    focused on urban areas, but everything should still be applicable to
+    tree plantations and forests.</p>
     <p>Then, the four fundamental computer vision tasks have their
     application when dealing with trees
     (<xref alt="Safonova et al. 2021" rid="ref-olive-tree-nb-article" ref-type="bibr">Safonova
@@ -1406,26 +1517,19 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     information about the trees. The most common information are the
     species and the height, but some models also try to predict the
     health of the trees, or their carbon stock.</p>
-    <p>In this paper, the task that is tackled is the detection of
-    trees, with a special classification between several labels related
-    to the discrepancies between the different kinds of data. The kind
-    of model that is used would also have allowed to focus on some more
-    advanced tasks, by replacing detection with instance segmentation
-    and asking the model to also predict the species. But due to the
-    difficulties regarding the dataset, a simpler task with a simpler
-    dataset was used, without compromising the ability to experiment
-    with different possible improvements of the model. The difficulties
-    and the experiments are developed below.</p>
+    <p>In this work, the task that is tackled is the detection of trees,
+    with a special classification between several labels related to the
+    discrepancies between the different kinds of data. The kind of model
+    that is used would also have allowed to focus on some more advanced
+    tasks, by replacing detection with instance segmentation and asking
+    the model to also predict the species. But due to the difficulties
+    regarding the dataset, a simpler task with a simpler dataset was
+    used, without compromising the ability to experiment with different
+    possible improvements of the model. The difficulties and the
+    experiments are developed below.</p>
   </sec>
   <sec id="datasets-nb-article">
     <title>Datasets</title>
-    <sec id="motivations-nb-article">
-      <title>Motivations</title>
-      <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
-      et al. 2016</xref>) shows that in forests, you can have up to more
-      than 50% of the trees which crowns are completely or partially
-      covered by other trees.</p>
-    </sec>
     <sec id="requirements-nb-article">
       <title>Requirements</title>
       <p>Before presenting the different promising datasets and the
@@ -1570,7 +1674,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <p>After rejecting all the available datasets I had found, the
       only solution I had left was to create my own dataset. I won’t
       dive too much in this process that I will explain in
-      <xref alt="Section 2" rid="sec-dataset-nb-article">Section 2</xref>. I just
+      <xref alt="Section 3" rid="sec-dataset-nb-article">Section 3</xref>. I just
       want to mention all the publicly available datasets that I used or
       could have used to create this custom dataset.</p>
       <p>For practical reasons, the two countries where I mostly
@@ -1590,7 +1694,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       <p>These three types of data are available in similar ways in both
       countries, although the Netherlands have a small edge over France.
       RGB images are really easy to find in France with the BD ORTHO
-      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BDORTHO-nb-article" ref-type="bibr">Institut
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2021" rid="ref-IGN_BD_ORTHO-nb-article" ref-type="bibr">Institut
       national de l’information géographique et forestière (IGN)
       2021</xref>) and in the Netherlands with the Luchtfotos
       (<xref alt="Beeldmateriaal Nederland 2024" rid="ref-Luchtfotos-nb-article" ref-type="bibr">Beeldmateriaal
@@ -1605,7 +1709,7 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       Hoogtebestand Nederland 2020</xref>), and are working on the fifth
       version. In France, data acquisition for the first LiDAR point
       cloud covering the whole country started a few years ago
-      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDARHD-nb-article" ref-type="bibr">Institut
+      (<xref alt="Institut national de l’information géographique et forestière (IGN) 2020" rid="ref-IGN_LiDAR_HD-nb-article" ref-type="bibr">Institut
       national de l’information géographique et forestière (IGN)
       2020</xref>). It is not yet finished, even though data is already
       available for half of the country. The other advantage of the data
@@ -1682,43 +1786,52 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       et al. 2022</xref>).</p>
     </sec>
   </sec>
-  <sec id="models-and-methods-nb-article">
-    <title>Models and methods</title>
-    <sec id="classical-methods-nb-article">
-      <title>Classical methods</title>
-      <p>Besides machine and deep learning methods that are mentioned in
-      the next sections, there exist several algorithmic methods that
-      use the special shape of the trees to detect them individually.
-      The most used is called the watershed algorithm, and even though
-      it has many variants, its base principle is simple
+  <sec id="algorithms-and-models-nb-article">
+    <title>Algorithms and models</title>
+    <p>In this section, the different algorithms and methods are grouped
+    according to the type of data they use as input.</p>
+    <sec id="images-only-nb-article">
+      <title>Images only</title>
+      <p>Then, there are methods that perform tree detection using only
+      visible or hyperspectral images or both. Several different
+      algorithms have been developed to analytically delineate tree
+      crowns from RGB images, by using the particular shape of the trees
+      and its effect on images
+      (<xref alt="Gomes and Maillard 2016" rid="ref-rgb_analytical-nb-article" ref-type="bibr">Gomes
+      and Maillard 2016</xref>). Without diving into the details, here
+      are a few of them. The watershed algorithm identifies trees to
+      inverted watersheds in the grey-scale image and tree crowns
+      frontiers are found by incrementally flooding the watersheds
       (<xref alt="Vincent and Soille 1991" rid="ref-watershed-nb-article" ref-type="bibr">Vincent
-      and Soille 1991</xref>). The idea of this algorithm is to find
-      individual trees in three steps:</p>
-      <list list-type="order">
-        <list-item>
-          <p>Identify the local treetops from a height map or from an
-          RGB image,</p>
-        </list-item>
-        <list-item>
-          <p>Inverse the image so that local maxima (treetops) become
-          local minima (watersheds),</p>
-        </list-item>
-        <list-item>
-          <p>Fill the watersheds with water until different watersheds
-          overflow and merge, marking their boundaries.</p>
-        </list-item>
-      </list>
-      <p>This algorithm works generally well, using the assumption that
-      the overall shape of each individual tree crown si similar to a
-      cone when seen from above. Due to its success and the different
-      changes that further improved its results, this algorithm is still
-      used today, even in complex pipelines using machine and deep
-      learning methods to extract features before applying the watershed
-      algorithm
-      (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022-nb-article" ref-type="bibr">Freudenberg,
-      Magdon, and Nölke 2022</xref>;
-      <xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst-nb-article" ref-type="bibr">Qin
-      et al. 2022</xref>).</p>
+      and Soille 1991</xref>). The local maxima filtering uses the
+      intensity of the pixels in the grey-scale image to identify the
+      brightest points locally and use them as treetops
+      (<xref alt="Wulder, Niemann, and Goodenough 2000" rid="ref-local-maximum-nb-article" ref-type="bibr">Wulder,
+      Niemann, and Goodenough 2000</xref>). Reversely, the
+      valley-following algorithm uses the darkest pixels which are
+      considered as the junctions between the trees since shaded areas
+      are the lower part of the tree crowns
+      (<xref alt="Gougeon et al. 1998" rid="ref-valley-following-nb-article" ref-type="bibr">Gougeon
+      et al. 1998</xref>). Another interesting algorithm is template
+      matching. This algorithm simulates the appearance of simple tree
+      templates with the light effects, and tries to identify similar
+      patterns in the grey-scale image
+      (<xref alt="Pollock 1996" rid="ref-template-matching-nb-article" ref-type="bibr">Pollock
+      1996</xref>). Combinations of these techniques and others have
+      also been proposed.</p>
+      <p>But with the recent developments of deep learning in image
+      analysis, deep learning models are increasingly used to detect
+      trees using RGB images. In some cases, deep learning is used to
+      extract features that can then be the input of one of the
+      algorithms described above. One example is the use of two neural
+      networks to predict masks, outlines and distance transforms which
+      can then be the input of a watershed algorithm
+      (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-rgb-dl-watershed-nb-article" ref-type="bibr">Freudenberg,
+      Magdon, and Nölke 2022</xref>). In other cases, a deep learning
+      model is responsible of directly detecting tree masks or bounding
+      boxes, often using CNNs, given the images
+      (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest-nb-article" ref-type="bibr">B.
+      G. Weinstein et al. 2020</xref>).</p>
     </sec>
     <sec id="lidar-only-nb-article">
       <title>LiDAR only</title>
@@ -1734,85 +1847,88 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
       algorithm, as it contains the height values that can be used to
       determine local maxima
       (<xref alt="Kwak et al. 2007" rid="ref-lidar_watershed-nb-article" ref-type="bibr">Kwak
-      et al. 2007</xref>).</p>
-    </sec>
-    <sec id="images-only-nb-article">
-      <title>Images only</title>
+      et al. 2007</xref>). A lot of different analytical methods and
+      variations of the simple CHM were proposed to perform individual
+      tree detection, but in the end, most of them still the concept of
+      local maxima
+      (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark-nb-article" ref-type="bibr">Eysn
+      et al. 2015</xref>;
+      <xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
+      et al. 2016</xref>). A CHM can also be used as the input of any
+      kind of convolutional neural network (CNN) because it is shaped
+      exactly like any image. This allows to use a lot of different
+      techniques usually applied to object detection in images.</p>
+      <p>Then, even though I finally used an approach similar to the
+      CHM, I want to mention other kinds of deep learning techniques
+      that exist and could potentially leverage all the information
+      contained in a point cloud. These techniques can be divided in two
+      categories: projection-based and point-based methods
+      (<xref alt="Diab, Kashef, and Shaker 2022" rid="ref-lidar_classification-nb-article" ref-type="bibr">Diab,
+      Kashef, and Shaker 2022</xref>). The main difference between the
+      two is that projection-based techniques are based on grids while
+      point-based methods take unstructured point clouds as input. Among
+      projection-based methods, the most basic method is 2D CNN, which
+      is how CHM can be processed. Then, multiview representation tries
+      to tackle the 3D aspect by projecting the point cloud in multiple
+      directions before merging them together. To really deal with 3D
+      data, volumetric grid representation consists in using 3D
+      occupancy grids, which are processed using 3D CNNs. Among
+      point-based methods, there are methods based on PointNet, which
+      are able to extract features and perform the classical computer
+      vision tasks by taking point clouds as input. Finally,
+      Convolutional Point Networks use a continuous generalization of
+      convolutions to apply convolution kernels to arbitrarily
+      distributed point clouds.</p>
     </sec>
     <sec id="lidar-and-images-nb-article">
       <title>LiDAR and images</title>
-      <p>Models to cite:</p>
-      <list list-type="bullet">
-        <list-item>
-          <p>AMF GD YOLOv8
-          (<xref alt="Zhong et al. 2024" rid="ref-amf_gd_yolov8-nb-article" ref-type="bibr">Zhong
-          et al. 2024</xref>): main source of inspiration, combining RGB
-          and LiDAR in an image model</p>
-        </list-item>
-        <list-item>
-          <p>Benchmark of 8 methods using LiDAR
-          (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark-nb-article" ref-type="bibr">Eysn
-          et al. 2015</xref>): no machine learning method, but one of
-          the methods uses multiple CHM layers, computed iteratively by
-          removing everything in the 0.5 m below the previous CHM</p>
-        </list-item>
-        <list-item>
-          <p>Individual tree crown delineation in high-resolution remote
-          sensing images based on U-Net
-          (<xref alt="Freudenberg, Magdon, and Nölke 2022" rid="ref-Freudenberg2022-nb-article" ref-type="bibr">Freudenberg,
-          Magdon, and Nölke 2022</xref>): multiple steps with two models
-          to predict masks, outlines and distance transform, and a final
-          step with the watershed algorithm</p>
-        </list-item>
-        <list-item>
-          <p>DeepForest: A Python package for RGB deep learning tree
-          crown delineation
-          (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest-nb-article" ref-type="bibr">B.
-          G. Weinstein et al. 2020</xref>): uses only RGB data to detect
-          trees, but uses LiDAR to create millions of annotations of
-          moderate quality to pre-train the model, before using around
-          10,000 hand-annotations to finalize and specialize the
-          training on a certain area.</p>
-        </list-item>
-        <list-item>
-          <p>International Benchmarking of the Individual Tree Detection
-          Methods for Modeling 3-D Canopy Structure for Silviculture and
-          Forest Ecology Using Airborne Laser Scanning
-          (<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
-          et al. 2016</xref>): another benchmark using LiDAR. They also
-          try a method based on 3D voxels.</p>
-        </list-item>
-        <list-item>
-          <p>Deep Learning for LiDAR Point Cloud Classification in
-          Remote Sensing
-          (<xref alt="Diab, Kashef, and Shaker 2022" rid="ref-lidar_classification-nb-article" ref-type="bibr">Diab,
-          Kashef, and Shaker 2022</xref>): overview of deep learning
-          methods to classify point clouds</p>
-        </list-item>
-        <list-item>
-          <p>Individual tree segmentation and tree species
-          classification in subtropical broadleaf forests using
-          UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB
-          data
-          (<xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst-nb-article" ref-type="bibr">Qin
-          et al. 2022</xref>): use LiDAR, RGB and hyperspectral data,
-          watershed algorithm and random forests.</p>
-        </list-item>
-        <list-item>
-          <p>ACE R-CNN: An Attention Complementary and Edge
-          Detection-Based Instance Segmentation Algorithm for Individual
-          Tree Species Identification Using UAV RGB Images and LiDAR
-          Data
-          (<xref alt="Li et al. 2022" rid="ref-lidar_rgb_acnet-nb-article" ref-type="bibr">Li
-          et al. 2022</xref>): use LiDAR and RGB data, Mask R-CNN model
-          with fusion, similar to AMF GD YOLOv8</p>
-        </list-item>
-      </list>
+      <p>Let’s now talk about the models of interest for this work,
+      which are machine learning pipelines using both LiDAR point cloud
+      data and RGB images.</p>
+      <p>The first pipeline
+      (<xref alt="Qin et al. 2022" rid="ref-lidar_rgb_wst-nb-article" ref-type="bibr">Qin
+      et al. 2022</xref>) uses a watershed algorithm to extract crown
+      boundaries, before extracting individual tree features from the
+      LiDAR point cloud, hyperspectral and RGB images. These features
+      are then used by a random forest classifier to identify which
+      species the tree belongs to. This pipeline therefore makes the
+      most out of all data to identify species, but sticks to an
+      improved variant of the watershed for individual tree
+      segmentation, which only uses a CHM raster.</p>
+      <p>Other works focused on using only one model that is able to
+      take both the CHM and the RGB data as input and combine them to
+      make the most out of all the available data. Among other models,
+      there are for example ACE R-CNN
+      (<xref alt="Li et al. 2022" rid="ref-lidar_rgb_acnet-nb-article" ref-type="bibr">Li
+      et al. 2022</xref>), an evolution of Mask region-based convolution
+      neural network (Mask R-CNN) and AMF GD YOLOv8
+      (<xref alt="Zhong et al. 2024" rid="ref-amf_gd_yolov8-nb-article" ref-type="bibr">Zhong
+      et al. 2024</xref>), an evolution of YOLOv8. These two models have
+      proven to give much better results when using both the images and
+      the LiDAR data as a CHM thant when using only one of them.</p>
     </sec>
   </sec>
 </sec>
+<sec id="objectives-and-motivations-nb-article">
+  <title>Objectives and motivations</title>
+  <sec id="multiple-layers-of-chm-nb-article">
+    <title>Multiple layers of CHM</title>
+    <p>Benchmark of 8 methods using LiDAR
+    (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark-nb-article" ref-type="bibr">Eysn
+    et al. 2015</xref>): one of the methods uses multiple CHM layers,
+    computed iteratively by removing everything in the 0.5 m below the
+    previous CHM</p>
+  </sec>
+  <sec id="hidden-trees-nb-article">
+    <title>Hidden trees</title>
+    <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
+    et al. 2016</xref>) shows that in forests, you can have up to more
+    than 50% of the trees which crowns are completely or partially
+    covered by other trees.</p>
+  </sec>
+</sec>
 <sec id="sec-dataset-nb-article">
-  <title>Dataset</title>
+  <title>Dataset creation</title>
   <p>The highest resolution of the CHM which keeps a high enough quality
   depends entirely on the density of the point cloud. Also, depending on
   the season when the point cloud is acquired, using a CHM might imply
@@ -1821,8 +1937,8 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
   <sec id="definition-and-content-nb-article">
     <title>Definition and content</title>
   </sec>
-  <sec id="challenges-nb-article">
-    <title>Challenges</title>
+  <sec id="challenges-and-solutions-nb-article">
+    <title>Challenges and solutions</title>
     <list list-type="bullet">
       <list-item>
         <p>Shift between RGB images, CIR images and LiDAR point clouds
@@ -1845,45 +1961,95 @@ draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-
     <title>Augmentation methods</title>
   </sec>
 </sec>
-<sec id="model-nb-article">
-  <title>Model</title>
+<sec id="deep-learning-model-nb-article">
+  <title>Deep learning model</title>
+  <sec id="architecture-nb-article">
+    <title>Architecture</title>
+  </sec>
+  <sec id="training-loop-nb-article">
+    <title>Training loop</title>
+  </sec>
 </sec>
 <sec id="results-nb-article">
   <title>Results</title>
-  <p>sortedAP:
-  (<xref alt="Chen et al. 2023" rid="ref-sortedAP-nb-article" ref-type="bibr">Chen
-  et al. 2023</xref>).</p>
-  <sec id="cell-fig-training-parameters-nb-article" specific-use="notebook-content">
-  <code language="python">import pandas as pd
+  <sec id="evaluation-method-nb-article">
+    <title>Evaluation method</title>
+    <p>sortedAP:
+    (<xref alt="Chen et al. 2023" rid="ref-sortedAP-nb-article" ref-type="bibr">Chen
+    et al. 2023</xref>)</p>
+  </sec>
+  <sec id="training-parameters-nb-article">
+    <title>Training parameters</title>
+    <sec id="cell-fig-training-parameters-nb-article" specific-use="notebook-content">
+    <code language="python">import pandas as pd
 import seaborn as sns
 
-df = pd.read_csv(&quot;data/training_params_experiment.csv&quot;)
+df = pd.read_csv(&quot;data/training_params_experiment_all.csv&quot;)
 df.sort_values(
     by=[&quot;proba_drop_chm&quot;, &quot;Data used for evaluation&quot;],
     inplace=True,
 )
+df[&quot;Proba drop&quot;] = df[&quot;proba_drop_chm&quot;]
+df.rename(columns = {
+    &quot;accumulate&quot;: &quot;Accum. count&quot;,
+    &quot;Data used for evaluation&quot;: &quot;Evaluation data&quot;,
+    &quot;lr&quot;: &quot;Learn. rate&quot;
+  },
+  inplace=True)
 sns.set_style(&quot;ticks&quot;, {&quot;axes.grid&quot;: True})
 sns.catplot(
     data=df,
     kind=&quot;swarm&quot;,
-    x=&quot;accumulate&quot;,
+    x=&quot;Accum. count&quot;,
     y=&quot;Best sortedAP&quot;,
-    hue=&quot;Data used for evaluation&quot;,
-    col=&quot;lr&quot;,
-    row=&quot;proba_drop_chm&quot;,
+    hue=&quot;Evaluation data&quot;,
+    col=&quot;Learn. rate&quot;,
+    row=&quot;Proba drop&quot;,
     margin_titles=True,
     height=2,
     aspect=1,
+    palette=&quot;colorblind&quot;
 )</code>
-  <boxed-text>
-    <fig id="fig-training-parameters-nb-article">
-      <caption><p>Figure 1: Results with different training
-      parameters</p></caption>
-      <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
-    </fig>
-  </boxed-text>
+    <boxed-text>
+      <fig id="fig-training-parameters-nb-article">
+        <caption><p>Figure 1: Results with different training
+        parameters</p></caption>
+        <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-8dccdc43-nb-article" specific-use="notebook-content">
   </sec>
-  <sec id="cell-43f2591f-nb-article" specific-use="notebook-content">
+  <sec id="data-used-nb-article">
+    <title>Data used</title>
+  </sec>
+  <sec id="chm-layers-nb-article">
+    <title>CHM layers</title>
+  </sec>
+  <sec id="hard-trees-nb-article">
+    <title>Hard trees</title>
+  </sec>
+</sec>
+<sec id="discussion-nb-article">
+  <title>Discussion</title>
+  <sec id="dataset-nb-article">
+    <title>Dataset</title>
+    <list list-type="bullet">
+      <list-item>
+        <p>DeepForest: A Python package for RGB deep learning tree crown
+        delineation
+        (<xref alt="B. G. Weinstein et al. 2020" rid="ref-DeepForest-nb-article" ref-type="bibr">B.
+        G. Weinstein et al. 2020</xref>): uses only RGB data to detect
+        trees, but uses LiDAR to create millions of annotations of
+        moderate quality to pre-train the model, before using around
+        10,000 hand-annotations to finalize and specialize the training
+        on a certain area.</p>
+      </list-item>
+    </list>
+  </sec>
+  <sec id="combination-of-data-types-nb-article">
+    <title>Combination of data types</title>
+  </sec>
 </sec>
 <sec id="conclusion-nb-article">
   <title>Conclusion</title>
@@ -2193,7 +2359,7 @@ sns.catplot(
       <uri>https://www.beeldmateriaal.nl/luchtfotos</uri>
     </element-citation>
   </ref>
-  <ref id="ref-IGN_LiDARHD-nb-article">
+  <ref id="ref-IGN_LiDAR_HD-nb-article">
     <element-citation>
       <person-group person-group-type="author">
         <string-name>Institut national de l’information géographique et forestière (IGN)</string-name>
@@ -2203,7 +2369,7 @@ sns.catplot(
       <uri>https://geoservices.ign.fr/lidarhd</uri>
     </element-citation>
   </ref>
-  <ref id="ref-IGN_BDORTHO-nb-article">
+  <ref id="ref-IGN_BD_ORTHO-nb-article">
     <element-citation>
       <person-group person-group-type="author">
         <string-name>Institut national de l’information géographique et forestière (IGN)</string-name>
@@ -2333,7 +2499,7 @@ sns.catplot(
       <lpage>1747</lpage>
     </element-citation>
   </ref>
-  <ref id="ref-Freudenberg2022-nb-article">
+  <ref id="ref-rgb-dl-watershed-nb-article">
     <element-citation publication-type="article-journal">
       <person-group person-group-type="author">
         <name><surname>Freudenberg</surname><given-names>Maximilian</given-names></name>
@@ -2488,7 +2654,7 @@ sns.catplot(
       <volume>280</volume>
       <issn>0034-4257</issn>
       <uri>https://www.sciencedirect.com/science/article/pii/S0034425722002577</uri>
-      <pub-id pub-id-type="doi">https://doi.org/10.1016/j.rse.2022.113143</pub-id>
+      <pub-id pub-id-type="doi">10.1016/j.rse.2022.113143</pub-id>
       <fpage>113143</fpage>
       <lpage></lpage>
     </element-citation>
@@ -2547,6 +2713,70 @@ sns.catplot(
       <pub-id pub-id-type="doi">10.1007/s10310-007-0041-9</pub-id>
       <fpage>425</fpage>
       <lpage>434</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-rgb_analytical-nb-article">
+    <element-citation publication-type="chapter">
+      <person-group person-group-type="author">
+        <name><surname>Gomes</surname><given-names>Marilia Ferreira</given-names></name>
+        <name><surname>Maillard</surname><given-names>Philippe</given-names></name>
+      </person-group>
+      <article-title>Detection of tree crowns in very high spatial resolution images</article-title>
+      <source>Environmental applications of remote sensing</source>
+      <person-group person-group-type="editor">
+        <name><surname>Marghany</surname><given-names>Maged</given-names></name>
+      </person-group>
+      <publisher-name>IntechOpen</publisher-name>
+      <publisher-loc>Rijeka</publisher-loc>
+      <year iso-8601-date="2016">2016</year>
+      <uri>https://doi.org/10.5772/62122</uri>
+      <pub-id pub-id-type="doi">10.5772/62122</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-local-maximum-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Wulder</surname><given-names>Mike</given-names></name>
+        <name><surname>Niemann</surname><given-names>K.Olaf</given-names></name>
+        <name><surname>Goodenough</surname><given-names>David G.</given-names></name>
+      </person-group>
+      <article-title>Local maximum filtering for the extraction of tree locations and basal area from high spatial resolution imagery</article-title>
+      <source>Remote Sensing of Environment</source>
+      <year iso-8601-date="2000">2000</year>
+      <volume>73</volume>
+      <issue>1</issue>
+      <issn>0034-4257</issn>
+      <uri>https://www.sciencedirect.com/science/article/pii/S0034425700001012</uri>
+      <pub-id pub-id-type="doi">10.1016/S0034-4257(00)00101-2</pub-id>
+      <fpage>103</fpage>
+      <lpage>114</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-valley-following-nb-article">
+    <element-citation publication-type="paper-conference">
+      <person-group person-group-type="author">
+        <name><surname>Gougeon</surname><given-names>François A</given-names></name>
+        <etal/>
+      </person-group>
+      <article-title>Automatic individual tree crown delineation using a valley-following algorithm and rule-based system</article-title>
+      <source>Proc. International forum on automated interpretation of high spatial resolution digital imagery for forestry, victoria, british columbia, canada</source>
+      <publisher-name>Citeseer</publisher-name>
+      <year iso-8601-date="1998">1998</year>
+      <uri>https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf</uri>
+      <fpage>11</fpage>
+      <lpage>23</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-template-matching-nb-article">
+    <element-citation publication-type="thesis">
+      <person-group person-group-type="author">
+        <name><surname>Pollock</surname><given-names>Richard James</given-names></name>
+      </person-group>
+      <article-title>The automatic recognition of individual trees in aerial images of forests based on a synthetic tree crown image model</article-title>
+      <publisher-name>The University of British Columbia (Canada)</publisher-name>
+      <year iso-8601-date="1996">1996</year>
+      <isbn>0612148157</isbn>
+      <uri>https://dx.doi.org/10.14288/1.0051597</uri>
     </element-citation>
   </ref>
 </ref-list>

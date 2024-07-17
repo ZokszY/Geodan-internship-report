@@ -160,7 +160,7 @@
 \title{Tree object detection using airborne images and LiDAR point
 clouds}
 \author{Alexandre Bry}
-\date{2024-07-16}
+\date{2024-07-17}
 
 \begin{document}
 \maketitle
@@ -180,20 +180,19 @@ This is the abstract. It can be on multiple lines and contain
 \addcontentsline{toc}{chapter}{Introduction}
 
 The goal of the internship was to study the possibility of combining
-LiDAR point clouds and aerial images in a deep learning model to perform
-instance segmentation of trees. The two types of data are indeed
-complementary, as point clouds capture the shape of the worlds, while
-images capture the colors. However, combining them into a format that
-allows a model to handle them simultaneously is not an easy task because
-they inherently have a very different spatial repartition and encoding.
+LiDAR point clouds and aerial images in a deep learning model to
+identify individual trees. The two types of data are indeed
+complementary, as point clouds capture geometric shapes, while images
+capture colors. However, combining them into a format that allows a
+model to handle them simultaneously is not a straightforward task
+because they inherently have a very different spatial repartition and
+encoding.
 
-The second major topic of the internship was to acquire a proper dataset
-matching all the criteria required for the project. Most of the datasets
-containing tree annotations only used either RGB images or LiDAR point
-clouds, but not both. Therefore, I had to create such a dataset by
-myself, using the openly available images and point clouds in the
-Netherlands, by annotating trees by hand to properly train and evaluate
-the methods.
+In this work, I focused on one specific deep learning model, and tried
+to improve it by using more information from the LiDAR point cloud. To
+do this, I had to create my own tree annotations dataset, with which I
+also tried to study the ability of this new model to detect trees that
+are covered by other trees.
 
 \chapter{State-of-the-art}\label{state-of-the-art}
 
@@ -210,16 +209,17 @@ methods using either ground data or aerial/satellite data. This is
 especially true when focusing on urban trees, since a lot of street view
 data is available \autocite{urban-trees}.
 
-This leads to the second variation, which is related to the kind of tree
-area that we are interested in. There are mainly three types of area,
-which among other things, influence the organization of the trees in
-space: urban areas, tree plantations and forests. This is important,
-because the tasks and the difficulty depends on the type of area. Tree
-plantations are much easier to work with than completely wild forests,
-while urban areas contain various levels of difficulty ranging from
-alignment trees to private and disorganized gardens and parks. For this
-project, we mainly focused on urban areas, but everything should still
-be applicable to tree plantations and forests.
+This leads to the second variation, which is related to the kind of
+environment that we are interested in. There are mainly three types of
+environments, which among other things, influence the organization of
+the trees in space: urban areas, tree plantations and forests. This is
+important, because the tasks and the difficulty depends on the type of
+environment. Tree plantations are much easier to work with than
+completely wild forests, while urban areas contain various levels of
+difficulty ranging from alignment trees to private and disorganized
+gardens and parks. For this project, we mainly focused on urban areas,
+but everything should still be applicable to tree plantations and
+forests.
 
 Then, the four fundamental computer vision tasks have their application
 when dealing with trees \autocite{olive-tree}:
@@ -247,8 +247,8 @@ about the trees. The most common information are the species and the
 height, but some models also try to predict the health of the trees, or
 their carbon stock.
 
-In this paper, the task that is tackled is the detection of trees, with
-a special classification between several labels related to the
+In this work, the task that is tackled is the detection of trees, with a
+special classification between several labels related to the
 discrepancies between the different kinds of data. The kind of model
 that is used would also have allowed to focus on some more advanced
 tasks, by replacing detection with instance segmentation and asking the
@@ -259,12 +259,6 @@ improvements of the model. The difficulties and the experiments are
 developed below.
 
 \section{Datasets}\label{datasets}
-
-\subsection{Motivations}\label{motivations}
-
-\autocite{lidar_benchmark_2} shows that in forests, you can have up to
-more than 50\% of the trees which crowns are completely or partially
-covered by other trees.
 
 \subsection{Requirements}\label{requirements}
 
@@ -414,7 +408,7 @@ different data types independently:
 These three types of data are available in similar ways in both
 countries, although the Netherlands have a small edge over France. RGB
 images are really easy to find in France with the BD ORTHO
-\autocite{IGN_BDORTHO} and in the Netherlands with the Luchtfotos
+\autocite{IGN_BD_ORTHO} and in the Netherlands with the Luchtfotos
 \autocite{Luchtfotos}, but the resolution is better in the Netherlands
 (8~cm vs 20~cm). Hyperspectral images are also available in both
 countries, although for those the resolution is only 25~cm in the
@@ -425,7 +419,7 @@ France, because they have already completed their forth version covering
 the whole country with AHN4 \autocite{AHN4}, and are working on the
 fifth version. In France, data acquisition for the first LiDAR point
 cloud covering the whole country started a few years ago
-\autocite{IGN_LiDARHD}. It is not yet finished, even though data is
+\autocite{IGN_LiDAR_HD}. It is not yet finished, even though data is
 already available for half of the country. The other advantage of the
 data from Netherlands regarding LiDAR point clouds is that all flights
 are performed during winter, which allows light beams to penetrate more
@@ -490,37 +484,41 @@ random but realistic artificial data similar to the dataset. This method
 has for example been successfully used to generate artificial tree
 height maps \autocite{gan_data_augment}.
 
-\section{Models and methods}\label{models-and-methods}
+\section{Algorithms and models}\label{algorithms-and-models}
 
-\subsection{Classical methods}\label{classical-methods}
+In this section, the different algorithms and methods are grouped
+according to the type of data they use as input.
 
-Besides machine and deep learning methods that are mentioned in the next
-sections, there exist several algorithmic methods that use the special
-shape of the trees to detect them individually. The most used is called
-the watershed algorithm, and even though it has many variants, its base
-principle is simple \autocite{watershed}. The idea of this algorithm is
-to find individual trees in three steps:
+\subsection{Images only}\label{images-only}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Identify the local treetops from a height map or from an RGB image,
-\item
-  Inverse the image so that local maxima (treetops) become local minima
-  (watersheds),
-\item
-  Fill the watersheds with water until different watersheds overflow and
-  merge, marking their boundaries.
-\end{enumerate}
+Then, there are methods that perform tree detection using only visible
+or hyperspectral images or both. Several different algorithms have been
+developed to analytically delineate tree crowns from RGB images, by
+using the particular shape of the trees and its effect on images
+\autocite{rgb_analytical}. Without diving into the details, here are a
+few of them. The watershed algorithm identifies trees to inverted
+watersheds in the grey-scale image and tree crowns frontiers are found
+by incrementally flooding the watersheds \autocite{watershed}. The local
+maxima filtering uses the intensity of the pixels in the grey-scale
+image to identify the brightest points locally and use them as treetops
+\autocite{local-maximum}. Reversely, the valley-following algorithm uses
+the darkest pixels which are considered as the junctions between the
+trees since shaded areas are the lower part of the tree crowns
+\autocite{valley-following}. Another interesting algorithm is template
+matching. This algorithm simulates the appearance of simple tree
+templates with the light effects, and tries to identify similar patterns
+in the grey-scale image \autocite{template-matching}. Combinations of
+these techniques and others have also been proposed.
 
-This algorithm works generally well, using the assumption that the
-overall shape of each individual tree crown si similar to a cone when
-seen from above. Due to its success and the different changes that
-further improved its results, this algorithm is still used today, even
-in complex pipelines using machine and deep learning methods to extract
-features before applying the watershed algorithm
-\autocite{Freudenberg2022,lidar_rgb_wst}.
+But with the recent developments of deep learning in image analysis,
+deep learning models are increasingly used to detect trees using RGB
+images. In some cases, deep learning is used to extract features that
+can then be the input of one of the algorithms described above. One
+example is the use of two neural networks to predict masks, outlines and
+distance transforms which can then be the input of a watershed algorithm
+\autocite{rgb-dl-watershed}. In other cases, a deep learning model is
+responsible of directly detecting tree masks or bounding boxes, often
+using CNNs, given the images \autocite{DeepForest}.
 
 \subsection{LiDAR only}\label{lidar-only}
 
@@ -535,58 +533,72 @@ CHM contains the height above ground of the highest point in the area
 corresponding to each pixel. This CHM can for example be used as the
 input raster for the watershed algorithm, as it contains the height
 values that can be used to determine local maxima
-\autocite{lidar_watershed}.
+\autocite{lidar_watershed}. A lot of different analytical methods and
+variations of the simple CHM were proposed to perform individual tree
+detection, but in the end, most of them still the concept of local
+maxima \autocite{lidar_benchmark,lidar_benchmark_2}. A CHM can also be
+used as the input of any kind of convolutional neural network (CNN)
+because it is shaped exactly like any image. This allows to use a lot of
+different techniques usually applied to object detection in images.
 
-\subsection{Images only}\label{images-only}
+Then, even though I finally used an approach similar to the CHM, I want
+to mention other kinds of deep learning techniques that exist and could
+potentially leverage all the information contained in a point cloud.
+These techniques can be divided in two categories: projection-based and
+point-based methods \autocite{lidar_classification}. The main difference
+between the two is that projection-based techniques are based on grids
+while point-based methods take unstructured point clouds as input. Among
+projection-based methods, the most basic method is 2D CNN, which is how
+CHM can be processed. Then, multiview representation tries to tackle the
+3D aspect by projecting the point cloud in multiple directions before
+merging them together. To really deal with 3D data, volumetric grid
+representation consists in using 3D occupancy grids, which are processed
+using 3D CNNs. Among point-based methods, there are methods based on
+PointNet, which are able to extract features and perform the classical
+computer vision tasks by taking point clouds as input. Finally,
+Convolutional Point Networks use a continuous generalization of
+convolutions to apply convolution kernels to arbitrarily distributed
+point clouds.
 
 \subsection{LiDAR and images}\label{lidar-and-images}
 
-Models to cite:
+Let's now talk about the models of interest for this work, which are
+machine learning pipelines using both LiDAR point cloud data and RGB
+images.
 
-\begin{itemize}
-\tightlist
-\item
-  AMF GD YOLOv8 \autocite{amf_gd_yolov8}: main source of inspiration,
-  combining RGB and LiDAR in an image model
-\item
-  Benchmark of 8 methods using LiDAR \autocite{lidar_benchmark}: no
-  machine learning method, but one of the methods uses multiple CHM
-  layers, computed iteratively by removing everything in the 0.5~m below
-  the previous CHM
-\item
-  Individual tree crown delineation in high-resolution remote sensing
-  images based on U-Net \autocite{Freudenberg2022}: multiple steps with
-  two models to predict masks, outlines and distance transform, and a
-  final step with the watershed algorithm
-\item
-  DeepForest: A Python package for RGB deep learning tree crown
-  delineation \autocite{DeepForest}: uses only RGB data to detect trees,
-  but uses LiDAR to create millions of annotations of moderate quality
-  to pre-train the model, before using around 10,000 hand-annotations to
-  finalize and specialize the training on a certain area.
-\item
-  International Benchmarking of the Individual Tree Detection Methods
-  for Modeling 3-D Canopy Structure for Silviculture and Forest Ecology
-  Using Airborne Laser Scanning \autocite{lidar_benchmark_2}: another
-  benchmark using LiDAR. They also try a method based on 3D voxels.
-\item
-  Deep Learning for LiDAR Point Cloud Classification in Remote Sensing
-  \autocite{lidar_classification}: overview of deep learning methods to
-  classify point clouds
-\item
-  Individual tree segmentation and tree species classification in
-  subtropical broadleaf forests using UAV-based LiDAR, hyperspectral,
-  and ultrahigh-resolution RGB data \autocite{lidar_rgb_wst}: use LiDAR,
-  RGB and hyperspectral data, watershed algorithm and random forests.
-\item
-  ACE R-CNN: An Attention Complementary and Edge Detection-Based
-  Instance Segmentation Algorithm for Individual Tree Species
-  Identification Using UAV RGB Images and LiDAR Data
-  \autocite{lidar_rgb_acnet}: use LiDAR and RGB data, Mask R-CNN model
-  with fusion, similar to AMF GD YOLOv8
-\end{itemize}
+The first pipeline \autocite{lidar_rgb_wst} uses a watershed algorithm
+to extract crown boundaries, before extracting individual tree features
+from the LiDAR point cloud, hyperspectral and RGB images. These features
+are then used by a random forest classifier to identify which species
+the tree belongs to. This pipeline therefore makes the most out of all
+data to identify species, but sticks to an improved variant of the
+watershed for individual tree segmentation, which only uses a CHM
+raster.
 
-\chapter{Dataset}\label{sec-dataset}
+Other works focused on using only one model that is able to take both
+the CHM and the RGB data as input and combine them to make the most out
+of all the available data. Among other models, there are for example ACE
+R-CNN \autocite{lidar_rgb_acnet}, an evolution of Mask region-based
+convolution neural network (Mask R-CNN) and AMF GD YOLOv8
+\autocite{amf_gd_yolov8}, an evolution of YOLOv8. These two models have
+proven to give much better results when using both the images and the
+LiDAR data as a CHM thant when using only one of them.
+
+\chapter{Objectives and motivations}\label{objectives-and-motivations}
+
+\section{Multiple layers of CHM}\label{multiple-layers-of-chm}
+
+Benchmark of 8 methods using LiDAR \autocite{lidar_benchmark}: one of
+the methods uses multiple CHM layers, computed iteratively by removing
+everything in the 0.5~m below the previous CHM
+
+\section{Hidden trees}\label{hidden-trees}
+
+\autocite{lidar_benchmark_2} shows that in forests, you can have up to
+more than 50\% of the trees which crowns are completely or partially
+covered by other trees.
+
+\chapter{Dataset creation}\label{sec-dataset}
 
 The highest resolution of the CHM which keeps a high enough quality
 depends entirely on the density of the point cloud. Also, depending on
@@ -596,7 +608,7 @@ cloud.
 
 \section{Definition and content}\label{definition-and-content}
 
-\section{Challenges}\label{challenges}
+\section{Challenges and solutions}\label{challenges-and-solutions}
 
 \begin{itemize}
 \tightlist
@@ -614,11 +626,19 @@ cloud.
 
 \section{Augmentation methods}\label{augmentation-methods}
 
-\chapter{Model}\label{model}
+\chapter{Deep learning model}\label{deep-learning-model}
+
+\section{Architecture}\label{architecture}
+
+\section{Training loop}\label{training-loop}
 
 \chapter{Results}\label{results}
 
-sortedAP: \autocite{sortedAP}.
+\section{Evaluation method}\label{evaluation-method}
+
+sortedAP: \autocite{sortedAP}
+
+\section{Training parameters}\label{training-parameters}
 
 \begin{figure*}[H]
 
@@ -636,10 +656,32 @@ parameters}
 \begin{figure*}
 
 \textsubscript{Source:
-\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+\href{https://ZokszY.github.io/Geodan-internship-report/index.qmd.html}{Article
 Notebook}}
 
 \end{figure*}%
+
+\section{Data used}\label{data-used}
+
+\section{CHM layers}\label{chm-layers}
+
+\section{Hard trees}\label{hard-trees}
+
+\chapter{Discussion}\label{discussion}
+
+\section{Dataset}\label{dataset}
+
+\begin{itemize}
+\tightlist
+\item
+  DeepForest: A Python package for RGB deep learning tree crown
+  delineation \autocite{DeepForest}: uses only RGB data to detect trees,
+  but uses LiDAR to create millions of annotations of moderate quality
+  to pre-train the model, before using around 10,000 hand-annotations to
+  finalize and specialize the training on a certain area.
+\end{itemize}
+
+\section{Combination of data types}\label{combination-of-data-types}
 
 \chapter*{Conclusion}\label{conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
@@ -647,7 +689,7 @@ Notebook}}
 Blablabla
 
 \textsubscript{Source:
-\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+\href{https://ZokszY.github.io/Geodan-internship-report/index.qmd.html}{Article
 Notebook}}
 
 

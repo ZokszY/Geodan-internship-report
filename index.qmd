@@ -6,7 +6,7 @@ author:
     email: alexandre.bry.21@polytechnique.org
     affiliation:
       - name: École polytechnique
-        deparment: Département d'informatique
+        department: Département d'informatique
         city: Palaiseau
         country: France
         url: https://portail.polytechnique.edu/informatique/fr/page-daccueil
@@ -31,9 +31,9 @@ execute:
 
 ## Introduction {.unnumbered}
 
-The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to perform instance segmentation of trees. The two types of data are indeed complementary, as point clouds capture the shape of the worlds, while images capture the colors. However, combining them into a format that allows a model to handle them simultaneously is not an easy task because they inherently have a very different spatial repartition and encoding.
+The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to identify individual trees. The two types of data are indeed complementary, as point clouds capture geometric shapes, while images capture colors. However, combining them into a format that allows a model to handle them simultaneously is not a straightforward task because they inherently have a very different spatial repartition and encoding.
 
-The second major topic of the internship was to acquire a proper dataset matching all the criteria required for the project. Most of the datasets containing tree annotations only used either RGB images or LiDAR point clouds, but not both. Therefore, I had to create such a dataset by myself, using the openly available images and point clouds in the Netherlands, by annotating trees by hand to properly train and evaluate the methods.
+In this work, I focused on one specific deep learning model, and tried to improve it by using more information from the LiDAR point cloud. To do this, I had to create my own tree annotations dataset, with which I also tried to study the ability of this new model to detect trees that are covered by other trees.
 
 ## State-of-the-art
 
@@ -43,7 +43,7 @@ Before talking about models and datasets, let's define properly the task that th
 
 The first main differentiation between tree recognition tasks comes from the acquisition of the data. There are some very different tasks and methods using either ground data or aerial/satellite data. This is especially true when focusing on urban trees, since a lot of street view data is available [@urban-trees].
 
-This leads to the second variation, which is related to the kind of tree area that we are interested in. There are mainly three types of area, which among other things, influence the organization of the trees in space: urban areas, tree plantations and forests. This is important, because the tasks and the difficulty depends on the type of area. Tree plantations are much easier to work with than completely wild forests, while urban areas contain various levels of difficulty ranging from alignment trees to private and disorganized gardens and parks. For this project, we mainly focused on urban areas, but everything should still be applicable to tree plantations and forests.
+This leads to the second variation, which is related to the kind of environment that we are interested in. There are mainly three types of environments, which among other things, influence the organization of the trees in space: urban areas, tree plantations and forests. This is important, because the tasks and the difficulty depends on the type of environment. Tree plantations are much easier to work with than completely wild forests, while urban areas contain various levels of difficulty ranging from alignment trees to private and disorganized gardens and parks. For this project, we mainly focused on urban areas, but everything should still be applicable to tree plantations and forests.
 
 Then, the four fundamental computer vision tasks have their application when dealing with trees [@olive-tree]:
 
@@ -54,13 +54,9 @@ Then, the four fundamental computer vision tasks have their application when dea
 
 These generic tasks can be extended by trying to get more information about the trees. The most common information are the species and the height, but some models also try to predict the health of the trees, or their carbon stock.
 
-In this paper, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used, without compromising the ability to experiment with different possible improvements of the model. The difficulties and the experiments are developed below.
+In this work, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used, without compromising the ability to experiment with different possible improvements of the model. The difficulties and the experiments are developed below.
 
 ### Datasets
-
-#### Motivations
-
-[@lidar_benchmark_2] shows that in forests, you can have up to more than 50% of the trees which crowns are completely or partially covered by other trees.
 
 #### Requirements
 
@@ -105,9 +101,9 @@ For practical reasons, the two countries where I mostly searched for available d
 - LiDAR point clouds
 - Tree annotations
 
-These three types of data are available in similar ways in both countries, although the Netherlands have a small edge over France. RGB images are really easy to find in France with the BD ORTHO [@IGN_BDORTHO] and in the Netherlands with the Luchtfotos [@Luchtfotos], but the resolution is better in the Netherlands (8 cm vs 20 cm). Hyperspectral images are also available in both countries, although for those the resolution is only 25 cm in the Netherlands.
+These three types of data are available in similar ways in both countries, although the Netherlands have a small edge over France. RGB images are really easy to find in France with the BD ORTHO [@IGN_BD_ORTHO] and in the Netherlands with the Luchtfotos [@Luchtfotos], but the resolution is better in the Netherlands (8 cm vs 20 cm). Hyperspectral images are also available in both countries, although for those the resolution is only 25 cm in the Netherlands.
 
-As for LiDAR point clouds, the Netherlands have a small edge over France, because they have already completed their forth version covering the whole country with AHN4 [@AHN4], and are working on the fifth version. In France, data acquisition for the first LiDAR point cloud covering the whole country started a few years ago [@IGN_LiDARHD]. It is not yet finished, even though data is already available for half of the country. The other advantage of the data from Netherlands regarding LiDAR point clouds is that all flights are performed during winter, which allows light beams to penetrate more deeply in trees and reach trunks and branches. This is not the case in France.
+As for LiDAR point clouds, the Netherlands have a small edge over France, because they have already completed their forth version covering the whole country with AHN4 [@AHN4], and are working on the fifth version. In France, data acquisition for the first LiDAR point cloud covering the whole country started a few years ago [@IGN_LiDAR_HD]. It is not yet finished, even though data is already available for half of the country. The other advantage of the data from Netherlands regarding LiDAR point clouds is that all flights are performed during winter, which allows light beams to penetrate more deeply in trees and reach trunks and branches. This is not the case in France.
 
 The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for Amsterdam [@amsterdam_trees] and Bordeaux [@bordeaux_trees]. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.
 
@@ -121,47 +117,51 @@ The most common way to do it is to randomly apply deterministic or random transf
 
 Another way to enlarge a dataset is to instead generate completely new input data sharing the same properties as the initial dataset. This can be done using Generative Adversarial Networks (GAN). These models usually have two parts, a generator and a discriminator, which are trained in parallel. The generator learns to produce realistic artificial data, while the discriminator learns to identify real data and artificial data produced by the generator. If the training is successful, we can then use the generator and random seeds to generate random but realistic artificial data similar to the dataset. This method has for example been successfully used to generate artificial tree height maps [@gan_data_augment]. 
 
-### Models and methods
+### Algorithms and models
 
-#### Classical methods
+In this section, the different algorithms and methods are grouped according to the type of data they use as input.
 
-Besides machine and deep learning methods that are mentioned in the next sections, there exist several algorithmic methods that use the special shape of the trees to detect them individually. The most used is called the watershed algorithm, and even though it has many variants, its base principle is simple [@watershed]. The idea of this algorithm is to find individual trees in three steps:
+#### Images only
 
-1. Identify the local treetops from a height map or from an RGB image,
-2. Inverse the image so that local maxima (treetops) become local minima (watersheds),
-3. Fill the watersheds with water until different watersheds overflow and merge, marking their boundaries.
+Then, there are methods that perform tree detection using only visible or hyperspectral images or both. Several different algorithms have been developed to analytically delineate tree crowns from RGB images, by using the particular shape of the trees and its effect on images [@rgb_analytical]. Without diving into the details, here are a few of them. The watershed algorithm identifies trees to inverted watersheds in the grey-scale image and tree crowns frontiers are found by incrementally flooding the watersheds [@watershed]. The local maxima filtering uses the intensity of the pixels in the grey-scale image to identify the brightest points locally and use them as treetops [@local-maximum]. Reversely, the valley-following algorithm uses the darkest pixels which are considered as the junctions between the trees since shaded areas are the lower part of the tree crowns [@valley-following]. Another interesting algorithm is template matching. This algorithm simulates the appearance of simple tree templates with the light effects, and tries to identify similar patterns in the grey-scale image [@template-matching]. Combinations of these techniques and others have also been proposed.
 
-This algorithm works generally well, using the assumption that the overall shape of each individual tree crown si similar to a cone when seen from above. Due to its success and the different changes that further improved its results, this algorithm is still used today, even in complex pipelines using machine and deep learning methods to extract features before applying the watershed algorithm [@Freudenberg2022; @lidar_rgb_wst].
+But with the recent developments of deep learning in image analysis, deep learning models are increasingly used to detect trees using RGB images. In some cases, deep learning is used to extract features that can then be the input of one of the algorithms described above. One example is the use of two neural networks to predict masks, outlines and distance transforms which can then be the input of a watershed algorithm [@rgb-dl-watershed]. In other cases, a deep learning model is responsible of directly detecting tree masks or bounding boxes, often using CNNs, given the images [@DeepForest].
 
 #### LiDAR only
 
 Some of the methods to identify individual trees use LiDAR data only. There are a lot of different ways to use and analyze point clouds, but the one that is mostly used for trees is based on height maps, or Canopy Height Models (CHM).
 
-A CHM is a raster computed as the subtraction of the Digital Terrain Model (DTM) to the Digital Surface Model (DSM). What it means is that a CHM contains the height above ground of the highest point in the area corresponding to each pixel. This CHM can for example be used as the input raster for the watershed algorithm, as it contains the height values that can be used to determine local maxima [@lidar_watershed].
+A CHM is a raster computed as the subtraction of the Digital Terrain Model (DTM) to the Digital Surface Model (DSM). What it means is that a CHM contains the height above ground of the highest point in the area corresponding to each pixel. This CHM can for example be used as the input raster for the watershed algorithm, as it contains the height values that can be used to determine local maxima [@lidar_watershed]. A lot of different analytical methods and variations of the simple CHM were proposed to perform individual tree detection, but in the end, most of them still the concept of local maxima [@lidar_benchmark; @lidar_benchmark_2]. A CHM can also be used as the input of any kind of convolutional neural network (CNN) because it is shaped exactly like any image. This allows to use a lot of different techniques usually applied to object detection in images.
 
-#### Images only
-
+Then, even though I finally used an approach similar to the CHM, I want to mention other kinds of deep learning techniques that exist and could potentially leverage all the information contained in a point cloud. These techniques can be divided in two categories: projection-based and point-based methods [@lidar_classification]. The main difference between the two is that projection-based techniques are based on grids while point-based methods take unstructured point clouds as input. Among projection-based methods, the most basic method is 2D CNN, which is how CHM can be processed. Then, multiview representation tries to tackle the 3D aspect by projecting the point cloud in multiple directions before merging them together. To really deal with 3D data, volumetric grid representation consists in using 3D occupancy grids, which are processed using 3D CNNs. Among point-based methods, there are methods based on PointNet, which are able to extract features and perform the classical computer vision tasks by taking point clouds as input. Finally, Convolutional Point Networks use a continuous generalization of convolutions to apply convolution kernels to arbitrarily distributed point clouds.
 
 #### LiDAR and images
 
-Models to cite:
+<!-- TO BE COMPLETED -->
 
-- AMF GD YOLOv8 [@amf_gd_yolov8]: main source of inspiration, combining RGB and LiDAR in an image model
-- Benchmark of 8 methods using LiDAR [@lidar_benchmark]: no machine learning method, but one of the methods uses multiple CHM layers, computed iteratively by removing everything in the 0.5 m below the previous CHM
-- Individual tree crown delineation in high-resolution remote sensing images based on U-Net [@Freudenberg2022]: multiple steps with two models to predict masks, outlines and distance transform, and a final step with the watershed algorithm
-- DeepForest: A Python package for RGB deep learning tree crown delineation [@DeepForest]: uses only RGB data to detect trees, but uses LiDAR to create millions of annotations of moderate quality to pre-train the model, before using around 10,000 hand-annotations to finalize and specialize the training on a certain area.
-- International Benchmarking of the Individual Tree Detection Methods for Modeling 3-D Canopy Structure for Silviculture and Forest Ecology Using Airborne Laser Scanning [@lidar_benchmark_2]: another benchmark using LiDAR. They also try a method based on 3D voxels.
-- Deep Learning for LiDAR Point Cloud Classification in Remote Sensing [@lidar_classification]: overview of deep learning methods to classify point clouds
-- Individual tree segmentation and tree species classification in subtropical broadleaf forests using UAV-based LiDAR, hyperspectral, and ultrahigh-resolution RGB data [@lidar_rgb_wst]: use LiDAR, RGB and hyperspectral data, watershed algorithm and random forests.
-- ACE R-CNN: An Attention Complementary and Edge Detection-Based Instance Segmentation Algorithm for Individual Tree Species Identification Using UAV RGB Images and LiDAR Data [@lidar_rgb_acnet]: use LiDAR and RGB data, Mask R-CNN model with fusion, similar to AMF GD YOLOv8
+Let's now talk about the models of interest for this work, which are machine learning pipelines using both LiDAR point cloud data and RGB images.
 
-## Dataset {#sec-dataset}
+The first pipeline [@lidar_rgb_wst] uses a watershed algorithm to extract crown boundaries, before extracting individual tree features from the LiDAR point cloud, hyperspectral and RGB images. These features are then used by a random forest classifier to identify which species the tree belongs to. This pipeline therefore makes the most out of all data to identify species, but sticks to an improved variant of the watershed for individual tree segmentation, which only uses a CHM raster.
+
+Other works focused on using only one model that is able to take both the CHM and the RGB data as input and combine them to make the most out of all the available data. Among other models, there are for example ACE R-CNN [@lidar_rgb_acnet], an evolution of Mask region-based convolution neural network (Mask R-CNN) and AMF GD YOLOv8 [@amf_gd_yolov8], an evolution of YOLOv8. These two models have proven to give much better results when using both the images and the LiDAR data as a CHM thant when using only one of them.
+
+## Objectives and motivations
+
+### Multiple layers of CHM
+
+Benchmark of 8 methods using LiDAR [@lidar_benchmark]:  one of the methods uses multiple CHM layers, computed iteratively by removing everything in the 0.5 m below the previous CHM
+
+### Hidden trees
+
+[@lidar_benchmark_2] shows that in forests, you can have up to more than 50% of the trees which crowns are completely or partially covered by other trees.
+
+## Dataset creation {#sec-dataset}
 
 The highest resolution of the CHM which keeps a high enough quality depends entirely on the density of the point cloud. Also, depending on the season when the point cloud is acquired, using a CHM might imply throwing away the majority of the information contained in the point cloud. 
 
 ### Definition and content
 
-### Challenges
+### Challenges and solutions
 
 - Shift between RGB images, CIR images and LiDAR point clouds due to images not being perfectly orthonormal
 - Variations of the trees over time, with new small trees being planted and old trees being cut off
@@ -169,13 +169,19 @@ The highest resolution of the CHM which keeps a high enough quality depends enti
 
 ### Augmentation methods
 
-## Model
+## Deep learning model
+
+### Architecture
+
+### Training loop
 
 ## Results
 
-sortedAP: [@sortedAP].
+### Evaluation method
 
+sortedAP: [@sortedAP]
 
+### Training parameters
 
 ```{python}
 #| label: fig-training-parameters
@@ -184,25 +190,47 @@ sortedAP: [@sortedAP].
 import pandas as pd
 import seaborn as sns
 
-df = pd.read_csv("data/training_params_experiment.csv")
+df = pd.read_csv("data/training_params_experiment_all.csv")
 df.sort_values(
     by=["proba_drop_chm", "Data used for evaluation"],
     inplace=True,
 )
+df["Proba drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate"
+  },
+  inplace=True)
 sns.set_style("ticks", {"axes.grid": True})
 sns.catplot(
     data=df,
     kind="swarm",
-    x="accumulate",
+    x="Accum. count",
     y="Best sortedAP",
-    hue="Data used for evaluation",
-    col="lr",
-    row="proba_drop_chm",
+    hue="Evaluation data",
+    col="Learn. rate",
+    row="Proba drop",
     margin_titles=True,
     height=2,
     aspect=1,
+    palette="colorblind"
 )
 ```
+
+### Data used
+
+### CHM layers
+
+### Hard trees
+
+## Discussion
+
+### Dataset
+
+- DeepForest: A Python package for RGB deep learning tree crown delineation [@DeepForest]: uses only RGB data to detect trees, but uses LiDAR to create millions of annotations of moderate quality to pre-train the model, before using around 10,000 hand-annotations to finalize and specialize the training on a certain area.
+
+### Combination of data types
 
 ## Conclusion {.unnumbered}
 
