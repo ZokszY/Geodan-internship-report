@@ -900,7 +900,7 @@ d’informatique</institution>
       <volume>28</volume>
       <issue>17</issue>
       <uri>https://onlinelibrary.wiley.com/doi/abs/10.1111/gcb.16302</uri>
-      <pub-id pub-id-type="doi">https://doi.org/10.1111/gcb.16302</pub-id>
+      <pub-id pub-id-type="doi">10.1111/gcb.16302</pub-id>
       <fpage>5254</fpage>
       <lpage>5268</lpage>
     </element-citation>
@@ -1118,7 +1118,6 @@ d’informatique</institution>
       <volume>34</volume>
       <issue>24</issue>
       <issn>1433-3058</issn>
-      <uri>https://doi.org/10.1007/s00521-022-07640-4</uri>
       <pub-id pub-id-type="doi">10.1007/s00521-022-07640-4</pub-id>
       <fpage>22197</fpage>
       <lpage>22207</lpage>
@@ -1155,7 +1154,6 @@ d’informatique</institution>
       <article-title>Data for the NeonTreeEvaluation benchmark (0.2.2)</article-title>
       <publisher-name>Zenodo</publisher-name>
       <year iso-8601-date="2022">2022</year>
-      <uri>https://doi.org/10.5281/zenodo.5914554</uri>
       <pub-id pub-id-type="doi">10.5281/zenodo.5914554</pub-id>
     </element-citation>
   </ref>
@@ -1315,7 +1313,6 @@ d’informatique</institution>
       <volume>12</volume>
       <issue>6</issue>
       <issn>1610-7403</issn>
-      <uri>https://doi.org/10.1007/s10310-007-0041-9</uri>
       <pub-id pub-id-type="doi">10.1007/s10310-007-0041-9</pub-id>
       <fpage>425</fpage>
       <lpage>434</lpage>
@@ -1335,7 +1332,6 @@ d’informatique</institution>
       <publisher-name>IntechOpen</publisher-name>
       <publisher-loc>Rijeka</publisher-loc>
       <year iso-8601-date="2016">2016</year>
-      <uri>https://doi.org/10.5772/62122</uri>
       <pub-id pub-id-type="doi">10.5772/62122</pub-id>
     </element-citation>
   </ref>
@@ -1388,7 +1384,7 @@ d’informatique</institution>
 </ref-list>
 </back>
 
-<sub-article article-type="notebook" id="nb-4-nb-article">
+<sub-article article-type="notebook" id="nb-2-nb-article">
 <front-stub>
 <title-group>
 <article-title>Tree object detection using airborne images and LiDAR
@@ -2294,7 +2290,7 @@ sns.catplot(
       <volume>28</volume>
       <issue>17</issue>
       <uri>https://onlinelibrary.wiley.com/doi/abs/10.1111/gcb.16302</uri>
-      <pub-id pub-id-type="doi">https://doi.org/10.1111/gcb.16302</pub-id>
+      <pub-id pub-id-type="doi">10.1111/gcb.16302</pub-id>
       <fpage>5254</fpage>
       <lpage>5268</lpage>
     </element-citation>
@@ -2512,7 +2508,6 @@ sns.catplot(
       <volume>34</volume>
       <issue>24</issue>
       <issn>1433-3058</issn>
-      <uri>https://doi.org/10.1007/s00521-022-07640-4</uri>
       <pub-id pub-id-type="doi">10.1007/s00521-022-07640-4</pub-id>
       <fpage>22197</fpage>
       <lpage>22207</lpage>
@@ -2549,7 +2544,6 @@ sns.catplot(
       <article-title>Data for the NeonTreeEvaluation benchmark (0.2.2)</article-title>
       <publisher-name>Zenodo</publisher-name>
       <year iso-8601-date="2022">2022</year>
-      <uri>https://doi.org/10.5281/zenodo.5914554</uri>
       <pub-id pub-id-type="doi">10.5281/zenodo.5914554</pub-id>
     </element-citation>
   </ref>
@@ -2709,7 +2703,6 @@ sns.catplot(
       <volume>12</volume>
       <issue>6</issue>
       <issn>1610-7403</issn>
-      <uri>https://doi.org/10.1007/s10310-007-0041-9</uri>
       <pub-id pub-id-type="doi">10.1007/s10310-007-0041-9</pub-id>
       <fpage>425</fpage>
       <lpage>434</lpage>
@@ -2729,7 +2722,6 @@ sns.catplot(
       <publisher-name>IntechOpen</publisher-name>
       <publisher-loc>Rijeka</publisher-loc>
       <year iso-8601-date="2016">2016</year>
-      <uri>https://doi.org/10.5772/62122</uri>
       <pub-id pub-id-type="doi">10.5772/62122</pub-id>
     </element-citation>
   </ref>
