@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Alexandre Bry">
-<meta name="dcterms.date" content="2024-07-17">
+<meta name="dcterms.date" content="2024-07-18">
 <meta name="keywords" content="tree detection, deep learning">
 
 <title>Tree object detection using airborne images and LiDAR point clouds</title>
@@ -73,10 +73,10 @@ It can be on multiple lines and contain **Markdown**.
 ">
 <meta name="citation_keywords" content="tree detection,deep learning">
 <meta name="citation_author" content="Alexandre Bry">
-<meta name="citation_publication_date" content="2024-07-17">
-<meta name="citation_cover_date" content="2024-07-17">
+<meta name="citation_publication_date" content="2024-07-18">
+<meta name="citation_cover_date" content="2024-07-18">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-07-17">
+<meta name="citation_online_date" content="2024-07-18">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=FoMo-bench: A multi-modal, multi-scale and multi-task forest monitoring benchmark for remote sensing foundation models;,citation_author=Nikolaos Ioannis Bountos;,citation_author=Arthur Ouaknine;,citation_author=David Rolnick;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://arxiv.org/abs/2312.10114;,citation_journal_title=arXiv preprint arXiv:2312.10114;">
 <meta name="citation_reference" content="citation_title=OpenForest: A data catalogue for machine learning in forest monitoring;,citation_author=Arthur Ouaknine;,citation_author=Teja Kattenborn;,citation_author=Etienne Laliberté;,citation_author=David Rolnick;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://arxiv.org/abs/2311.00277;">
@@ -154,7 +154,7 @@ It can be on multiple lines and contain **Markdown**.
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">July 17, 2024</p>
+              <p class="date">July 18, 2024</p>
             </div>
           </div>
           
@@ -188,40 +188,41 @@ It can be on multiple lines and contain **Markdown**.
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#state-of-the-art" id="toc-state-of-the-art" class="nav-link" data-scroll-target="#state-of-the-art">State-of-the-art</a>
+  <li><a href="#state-of-the-art" id="toc-state-of-the-art" class="nav-link" data-scroll-target="#state-of-the-art"><span class="header-section-number">1</span> State-of-the-art</a>
   <ul class="collapse">
-  <li><a href="#computer-vision-tasks-related-to-trees" id="toc-computer-vision-tasks-related-to-trees" class="nav-link" data-scroll-target="#computer-vision-tasks-related-to-trees">Computer vision tasks related to trees</a></li>
-  <li><a href="#datasets" id="toc-datasets" class="nav-link" data-scroll-target="#datasets">Datasets</a></li>
-  <li><a href="#algorithms-and-models" id="toc-algorithms-and-models" class="nav-link" data-scroll-target="#algorithms-and-models">Algorithms and models</a></li>
+  <li><a href="#computer-vision-tasks-related-to-trees" id="toc-computer-vision-tasks-related-to-trees" class="nav-link" data-scroll-target="#computer-vision-tasks-related-to-trees"><span class="header-section-number">1.1</span> Computer vision tasks related to trees</a></li>
+  <li><a href="#datasets" id="toc-datasets" class="nav-link" data-scroll-target="#datasets"><span class="header-section-number">1.2</span> Datasets</a></li>
+  <li><a href="#algorithms-and-models" id="toc-algorithms-and-models" class="nav-link" data-scroll-target="#algorithms-and-models"><span class="header-section-number">1.3</span> Algorithms and models</a></li>
   </ul></li>
-  <li><a href="#objectives-and-motivations" id="toc-objectives-and-motivations" class="nav-link" data-scroll-target="#objectives-and-motivations">Objectives and motivations</a>
+  <li><a href="#objectives-and-motivations" id="toc-objectives-and-motivations" class="nav-link" data-scroll-target="#objectives-and-motivations"><span class="header-section-number">2</span> Objectives and motivations</a>
   <ul class="collapse">
-  <li><a href="#multiple-layers-of-chm" id="toc-multiple-layers-of-chm" class="nav-link" data-scroll-target="#multiple-layers-of-chm">Multiple layers of CHM</a></li>
-  <li><a href="#hidden-trees" id="toc-hidden-trees" class="nav-link" data-scroll-target="#hidden-trees">Hidden trees</a></li>
+  <li><a href="#data-and-model" id="toc-data-and-model" class="nav-link" data-scroll-target="#data-and-model"><span class="header-section-number">2.1</span> Data and model</a></li>
+  <li><a href="#sec-obj-covered_trees" id="toc-sec-obj-covered_trees" class="nav-link" data-scroll-target="#sec-obj-covered_trees"><span class="header-section-number">2.2</span> Covered trees</a></li>
+  <li><a href="#multiple-layers-of-chm" id="toc-multiple-layers-of-chm" class="nav-link" data-scroll-target="#multiple-layers-of-chm"><span class="header-section-number">2.3</span> Multiple layers of CHM</a></li>
   </ul></li>
-  <li><a href="#sec-dataset" id="toc-sec-dataset" class="nav-link" data-scroll-target="#sec-dataset">Dataset creation</a>
+  <li><a href="#sec-dataset" id="toc-sec-dataset" class="nav-link" data-scroll-target="#sec-dataset"><span class="header-section-number">3</span> Dataset creation</a>
   <ul class="collapse">
-  <li><a href="#definition-and-content" id="toc-definition-and-content" class="nav-link" data-scroll-target="#definition-and-content">Definition and content</a></li>
-  <li><a href="#challenges-and-solutions" id="toc-challenges-and-solutions" class="nav-link" data-scroll-target="#challenges-and-solutions">Challenges and solutions</a></li>
-  <li><a href="#augmentation-methods" id="toc-augmentation-methods" class="nav-link" data-scroll-target="#augmentation-methods">Augmentation methods</a></li>
+  <li><a href="#definition-and-content" id="toc-definition-and-content" class="nav-link" data-scroll-target="#definition-and-content"><span class="header-section-number">3.1</span> Definition and content</a></li>
+  <li><a href="#sec-dataset-challenges" id="toc-sec-dataset-challenges" class="nav-link" data-scroll-target="#sec-dataset-challenges"><span class="header-section-number">3.2</span> Challenges and solutions</a></li>
+  <li><a href="#augmentation-methods" id="toc-augmentation-methods" class="nav-link" data-scroll-target="#augmentation-methods"><span class="header-section-number">3.3</span> Augmentation methods</a></li>
   </ul></li>
-  <li><a href="#deep-learning-model" id="toc-deep-learning-model" class="nav-link" data-scroll-target="#deep-learning-model">Deep learning model</a>
+  <li><a href="#deep-learning-model" id="toc-deep-learning-model" class="nav-link" data-scroll-target="#deep-learning-model"><span class="header-section-number">4</span> Deep learning model</a>
   <ul class="collapse">
-  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">Architecture</a></li>
-  <li><a href="#training-loop" id="toc-training-loop" class="nav-link" data-scroll-target="#training-loop">Training loop</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">4.1</span> Architecture</a></li>
+  <li><a href="#training-loop" id="toc-training-loop" class="nav-link" data-scroll-target="#training-loop"><span class="header-section-number">4.2</span> Training loop</a></li>
   </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a>
   <ul class="collapse">
-  <li><a href="#evaluation-method" id="toc-evaluation-method" class="nav-link" data-scroll-target="#evaluation-method">Evaluation method</a></li>
-  <li><a href="#training-parameters" id="toc-training-parameters" class="nav-link" data-scroll-target="#training-parameters">Training parameters</a></li>
-  <li><a href="#data-used" id="toc-data-used" class="nav-link" data-scroll-target="#data-used">Data used</a></li>
-  <li><a href="#chm-layers" id="toc-chm-layers" class="nav-link" data-scroll-target="#chm-layers">CHM layers</a></li>
-  <li><a href="#hard-trees" id="toc-hard-trees" class="nav-link" data-scroll-target="#hard-trees">Hard trees</a></li>
+  <li><a href="#evaluation-method" id="toc-evaluation-method" class="nav-link" data-scroll-target="#evaluation-method"><span class="header-section-number">5.1</span> Evaluation method</a></li>
+  <li><a href="#training-parameters" id="toc-training-parameters" class="nav-link" data-scroll-target="#training-parameters"><span class="header-section-number">5.2</span> Training parameters</a></li>
+  <li><a href="#data-used" id="toc-data-used" class="nav-link" data-scroll-target="#data-used"><span class="header-section-number">5.3</span> Data used</a></li>
+  <li><a href="#chm-layers" id="toc-chm-layers" class="nav-link" data-scroll-target="#chm-layers"><span class="header-section-number">5.4</span> CHM layers</a></li>
+  <li><a href="#hard-trees" id="toc-hard-trees" class="nav-link" data-scroll-target="#hard-trees"><span class="header-section-number">5.5</span> Hard trees</a></li>
   </ul></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">6</span> Discussion</a>
   <ul class="collapse">
-  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#combination-of-data-types" id="toc-combination-of-data-types" class="nav-link" data-scroll-target="#combination-of-data-types">Combination of data types</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">6.1</span> Dataset</a></li>
+  <li><a href="#combination-of-data-types" id="toc-combination-of-data-types" class="nav-link" data-scroll-target="#combination-of-data-types"><span class="header-section-number">6.2</span> Combination of data types</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
@@ -229,7 +230,7 @@ It can be on multiple lines and contain **Markdown**.
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
-<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
@@ -241,10 +242,10 @@ It can be on multiple lines and contain **Markdown**.
 <p>The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to identify individual trees. The two types of data are indeed complementary, as point clouds capture geometric shapes, while images capture colors. However, combining them into a format that allows a model to handle them simultaneously is not a straightforward task because they inherently have a very different spatial repartition and encoding.</p>
 <p>In this work, I focused on one specific deep learning model, and tried to improve it by using more information from the LiDAR point cloud. To do this, I had to create my own tree annotations dataset, with which I also tried to study the ability of this new model to detect trees that are covered by other trees.</p>
 </section>
-<section id="state-of-the-art" class="level2">
-<h2 class="anchored" data-anchor-id="state-of-the-art">State-of-the-art</h2>
-<section id="computer-vision-tasks-related-to-trees" class="level3">
-<h3 class="anchored" data-anchor-id="computer-vision-tasks-related-to-trees">Computer vision tasks related to trees</h3>
+<section id="state-of-the-art" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="state-of-the-art"><span class="header-section-number">1</span> State-of-the-art</h2>
+<section id="computer-vision-tasks-related-to-trees" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="computer-vision-tasks-related-to-trees"><span class="header-section-number">1.1</span> Computer vision tasks related to trees</h3>
 <p>Before talking about models and datasets, let’s define properly the task that this project focused on, in the midst of all the various computer vision tasks, and specifically those related to tree detection.</p>
 <p>The first main differentiation between tree recognition tasks comes from the acquisition of the data. There are some very different tasks and methods using either ground data or aerial/satellite data. This is especially true when focusing on urban trees, since a lot of street view data is available <span class="citation" data-cites="urban-trees">(<a href="#ref-urban-trees" role="doc-biblioref">Arevalo-Ramirez et al. 2024</a>)</span>.</p>
 <p>This leads to the second variation, which is related to the kind of environment that we are interested in. There are mainly three types of environments, which among other things, influence the organization of the trees in space: urban areas, tree plantations and forests. This is important, because the tasks and the difficulty depends on the type of environment. Tree plantations are much easier to work with than completely wild forests, while urban areas contain various levels of difficulty ranging from alignment trees to private and disorganized gardens and parks. For this project, we mainly focused on urban areas, but everything should still be applicable to tree plantations and forests.</p>
@@ -258,10 +259,10 @@ It can be on multiple lines and contain **Markdown**.
 <p>These generic tasks can be extended by trying to get more information about the trees. The most common information are the species and the height, but some models also try to predict the health of the trees, or their carbon stock.</p>
 <p>In this work, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used, without compromising the ability to experiment with different possible improvements of the model. The difficulties and the experiments are developed below.</p>
 </section>
-<section id="datasets" class="level3">
-<h3 class="anchored" data-anchor-id="datasets">Datasets</h3>
-<section id="requirements" class="level4">
-<h4 class="anchored" data-anchor-id="requirements">Requirements</h4>
+<section id="datasets" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="datasets"><span class="header-section-number">1.2</span> Datasets</h3>
+<section id="sec-sota-datasets-requirements" class="level4" data-number="1.2.1">
+<h4 data-number="1.2.1" class="anchored" data-anchor-id="sec-sota-datasets-requirements"><span class="header-section-number">1.2.1</span> Requirements</h4>
 <p>Before presenting the different promising datasets and the reasons why they were not fully usable for the project, let’s enumerate the different conditions and requirements for the tree instance segmentation task:</p>
 <ul>
 <li>Multiple types of data:
@@ -280,8 +281,8 @@ It can be on multiple lines and contain **Markdown**.
 <p>Here are the explanations for these requirements. As for the types of data, RGB images and point clouds are required to experiment on the ability of the model to combine the two very different kinds of information they hold. Having infrared data as well could be beneficial, but it was not necessary. Regarding tree annotations, it was necessary to have a way to spatially identify them individually, using crown contours or simply bounding boxes. Since the model outputs bounding boxes, any kind of other format could easily be transformed to bounding boxes. Finally, the resolution had to be high enough to identify individual trees and be able to really use the data. For the point clouds especially, the whole idea was to see if and how the topology of the trees could be learnt, using at least the trunks and even the biggest branches if possible. Therefore, even if they are not really comparable, this is the reason why the required resolution is more precise for the point clouds.</p>
 <p>Unfortunately, none of the datasets that I found matched all these criteria. Furthermore, I didn’t find any overlapping datasets that I could merge to create a dataset with all the required types of data. In the next parts, I will go through the different kinds of datasets that exist, the reasons why they did not really fit for the project and the ideas I got when searching for a way to use them.</p>
 </section>
-<section id="existing-tree-datasets" class="level4">
-<h4 class="anchored" data-anchor-id="existing-tree-datasets">Existing tree datasets</h4>
+<section id="existing-tree-datasets" class="level4" data-number="1.2.2">
+<h4 data-number="1.2.2" class="anchored" data-anchor-id="existing-tree-datasets"><span class="header-section-number">1.2.2</span> Existing tree datasets</h4>
 <p>As explained above, there were quite a lot of requirements to fulfill to have a complete dataset usable for the task. This means that almost all the available datasets were missing something, as they were mainly focusing on using one kind of data and trying to make the most out of it, instead of trying to use all the types of data together.</p>
 <p>The most comprehensive list of tree annotations datasets was published in OpenForest <span class="citation" data-cites="OpenForest">(<a href="#ref-OpenForest" role="doc-biblioref">Ouaknine et al. 2023</a>)</span>. FoMo-Bench <span class="citation" data-cites="FoMo-Bench">(<a href="#ref-FoMo-Bench" role="doc-biblioref">Bountos, Ouaknine, and Rolnick 2023</a>)</span> also lists several interesting datasets, even though most of them can also be found in OpenForest. Without enumerating all of them, there were multiple kinds of datasets that all have their own flaws regarding the requirements I was looking for.</p>
 <p>Firstly, there are the forest inventories. TALLO <span class="citation" data-cites="TALLO">(<a href="#ref-TALLO" role="doc-biblioref">Jucker et al. 2022</a>)</span> is probably the most interesting one in this category, because it contains a lot of spatial information about almost 500K trees, with their locations, their crown radii and their heights. Therefore, everything needed to localize trees is in the dataset. However, I didn’t manage to find RGB images or LiDAR point clouds of the areas where the trees are located, making it impossible to use these annotations to train tree detection.</p>
@@ -290,8 +291,8 @@ It can be on multiple lines and contain **Markdown**.
 <p>Finally, I also found two datasets that had RGB and LiDAR components. The first one is MDAS <span class="citation" data-cites="MDAS">(<a href="#ref-MDAS" role="doc-biblioref">Hu et al. 2023</a>)</span>. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There were however two major flaws. The obvious one was that this dataset was created with land semantic segmentation tasks in mind, so there was no tree annotations. The less obvious one was that a DSM is not a point cloud, even though it is some kind of 3D information and was often created using a LiDAR point cloud. As a consequence, I would have been very limited in my ability to use the point cloud.</p>
 <p>The only real dataset with RGB and LiDAR came from NEON <span class="citation" data-cites="NEONdata">(<a href="#ref-NEONdata" role="doc-biblioref">B. Weinstein, Marconi, and White 2022</a>)</span>. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about later. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.</p>
 </section>
-<section id="public-data" class="level4">
-<h4 class="anchored" data-anchor-id="public-data">Public data</h4>
+<section id="public-data" class="level4" data-number="1.2.3">
+<h4 data-number="1.2.3" class="anchored" data-anchor-id="public-data"><span class="header-section-number">1.2.3</span> Public data</h4>
 <p>After rejecting all the available datasets I had found, the only solution I had left was to create my own dataset. I won’t dive too much in this process that I will explain in <a href="#sec-dataset" class="quarto-xref">Section&nbsp;3</a>. I just want to mention all the publicly available datasets that I used or could have used to create this custom dataset.</p>
 <p>For practical reasons, the two countries where I mostly searched for available data are France and the Netherlands. I was looking for three different data types independently:</p>
 <ul>
@@ -304,88 +305,112 @@ It can be on multiple lines and contain **Markdown**.
 <p>The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for Amsterdam <span class="citation" data-cites="amsterdam_trees">(<a href="#ref-amsterdam_trees" role="doc-biblioref">Gemeente Amsterdam 2024</a>)</span> and Bordeaux <span class="citation" data-cites="bordeaux_trees">(<a href="#ref-bordeaux_trees" role="doc-biblioref">Bordeaux Métropole 2024</a>)</span>. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.</p>
 <p>The other tree annotation source that we could have used is Boomregister <span class="citation" data-cites="boomregister">(<a href="#ref-boomregister" role="doc-biblioref">Coöperatief Boomregister U.A. 2014</a>)</span>. This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9&nbsp;m heigh or have a crown diameter smaller than 4&nbsp;m. Therefore, even it is a very impressive piece of work, we thought that it could not be used as training data for a deep learning models due to its biases and imperfections.</p>
 </section>
-<section id="dataset-augmentation-techniques" class="level4">
-<h4 class="anchored" data-anchor-id="dataset-augmentation-techniques">Dataset augmentation techniques</h4>
+<section id="sec-sota-dataset-augment" class="level4" data-number="1.2.4">
+<h4 data-number="1.2.4" class="anchored" data-anchor-id="sec-sota-dataset-augment"><span class="header-section-number">1.2.4</span> Dataset augmentation techniques</h4>
 <p>When a dataset is too small to train a model, there are several ways of artificially enlarging it.</p>
 <p>The most common way to do it is to randomly apply deterministic or random transformations to the data, during the training process, to be able to generate several unique and different realistic data instances from one real data instance. There are a lot of different transformations that can be applied to images, divided into two categories: pixel-level and spatial-level <span class="citation" data-cites="albumentations">(<a href="#ref-albumentations" role="doc-biblioref">Buslaev et al. 2020</a>)</span>. Pixel-level transformations modify the value of individual pixels, by applying different filters, such as random noise, color shifts and more complex effects like fog and sun flare. Spatial-level transformations modify the spatial arrangement of the image, without changing the pixel values. In other words, these transformations move the pixels in the image. The transformations range from simple rotations and croppings to complex spatial distortions. In the end, all these transformations are simply producing one artificial image out of one real image.</p>
 <p>Another way to enlarge a dataset is to instead generate completely new input data sharing the same properties as the initial dataset. This can be done using Generative Adversarial Networks (GAN). These models usually have two parts, a generator and a discriminator, which are trained in parallel. The generator learns to produce realistic artificial data, while the discriminator learns to identify real data and artificial data produced by the generator. If the training is successful, we can then use the generator and random seeds to generate random but realistic artificial data similar to the dataset. This method has for example been successfully used to generate artificial tree height maps <span class="citation" data-cites="gan_data_augment">(<a href="#ref-gan_data_augment" role="doc-biblioref">Sun et al. 2022</a>)</span>.</p>
 </section>
 </section>
-<section id="algorithms-and-models" class="level3">
-<h3 class="anchored" data-anchor-id="algorithms-and-models">Algorithms and models</h3>
+<section id="algorithms-and-models" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="algorithms-and-models"><span class="header-section-number">1.3</span> Algorithms and models</h3>
 <p>In this section, the different algorithms and methods are grouped according to the type of data they use as input.</p>
-<section id="images-only" class="level4">
-<h4 class="anchored" data-anchor-id="images-only">Images only</h4>
+<section id="images-only" class="level4" data-number="1.3.1">
+<h4 data-number="1.3.1" class="anchored" data-anchor-id="images-only"><span class="header-section-number">1.3.1</span> Images only</h4>
 <p>Then, there are methods that perform tree detection using only visible or hyperspectral images or both. Several different algorithms have been developed to analytically delineate tree crowns from RGB images, by using the particular shape of the trees and its effect on images <span class="citation" data-cites="rgb_analytical">(<a href="#ref-rgb_analytical" role="doc-biblioref">Gomes and Maillard 2016</a>)</span>. Without diving into the details, here are a few of them. The watershed algorithm identifies trees to inverted watersheds in the grey-scale image and tree crowns frontiers are found by incrementally flooding the watersheds <span class="citation" data-cites="watershed">(<a href="#ref-watershed" role="doc-biblioref">Vincent and Soille 1991</a>)</span>. The local maxima filtering uses the intensity of the pixels in the grey-scale image to identify the brightest points locally and use them as treetops <span class="citation" data-cites="local-maximum">(<a href="#ref-local-maximum" role="doc-biblioref">Wulder, Niemann, and Goodenough 2000</a>)</span>. Reversely, the valley-following algorithm uses the darkest pixels which are considered as the junctions between the trees since shaded areas are the lower part of the tree crowns <span class="citation" data-cites="valley-following">(<a href="#ref-valley-following" role="doc-biblioref">Gougeon et al. 1998</a>)</span>. Another interesting algorithm is template matching. This algorithm simulates the appearance of simple tree templates with the light effects, and tries to identify similar patterns in the grey-scale image <span class="citation" data-cites="template-matching">(<a href="#ref-template-matching" role="doc-biblioref">Pollock 1996</a>)</span>. Combinations of these techniques and others have also been proposed.</p>
 <p>But with the recent developments of deep learning in image analysis, deep learning models are increasingly used to detect trees using RGB images. In some cases, deep learning is used to extract features that can then be the input of one of the algorithms described above. One example is the use of two neural networks to predict masks, outlines and distance transforms which can then be the input of a watershed algorithm <span class="citation" data-cites="rgb-dl-watershed">(<a href="#ref-rgb-dl-watershed" role="doc-biblioref">Freudenberg, Magdon, and Nölke 2022</a>)</span>. In other cases, a deep learning model is responsible of directly detecting tree masks or bounding boxes, often using CNNs, given the images <span class="citation" data-cites="DeepForest">(<a href="#ref-DeepForest" role="doc-biblioref">B. G. Weinstein et al. 2020</a>)</span>.</p>
 </section>
-<section id="lidar-only" class="level4">
-<h4 class="anchored" data-anchor-id="lidar-only">LiDAR only</h4>
+<section id="lidar-only" class="level4" data-number="1.3.2">
+<h4 data-number="1.3.2" class="anchored" data-anchor-id="lidar-only"><span class="header-section-number">1.3.2</span> LiDAR only</h4>
 <p>Some of the methods to identify individual trees use LiDAR data only. There are a lot of different ways to use and analyze point clouds, but the one that is mostly used for trees is based on height maps, or Canopy Height Models (CHM).</p>
 <p>A CHM is a raster computed as the subtraction of the Digital Terrain Model (DTM) to the Digital Surface Model (DSM). What it means is that a CHM contains the height above ground of the highest point in the area corresponding to each pixel. This CHM can for example be used as the input raster for the watershed algorithm, as it contains the height values that can be used to determine local maxima <span class="citation" data-cites="lidar_watershed">(<a href="#ref-lidar_watershed" role="doc-biblioref">Kwak et al. 2007</a>)</span>. A lot of different analytical methods and variations of the simple CHM were proposed to perform individual tree detection, but in the end, most of them still the concept of local maxima <span class="citation" data-cites="lidar_benchmark lidar_benchmark_2">(<a href="#ref-lidar_benchmark" role="doc-biblioref">Eysn et al. 2015</a>; <a href="#ref-lidar_benchmark_2" role="doc-biblioref">Wang et al. 2016</a>)</span>. A CHM can also be used as the input of any kind of convolutional neural network (CNN) because it is shaped exactly like any image. This allows to use a lot of different techniques usually applied to object detection in images.</p>
 <p>Then, even though I finally used an approach similar to the CHM, I want to mention other kinds of deep learning techniques that exist and could potentially leverage all the information contained in a point cloud. These techniques can be divided in two categories: projection-based and point-based methods <span class="citation" data-cites="lidar_classification">(<a href="#ref-lidar_classification" role="doc-biblioref">Diab, Kashef, and Shaker 2022</a>)</span>. The main difference between the two is that projection-based techniques are based on grids while point-based methods take unstructured point clouds as input. Among projection-based methods, the most basic method is 2D CNN, which is how CHM can be processed. Then, multiview representation tries to tackle the 3D aspect by projecting the point cloud in multiple directions before merging them together. To really deal with 3D data, volumetric grid representation consists in using 3D occupancy grids, which are processed using 3D CNNs. Among point-based methods, there are methods based on PointNet, which are able to extract features and perform the classical computer vision tasks by taking point clouds as input. Finally, Convolutional Point Networks use a continuous generalization of convolutions to apply convolution kernels to arbitrarily distributed point clouds.</p>
 </section>
-<section id="lidar-and-images" class="level4">
-<h4 class="anchored" data-anchor-id="lidar-and-images">LiDAR and images</h4>
-<!-- TO BE COMPLETED -->
+<section id="lidar-and-images" class="level4" data-number="1.3.3">
+<h4 data-number="1.3.3" class="anchored" data-anchor-id="lidar-and-images"><span class="header-section-number">1.3.3</span> LiDAR and images</h4>
+<!-- TODO: ADD OTHER MODELS -->
 <p>Let’s now talk about the models of interest for this work, which are machine learning pipelines using both LiDAR point cloud data and RGB images.</p>
 <p>The first pipeline <span class="citation" data-cites="lidar_rgb_wst">(<a href="#ref-lidar_rgb_wst" role="doc-biblioref">Qin et al. 2022</a>)</span> uses a watershed algorithm to extract crown boundaries, before extracting individual tree features from the LiDAR point cloud, hyperspectral and RGB images. These features are then used by a random forest classifier to identify which species the tree belongs to. This pipeline therefore makes the most out of all data to identify species, but sticks to an improved variant of the watershed for individual tree segmentation, which only uses a CHM raster.</p>
 <p>Other works focused on using only one model that is able to take both the CHM and the RGB data as input and combine them to make the most out of all the available data. Among other models, there are for example ACE R-CNN <span class="citation" data-cites="lidar_rgb_acnet">(<a href="#ref-lidar_rgb_acnet" role="doc-biblioref">Li et al. 2022</a>)</span>, an evolution of Mask region-based convolution neural network (Mask R-CNN) and AMF GD YOLOv8 <span class="citation" data-cites="amf_gd_yolov8">(<a href="#ref-amf_gd_yolov8" role="doc-biblioref">Zhong et al. 2024</a>)</span>, an evolution of YOLOv8. These two models have proven to give much better results when using both the images and the LiDAR data as a CHM thant when using only one of them.</p>
 </section>
 </section>
 </section>
-<section id="objectives-and-motivations" class="level2">
-<h2 class="anchored" data-anchor-id="objectives-and-motivations">Objectives and motivations</h2>
-<section id="multiple-layers-of-chm" class="level3">
-<h3 class="anchored" data-anchor-id="multiple-layers-of-chm">Multiple layers of CHM</h3>
-<p>Benchmark of 8 methods using LiDAR <span class="citation" data-cites="lidar_benchmark">(<a href="#ref-lidar_benchmark" role="doc-biblioref">Eysn et al. 2015</a>)</span>: one of the methods uses multiple CHM layers, computed iteratively by removing everything in the 0.5&nbsp;m below the previous CHM</p>
+<section id="objectives-and-motivations" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="objectives-and-motivations"><span class="header-section-number">2</span> Objectives and motivations</h2>
+<p>In this section, I will explain the objectives that I set for this internship and the motivations that led to them.</p>
+<section id="data-and-model" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="data-and-model"><span class="header-section-number">2.1</span> Data and model</h3>
+<p>The basis for this internship was to look at deep learning models to detect trees using LiDAR and aerial images. In fourth months, it would have been difficult to dive into the literature, think about a completely new approach and develop it. Therefore, I wanted to find an interesting and not too complicated deep learning model, and try a few changes that would hopefully improve the results.</p>
+<p>This idea was also reinforced by the decision to create my own dataset for two reasons. The first reason was the small number of openly available tree annotation datasets which contained both LiDAR and RGB data. I therefore thought that creating a new dataset and making it available could be a great contribution. The second reason was to have more control over the definition and the characteristics of the dataset, to be able to experiment on the detection of specific trees.</p>
 </section>
-<section id="hidden-trees" class="level3">
-<h3 class="anchored" data-anchor-id="hidden-trees">Hidden trees</h3>
-<p><span class="citation" data-cites="lidar_benchmark_2">(<a href="#ref-lidar_benchmark_2" role="doc-biblioref">Wang et al. 2016</a>)</span> shows that in forests, you can have up to more than 50% of the trees which crowns are completely or partially covered by other trees.</p>
+<section id="sec-obj-covered_trees" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="sec-obj-covered_trees"><span class="header-section-number">2.2</span> Covered trees</h3>
+<p>The main thing that I wanted to experiment on was the possibility to make a better use of the LiDAR point cloud to be able to detect covered trees. Covered trees are the trees which are located partially or completely under another tree’s crown. This makes them impossible to completely delineate when using only data that is visible from above. These trees are not meaningless or negligible, because as demonstrated in this paper <span class="citation" data-cites="lidar_benchmark_2">(<a href="#ref-lidar_benchmark_2" role="doc-biblioref">Wang et al. 2016</a>)</span>, they can represent up to 50% of the trees in a forest.</p>
+<p>However, doing this implied being able to process them on the whole pipeline. In practice, covered trees are never annotated in all the datasets that are created using only RGB images, because they are simply not visible. This means that creating my own dataset was the only solution to have a dataset containing really all trees including covered trees and be able to easily identify them.</p>
+</section>
+<section id="multiple-layers-of-chm" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="multiple-layers-of-chm"><span class="header-section-number">2.3</span> Multiple layers of CHM</h3>
+<p>Being able to find covered trees meant finding a way to find more information out of the LiDAR point cloud than what is contained by the CHM. In fact, the CHM only contains a very small part of the point cloud and doesn’t really benefit from the 3D shape that is contained in the point cloud. This is particularly true when the point cloud is acquired in a season where trees don’t have their leaves, because the LiDAR then goes deep into the tree more easily, and can find the trunk and many of the largest branches.</p>
+<p>Therefore, getting information below the tree crown surface was mandatory to find covered trees. But it could also be helpful for the model to find better separations between each tree, thanks to having access to the branches and the trunks. Even though I didn’t end up asking the model to also identify the species, this is another task that could have been improved a lot if the model could use the architecture of the branches.</p>
+<p>To do this, I wanted to stick with a simple solution that would integrate well with the initial model and wouldn’t require too many changes. The idea I implemented is therefore very simple. Instead of having only one CHM raster, I would have multiple layers, each focusing on a different height interval. There are many ways to do this, but due to a lack of time, I only really tried what seemed to me the easiest and most straightforward way to do it, which consists in removing all the points above a certain height threshold, and compute the CHM with the points that are left. When doing this for multiple height thresholds, we get an interesting view of what the point cloud looks like at multiple levels, which gives a lot more information about the organization of the point cloud. Another way to do this, which is used in the third method of this paper <span class="citation" data-cites="lidar_benchmark">(<a href="#ref-lidar_benchmark" role="doc-biblioref">Eysn et al. 2015</a>)</span>, would be instead to use the previous CHM by removing all the points that are in the interval between the CHM height and 0.5&nbsp;m below, before computing an additional layer. It could be interesting to see if this method works better than dropping the points at pre-determined heights.</p>
 </section>
 </section>
-<section id="sec-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="sec-dataset">Dataset creation</h2>
+<section id="sec-dataset" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-dataset"><span class="header-section-number">3</span> Dataset creation</h2>
 <p>The highest resolution of the CHM which keeps a high enough quality depends entirely on the density of the point cloud. Also, depending on the season when the point cloud is acquired, using a CHM might imply throwing away the majority of the information contained in the point cloud.</p>
-<section id="definition-and-content" class="level3">
-<h3 class="anchored" data-anchor-id="definition-and-content">Definition and content</h3>
+<section id="definition-and-content" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="definition-and-content"><span class="header-section-number">3.1</span> Definition and content</h3>
+<p>As explained in the section <a href="#sec-sota-datasets-requirements" class="quarto-xref">Section&nbsp;1.2.1</a>, the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and infrared data, with simple bounding box annotations for all trees. And as explained in <a href="#sec-obj-covered_trees" class="quarto-xref">Section&nbsp;2.2</a>, all trees means also annotating trees that are partially or completely covered by other trees.</p>
+<p>Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8&nbsp;cm, which is also the resolution of the RGB images. However, the resolution of infrared images is 25&nbsp;cm, which made it less optimal, but still usable.</p>
+<p>To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km&nbsp;×&nbsp;1&nbsp;km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640&nbsp;px&nbsp;×&nbsp;640&nbsp;px i.e.&nbsp;51.2&nbsp;m&nbsp;×&nbsp;51.2&nbsp;m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section <a href="#sec-dataset-challenges" class="quarto-xref">Section&nbsp;3.2</a>, and each tree belongs to one class.</p>
+<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area.</p>
 </section>
-<section id="challenges-and-solutions" class="level3">
-<h3 class="anchored" data-anchor-id="challenges-and-solutions">Challenges and solutions</h3>
+<section id="sec-dataset-challenges" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="sec-dataset-challenges"><span class="header-section-number">3.2</span> Challenges and solutions</h3>
+<p>The creation of this dataset raised a number of challenges. The first one was the interval of time between the acquisition of the different types of data. While the point cloud data dated from 2020, the RGB images were acquired in 2023. It would have been possible to use images from 2021 or 2022 with the same resolution, but the quality of the 2023 images was much better. Consequently, there were a certain amount of changes regarding trees between these two periods of acquisition. Some large trees were cut off, while small trees were planted, sometimes even at the position of old trees that were previously cut off in the same time frame. For this reason, a non negligible number of trees were either present only in the point cloud, or only in the images. To try to handle this situation, I created two new class labels corresponding to these situation. This amounted up to 4 class labels:</p>
 <ul>
-<li>Shift between RGB images, CIR images and LiDAR point clouds due to images not being perfectly orthonormal</li>
-<li>Variations of the trees over time, with new small trees being planted and old trees being cut off</li>
-<li>Not so easy to define what we consider as a tree and identify them. Problems with bushes for example. This problem is also mentioned in another paper <span class="citation" data-cites="DeepForestBefore">(<a href="#ref-DeepForestBefore" role="doc-biblioref">B. G. Weinstein et al. 2019</a>)</span>.</li>
+<li>“Tree”: trees which are visible in the point cloud and the images</li>
+<li>“Tree_LiDAR”: trees which are visible in the point cloud only but would be visible in the images if they had been there during the acquisition</li>
+<li>“Tree_RGB”: trees which are visible in the images only but would be visible in the point cloud if they had been there during the acquisition</li>
+<li>“Tree_covered”: trees that are visible in the point cloud only because they are covered by other trees.</li>
 </ul>
+<p>All these labels theoretically correspond to situations that have no intersection, even though it is more complicated in practice.</p>
+<p>The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthonormal. Point clouds don’t have this problem, because the data is acquired and represented in 3D, but images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.</p>
+<!-- TODO: PUT AN IMAGE TO SHOW THE MISALIGNMENT HERE -->
+<p>Finally, the last challenge comes from the definition of what we consider as a tree and what we don’t. There are two main sub-problems. The first one comes from the threshold to set between bushes and trees. Large bushes can be much larger than small trees, and sometimes have a similar shape. Therefore, it is hard to keep coherent rules when annotating them. The second sub-problem comes from multi-stemmed and close trees. It can be very difficult to see, even with the point cloud, if a there is only one tree with two or more trunks dividing at the bottom, or multiple trees which are simply close to one another. (Un)fortunately I know that I was not the only one to face this problem because it was also mentioned in another paper <span class="citation" data-cites="DeepForestBefore">(<a href="#ref-DeepForestBefore" role="doc-biblioref">B. G. Weinstein et al. 2019</a>)</span>. In the end, it was just an unsolvable problem for which the most important was to remain consistent in the whole dataset.</p>
 </section>
-<section id="augmentation-methods" class="level3">
-<h3 class="anchored" data-anchor-id="augmentation-methods">Augmentation methods</h3>
+<section id="augmentation-methods" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="augmentation-methods"><span class="header-section-number">3.3</span> Augmentation methods</h3>
+<p>Dataset augmentation methods are in the middle between dataset creation and deep learning model training, because they are a way to enhance the dataset but depend on the objective for which the model is trained. Their importance is inversely proportional with the size of the dataset, which made them very important for my small dataset.</p>
+<p>As it was already explained in <a href="#sec-sota-dataset-augment" class="quarto-xref">Section&nbsp;1.2.4</a>, I used Albumentations <span class="citation" data-cites="albumentations">(<a href="#ref-albumentations" role="doc-biblioref">Buslaev et al. 2020</a>)</span> to apply two types of augmentations: pixel-level and spatial-level.</p>
+<p>Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, infrared images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images we can get when flipping and rotating the image by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.</p>
+<!-- TODO: Add an example of an image before and after the transformations -->
+<p>On the contrary, Pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.</p>
 </section>
 </section>
-<section id="deep-learning-model" class="level2">
-<h2 class="anchored" data-anchor-id="deep-learning-model">Deep learning model</h2>
-<section id="architecture" class="level3">
-<h3 class="anchored" data-anchor-id="architecture">Architecture</h3>
+<section id="deep-learning-model" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="deep-learning-model"><span class="header-section-number">4</span> Deep learning model</h2>
+<section id="architecture" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="architecture"><span class="header-section-number">4.1</span> Architecture</h3>
 </section>
-<section id="training-loop" class="level3">
-<h3 class="anchored" data-anchor-id="training-loop">Training loop</h3>
+<section id="training-loop" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="training-loop"><span class="header-section-number">4.2</span> Training loop</h3>
 </section>
 </section>
-<section id="results" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
-<section id="evaluation-method" class="level3">
-<h3 class="anchored" data-anchor-id="evaluation-method">Evaluation method</h3>
+<section id="results" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="results"><span class="header-section-number">5</span> Results</h2>
+<section id="evaluation-method" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="evaluation-method"><span class="header-section-number">5.1</span> Evaluation method</h3>
 <p>sortedAP: <span class="citation" data-cites="sortedAP">(<a href="#ref-sortedAP" role="doc-biblioref">Chen et al. 2023</a>)</span></p>
 </section>
-<section id="training-parameters" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="training-parameters">Training parameters</h3>
-<div id="cell-fig-training-parameters" class="cell page-columns page-full" data-execution_count="1">
-<div class="cell-output cell-output-display page-columns page-full">
-<div id="fig-training-parameters" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
-<div aria-describedby="fig-training-parameters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
-<a href="index_files/figure-html/fig-training-parameters-output-1.png" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Results with different training parameters"><img src="index_files/figure-html/fig-training-parameters-output-1.png" width="924" height="566" class="figure-img column-page-right"></a>
+<section id="training-parameters" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="training-parameters"><span class="header-section-number">5.2</span> Training parameters</h3>
+<div id="cell-fig-training-parameters" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<div id="fig-training-parameters" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-training-parameters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-training-parameters-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Results with different training parameters"><img src="index_files/figure-html/fig-training-parameters-output-2.png" width="924" height="566" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Results with different training parameters
@@ -394,27 +419,41 @@ Figure&nbsp;1: Results with different training parameters
 </div>
 </div>
 <a class="quarto-notebook-link" id="nblink-1" href="index-preview.html#cell-fig-training-parameters">Source: Article Notebook</a></div>
+<div id="cell-fig-training-parameters-experiments" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div id="fig-training-parameters-experiments" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Results with different training parameters for all experiments
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="data-used" class="level3">
-<h3 class="anchored" data-anchor-id="data-used">Data used</h3>
+<section id="data-used" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="data-used"><span class="header-section-number">5.3</span> Data used</h3>
 </section>
-<section id="chm-layers" class="level3">
-<h3 class="anchored" data-anchor-id="chm-layers">CHM layers</h3>
+<section id="chm-layers" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="chm-layers"><span class="header-section-number">5.4</span> CHM layers</h3>
 </section>
-<section id="hard-trees" class="level3">
-<h3 class="anchored" data-anchor-id="hard-trees">Hard trees</h3>
+<section id="hard-trees" class="level3" data-number="5.5">
+<h3 data-number="5.5" class="anchored" data-anchor-id="hard-trees"><span class="header-section-number">5.5</span> Hard trees</h3>
 </section>
 </section>
-<section id="discussion" class="level2">
-<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
-<section id="dataset" class="level3">
-<h3 class="anchored" data-anchor-id="dataset">Dataset</h3>
+<section id="discussion" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="discussion"><span class="header-section-number">6</span> Discussion</h2>
+<section id="dataset" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">6.1</span> Dataset</h3>
 <ul>
 <li>DeepForest: A Python package for RGB deep learning tree crown delineation <span class="citation" data-cites="DeepForest">(<a href="#ref-DeepForest" role="doc-biblioref">B. G. Weinstein et al. 2020</a>)</span>: uses only RGB data to detect trees, but uses LiDAR to create millions of annotations of moderate quality to pre-train the model, before using around 10,000 hand-annotations to finalize and specialize the training on a certain area.</li>
 </ul>
 </section>
-<section id="combination-of-data-types" class="level3">
-<h3 class="anchored" data-anchor-id="combination-of-data-types">Combination of data types</h3>
+<section id="combination-of-data-types" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="combination-of-data-types"><span class="header-section-number">6.2</span> Combination of data types</h3>
 </section>
 </section>
 <section id="conclusion" class="level2 unnumbered">
@@ -955,7 +994,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","descPosition":"bottom","openEffect":"zoom","closeEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","loop":false,"closeEffect":"zoom","descPosition":"bottom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

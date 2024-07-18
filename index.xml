@@ -173,7 +173,7 @@ d’informatique</institution>
   </sec>
   <sec id="datasets">
     <title>Datasets</title>
-    <sec id="requirements">
+    <sec id="sec-sota-datasets-requirements">
       <title>Requirements</title>
       <p>Before presenting the different promising datasets and the
       reasons why they were not fully usable for the project, let’s
@@ -392,7 +392,7 @@ d’informatique</institution>
       that it could not be used as training data for a deep learning
       models due to its biases and imperfections.</p>
     </sec>
-    <sec id="dataset-augmentation-techniques">
+    <sec id="sec-sota-dataset-augment">
       <title>Dataset augmentation techniques</title>
       <p>When a dataset is too small to train a model, there are several
       ways of artificially enlarging it.</p>
@@ -554,20 +554,80 @@ d’informatique</institution>
 </sec>
 <sec id="objectives-and-motivations">
   <title>Objectives and motivations</title>
+  <p>In this section, I will explain the objectives that I set for this
+  internship and the motivations that led to them.</p>
+  <sec id="data-and-model">
+    <title>Data and model</title>
+    <p>The basis for this internship was to look at deep learning models
+    to detect trees using LiDAR and aerial images. In fourth months, it
+    would have been difficult to dive into the literature, think about a
+    completely new approach and develop it. Therefore, I wanted to find
+    an interesting and not too complicated deep learning model, and try
+    a few changes that would hopefully improve the results.</p>
+    <p>This idea was also reinforced by the decision to create my own
+    dataset for two reasons. The first reason was the small number of
+    openly available tree annotation datasets which contained both LiDAR
+    and RGB data. I therefore thought that creating a new dataset and
+    making it available could be a great contribution. The second reason
+    was to have more control over the definition and the characteristics
+    of the dataset, to be able to experiment on the detection of
+    specific trees.</p>
+  </sec>
+  <sec id="sec-obj-covered_trees">
+    <title>Covered trees</title>
+    <p>The main thing that I wanted to experiment on was the possibility
+    to make a better use of the LiDAR point cloud to be able to detect
+    covered trees. Covered trees are the trees which are located
+    partially or completely under another tree’s crown. This makes them
+    impossible to completely delineate when using only data that is
+    visible from above. These trees are not meaningless or negligible,
+    because as demonstrated in this paper
+    (<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
+    et al. 2016</xref>), they can represent up to 50% of the trees in a
+    forest.</p>
+    <p>However, doing this implied being able to process them on the
+    whole pipeline. In practice, covered trees are never annotated in
+    all the datasets that are created using only RGB images, because
+    they are simply not visible. This means that creating my own dataset
+    was the only solution to have a dataset containing really all trees
+    including covered trees and be able to easily identify them.</p>
+  </sec>
   <sec id="multiple-layers-of-chm">
     <title>Multiple layers of CHM</title>
-    <p>Benchmark of 8 methods using LiDAR
+    <p>Being able to find covered trees meant finding a way to find more
+    information out of the LiDAR point cloud than what is contained by
+    the CHM. In fact, the CHM only contains a very small part of the
+    point cloud and doesn’t really benefit from the 3D shape that is
+    contained in the point cloud. This is particularly true when the
+    point cloud is acquired in a season where trees don’t have their
+    leaves, because the LiDAR then goes deep into the tree more easily,
+    and can find the trunk and many of the largest branches.</p>
+    <p>Therefore, getting information below the tree crown surface was
+    mandatory to find covered trees. But it could also be helpful for
+    the model to find better separations between each tree, thanks to
+    having access to the branches and the trunks. Even though I didn’t
+    end up asking the model to also identify the species, this is
+    another task that could have been improved a lot if the model could
+    use the architecture of the branches.</p>
+    <p>To do this, I wanted to stick with a simple solution that would
+    integrate well with the initial model and wouldn’t require too many
+    changes. The idea I implemented is therefore very simple. Instead of
+    having only one CHM raster, I would have multiple layers, each
+    focusing on a different height interval. There are many ways to do
+    this, but due to a lack of time, I only really tried what seemed to
+    me the easiest and most straightforward way to do it, which consists
+    in removing all the points above a certain height threshold, and
+    compute the CHM with the points that are left. When doing this for
+    multiple height thresholds, we get an interesting view of what the
+    point cloud looks like at multiple levels, which gives a lot more
+    information about the organization of the point cloud. Another way
+    to do this, which is used in the third method of this paper
     (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark" ref-type="bibr">Eysn
-    et al. 2015</xref>): one of the methods uses multiple CHM layers,
-    computed iteratively by removing everything in the 0.5 m below the
-    previous CHM</p>
-  </sec>
-  <sec id="hidden-trees">
-    <title>Hidden trees</title>
-    <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2" ref-type="bibr">Wang
-    et al. 2016</xref>) shows that in forests, you can have up to more
-    than 50% of the trees which crowns are completely or partially
-    covered by other trees.</p>
+    et al. 2015</xref>), would be instead to use the previous CHM by
+    removing all the points that are in the interval between the CHM
+    height and 0.5 m below, before computing an additional layer. It
+    could be interesting to see if this method works better than
+    dropping the points at pre-determined heights.</p>
   </sec>
 </sec>
 <sec id="sec-dataset">
@@ -579,29 +639,142 @@ d’informatique</institution>
   cloud.</p>
   <sec id="definition-and-content">
     <title>Definition and content</title>
+    <p>As explained in the section
+    <xref alt="Section 1.2.1" rid="sec-sota-datasets-requirements">Section 1.2.1</xref>,
+    the main requirements of the dataset that I wanted to create were to
+    contain at the same time LiDAR data, RGB data and infrared data,
+    with simple bounding box annotations for all trees. And as explained
+    in
+    <xref alt="Section 2.2" rid="sec-obj-covered_trees">Section 2.2</xref>,
+    all trees means also annotating trees that are partially or
+    completely covered by other trees.</p>
+    <p>Then, to make the most out of the point cloud resolution and the
+    RGB images resolution, I decided to use a CHM resolution of 8 cm,
+    which is also the resolution of the RGB images. However, the
+    resolution of infrared images is 25 cm, which made it less optimal,
+    but still usable.</p>
+    <p>To be able to get results even with a small dataset, I decided to
+    focus on one specific area, to limit the diversity of trees and
+    environments to something that could hopefully still be learnt with
+    a small dataset. Therefore, the whole dataset is currently inside of
+    a 1 km × 1 km square around Geodan office, in Amsterdam. It contains
+    2726 annotated trees spread over 241 images of size 640 px × 640 px
+    i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding
+    box, and some of them have a more accurate polygon representing the
+    shape of the crown. There are four classes, which I will detail in
+    the next section
+    <xref alt="Section 3.2" rid="sec-dataset-challenges">Section 3.2</xref>,
+    and each tree belongs to one class.</p>
+    <p>Annotating all these trees took me about 100 hours, with a very
+    high variation of the time spent on each tree depending on the
+    complexity of the area.</p>
   </sec>
-  <sec id="challenges-and-solutions">
+  <sec id="sec-dataset-challenges">
     <title>Challenges and solutions</title>
+    <p>The creation of this dataset raised a number of challenges. The
+    first one was the interval of time between the acquisition of the
+    different types of data. While the point cloud data dated from 2020,
+    the RGB images were acquired in 2023. It would have been possible to
+    use images from 2021 or 2022 with the same resolution, but the
+    quality of the 2023 images was much better. Consequently, there were
+    a certain amount of changes regarding trees between these two
+    periods of acquisition. Some large trees were cut off, while small
+    trees were planted, sometimes even at the position of old trees that
+    were previously cut off in the same time frame. For this reason, a
+    non negligible number of trees were either present only in the point
+    cloud, or only in the images. To try to handle this situation, I
+    created two new class labels corresponding to these situation. This
+    amounted up to 4 class labels:</p>
     <list list-type="bullet">
       <list-item>
-        <p>Shift between RGB images, CIR images and LiDAR point clouds
-        due to images not being perfectly orthonormal</p>
+        <p>“Tree”: trees which are visible in the point cloud and the
+        images</p>
       </list-item>
       <list-item>
-        <p>Variations of the trees over time, with new small trees being
-        planted and old trees being cut off</p>
+        <p>“Tree_LiDAR”: trees which are visible in the point cloud only
+        but would be visible in the images if they had been there during
+        the acquisition</p>
       </list-item>
       <list-item>
-        <p>Not so easy to define what we consider as a tree and identify
-        them. Problems with bushes for example. This problem is also
-        mentioned in another paper
-        (<xref alt="B. G. Weinstein et al. 2019" rid="ref-DeepForestBefore" ref-type="bibr">B.
-        G. Weinstein et al. 2019</xref>).</p>
+        <p>“Tree_RGB”: trees which are visible in the images only but
+        would be visible in the point cloud if they had been there
+        during the acquisition</p>
+      </list-item>
+      <list-item>
+        <p>“Tree_covered”: trees that are visible in the point cloud
+        only because they are covered by other trees.</p>
       </list-item>
     </list>
+    <p>All these labels theoretically correspond to situations that have
+    no intersection, even though it is more complicated in practice.</p>
+    <p>The next challenge was the misalignment of images and point
+    cloud. This misalignment comes from the images not being perfectly
+    orthonormal. Point clouds don’t have this problem, because the data
+    is acquired and represented in 3D, but images have to be projected
+    to a 2D plane after being acquired with an angle that is not
+    perfectly orthogonal to the plane. Despite the post-processing that
+    was surely performed on the images, they are therefore not perfect,
+    and there is a shift between the positions of each object in the
+    point cloud and in the images. This shift cannot really be solved,
+    because it depends on the position. Because of this misalignment, a
+    choice had to be made as to where tree annotations should be placed,
+    using either the point clouds or the RGB images. I chose to the RGB
+    images as it is simpler to visualize and annotate, but there was not
+    really a perfect choice.</p>
+    <p>Finally, the last challenge comes from the definition of what we
+    consider as a tree and what we don’t. There are two main
+    sub-problems. The first one comes from the threshold to set between
+    bushes and trees. Large bushes can be much larger than small trees,
+    and sometimes have a similar shape. Therefore, it is hard to keep
+    coherent rules when annotating them. The second sub-problem comes
+    from multi-stemmed and close trees. It can be very difficult to see,
+    even with the point cloud, if a there is only one tree with two or
+    more trunks dividing at the bottom, or multiple trees which are
+    simply close to one another. (Un)fortunately I know that I was not
+    the only one to face this problem because it was also mentioned in
+    another paper
+    (<xref alt="B. G. Weinstein et al. 2019" rid="ref-DeepForestBefore" ref-type="bibr">B.
+    G. Weinstein et al. 2019</xref>). In the end, it was just an
+    unsolvable problem for which the most important was to remain
+    consistent in the whole dataset.</p>
   </sec>
   <sec id="augmentation-methods">
     <title>Augmentation methods</title>
+    <p>Dataset augmentation methods are in the middle between dataset
+    creation and deep learning model training, because they are a way to
+    enhance the dataset but depend on the objective for which the model
+    is trained. Their importance is inversely proportional with the size
+    of the dataset, which made them very important for my small
+    dataset.</p>
+    <p>As it was already explained in
+    <xref alt="Section 1.2.4" rid="sec-sota-dataset-augment">Section 1.2.4</xref>,
+    I used Albumentations
+    (<xref alt="Buslaev et al. 2020" rid="ref-albumentations" ref-type="bibr">Buslaev
+    et al. 2020</xref>) to apply two types of augmentations: pixel-level
+    and spatial-level.</p>
+    <p>Spatial-level augmentations had to be in the exact same way to
+    the whole dataset, to maintain the spatial coherence between RGB
+    images, infrared images and the CHM layers. I used three different
+    spatial transformations, applied with random parameters. The first
+    one chooses one of the eight possible images we can get when
+    flipping and rotating the image by angles that are multiples of 90°.
+    The second one adds a perspective effect to the images. The third
+    one adds a small distortion to the image.</p>
+    <p>On the contrary, Pixel-level augmentations must be applied
+    differently to RGB images and CHM layers because they represent
+    different kinds of data, so the values of the pixels do not have the
+    same meaning. In practice, a lot of transformations were conceived
+    to reproduce camera effects on RGB images or to shift the color
+    spectrum. Among others, I used random modifications of the
+    brightness, the gamma value and added noise and a blurring effect
+    randomly to RGB images. For both types of data, a channel dropout is
+    also randomly applied, leaving a random number of channels and
+    removing the others. A better way to augment the CHM data would have
+    been to apply random displacements and deletions of points in the
+    point cloud, before computing the CHM layers. However, these
+    operations are too costly to be integrated in the training pipeline
+    without consequently increasing the training time, so this idea was
+    discarded.</p>
   </sec>
 </sec>
 <sec id="deep-learning-model">
@@ -626,7 +799,12 @@ d’informatique</institution>
     <fig id="fig-training-parameters">
       <caption><p>Figure 1: Results with different training
       parameters</p></caption>
-      <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
+      <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-2.png" />
+    </fig>
+    <fig id="fig-training-parameters-experiments">
+      <caption><p>Figure 2: Results with different training parameters
+      for all experiments</p></caption>
+      <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-experiments-output-1.png" />
     </fig>
   </sec>
   <sec id="data-used">
@@ -1384,7 +1562,7 @@ d’informatique</institution>
 </ref-list>
 </back>
 
-<sub-article article-type="notebook" id="nb-2-nb-article">
+<sub-article article-type="notebook" id="nb-4-nb-article">
 <front-stub>
 <title-group>
 <article-title>Tree object detection using airborne images and LiDAR
@@ -1526,7 +1704,7 @@ d’informatique</institution>
   </sec>
   <sec id="datasets-nb-article">
     <title>Datasets</title>
-    <sec id="requirements-nb-article">
+    <sec id="sec-sota-datasets-requirements-nb-article">
       <title>Requirements</title>
       <p>Before presenting the different promising datasets and the
       reasons why they were not fully usable for the project, let’s
@@ -1745,7 +1923,7 @@ d’informatique</institution>
       that it could not be used as training data for a deep learning
       models due to its biases and imperfections.</p>
     </sec>
-    <sec id="dataset-augmentation-techniques-nb-article">
+    <sec id="sec-sota-dataset-augment-nb-article">
       <title>Dataset augmentation techniques</title>
       <p>When a dataset is too small to train a model, there are several
       ways of artificially enlarging it.</p>
@@ -1907,20 +2085,80 @@ d’informatique</institution>
 </sec>
 <sec id="objectives-and-motivations-nb-article">
   <title>Objectives and motivations</title>
+  <p>In this section, I will explain the objectives that I set for this
+  internship and the motivations that led to them.</p>
+  <sec id="data-and-model-nb-article">
+    <title>Data and model</title>
+    <p>The basis for this internship was to look at deep learning models
+    to detect trees using LiDAR and aerial images. In fourth months, it
+    would have been difficult to dive into the literature, think about a
+    completely new approach and develop it. Therefore, I wanted to find
+    an interesting and not too complicated deep learning model, and try
+    a few changes that would hopefully improve the results.</p>
+    <p>This idea was also reinforced by the decision to create my own
+    dataset for two reasons. The first reason was the small number of
+    openly available tree annotation datasets which contained both LiDAR
+    and RGB data. I therefore thought that creating a new dataset and
+    making it available could be a great contribution. The second reason
+    was to have more control over the definition and the characteristics
+    of the dataset, to be able to experiment on the detection of
+    specific trees.</p>
+  </sec>
+  <sec id="sec-obj-covered_trees-nb-article">
+    <title>Covered trees</title>
+    <p>The main thing that I wanted to experiment on was the possibility
+    to make a better use of the LiDAR point cloud to be able to detect
+    covered trees. Covered trees are the trees which are located
+    partially or completely under another tree’s crown. This makes them
+    impossible to completely delineate when using only data that is
+    visible from above. These trees are not meaningless or negligible,
+    because as demonstrated in this paper
+    (<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
+    et al. 2016</xref>), they can represent up to 50% of the trees in a
+    forest.</p>
+    <p>However, doing this implied being able to process them on the
+    whole pipeline. In practice, covered trees are never annotated in
+    all the datasets that are created using only RGB images, because
+    they are simply not visible. This means that creating my own dataset
+    was the only solution to have a dataset containing really all trees
+    including covered trees and be able to easily identify them.</p>
+  </sec>
   <sec id="multiple-layers-of-chm-nb-article">
     <title>Multiple layers of CHM</title>
-    <p>Benchmark of 8 methods using LiDAR
+    <p>Being able to find covered trees meant finding a way to find more
+    information out of the LiDAR point cloud than what is contained by
+    the CHM. In fact, the CHM only contains a very small part of the
+    point cloud and doesn’t really benefit from the 3D shape that is
+    contained in the point cloud. This is particularly true when the
+    point cloud is acquired in a season where trees don’t have their
+    leaves, because the LiDAR then goes deep into the tree more easily,
+    and can find the trunk and many of the largest branches.</p>
+    <p>Therefore, getting information below the tree crown surface was
+    mandatory to find covered trees. But it could also be helpful for
+    the model to find better separations between each tree, thanks to
+    having access to the branches and the trunks. Even though I didn’t
+    end up asking the model to also identify the species, this is
+    another task that could have been improved a lot if the model could
+    use the architecture of the branches.</p>
+    <p>To do this, I wanted to stick with a simple solution that would
+    integrate well with the initial model and wouldn’t require too many
+    changes. The idea I implemented is therefore very simple. Instead of
+    having only one CHM raster, I would have multiple layers, each
+    focusing on a different height interval. There are many ways to do
+    this, but due to a lack of time, I only really tried what seemed to
+    me the easiest and most straightforward way to do it, which consists
+    in removing all the points above a certain height threshold, and
+    compute the CHM with the points that are left. When doing this for
+    multiple height thresholds, we get an interesting view of what the
+    point cloud looks like at multiple levels, which gives a lot more
+    information about the organization of the point cloud. Another way
+    to do this, which is used in the third method of this paper
     (<xref alt="Eysn et al. 2015" rid="ref-lidar_benchmark-nb-article" ref-type="bibr">Eysn
-    et al. 2015</xref>): one of the methods uses multiple CHM layers,
-    computed iteratively by removing everything in the 0.5 m below the
-    previous CHM</p>
-  </sec>
-  <sec id="hidden-trees-nb-article">
-    <title>Hidden trees</title>
-    <p>(<xref alt="Wang et al. 2016" rid="ref-lidar_benchmark_2-nb-article" ref-type="bibr">Wang
-    et al. 2016</xref>) shows that in forests, you can have up to more
-    than 50% of the trees which crowns are completely or partially
-    covered by other trees.</p>
+    et al. 2015</xref>), would be instead to use the previous CHM by
+    removing all the points that are in the interval between the CHM
+    height and 0.5 m below, before computing an additional layer. It
+    could be interesting to see if this method works better than
+    dropping the points at pre-determined heights.</p>
   </sec>
 </sec>
 <sec id="sec-dataset-nb-article">
@@ -1932,29 +2170,142 @@ d’informatique</institution>
   cloud.</p>
   <sec id="definition-and-content-nb-article">
     <title>Definition and content</title>
+    <p>As explained in the section
+    <xref alt="Section 1.2.1" rid="sec-sota-datasets-requirements-nb-article">Section 1.2.1</xref>,
+    the main requirements of the dataset that I wanted to create were to
+    contain at the same time LiDAR data, RGB data and infrared data,
+    with simple bounding box annotations for all trees. And as explained
+    in
+    <xref alt="Section 2.2" rid="sec-obj-covered_trees-nb-article">Section 2.2</xref>,
+    all trees means also annotating trees that are partially or
+    completely covered by other trees.</p>
+    <p>Then, to make the most out of the point cloud resolution and the
+    RGB images resolution, I decided to use a CHM resolution of 8 cm,
+    which is also the resolution of the RGB images. However, the
+    resolution of infrared images is 25 cm, which made it less optimal,
+    but still usable.</p>
+    <p>To be able to get results even with a small dataset, I decided to
+    focus on one specific area, to limit the diversity of trees and
+    environments to something that could hopefully still be learnt with
+    a small dataset. Therefore, the whole dataset is currently inside of
+    a 1 km × 1 km square around Geodan office, in Amsterdam. It contains
+    2726 annotated trees spread over 241 images of size 640 px × 640 px
+    i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding
+    box, and some of them have a more accurate polygon representing the
+    shape of the crown. There are four classes, which I will detail in
+    the next section
+    <xref alt="Section 3.2" rid="sec-dataset-challenges-nb-article">Section 3.2</xref>,
+    and each tree belongs to one class.</p>
+    <p>Annotating all these trees took me about 100 hours, with a very
+    high variation of the time spent on each tree depending on the
+    complexity of the area.</p>
   </sec>
-  <sec id="challenges-and-solutions-nb-article">
+  <sec id="sec-dataset-challenges-nb-article">
     <title>Challenges and solutions</title>
+    <p>The creation of this dataset raised a number of challenges. The
+    first one was the interval of time between the acquisition of the
+    different types of data. While the point cloud data dated from 2020,
+    the RGB images were acquired in 2023. It would have been possible to
+    use images from 2021 or 2022 with the same resolution, but the
+    quality of the 2023 images was much better. Consequently, there were
+    a certain amount of changes regarding trees between these two
+    periods of acquisition. Some large trees were cut off, while small
+    trees were planted, sometimes even at the position of old trees that
+    were previously cut off in the same time frame. For this reason, a
+    non negligible number of trees were either present only in the point
+    cloud, or only in the images. To try to handle this situation, I
+    created two new class labels corresponding to these situation. This
+    amounted up to 4 class labels:</p>
     <list list-type="bullet">
       <list-item>
-        <p>Shift between RGB images, CIR images and LiDAR point clouds
-        due to images not being perfectly orthonormal</p>
+        <p>“Tree”: trees which are visible in the point cloud and the
+        images</p>
       </list-item>
       <list-item>
-        <p>Variations of the trees over time, with new small trees being
-        planted and old trees being cut off</p>
+        <p>“Tree_LiDAR”: trees which are visible in the point cloud only
+        but would be visible in the images if they had been there during
+        the acquisition</p>
       </list-item>
       <list-item>
-        <p>Not so easy to define what we consider as a tree and identify
-        them. Problems with bushes for example. This problem is also
-        mentioned in another paper
-        (<xref alt="B. G. Weinstein et al. 2019" rid="ref-DeepForestBefore-nb-article" ref-type="bibr">B.
-        G. Weinstein et al. 2019</xref>).</p>
+        <p>“Tree_RGB”: trees which are visible in the images only but
+        would be visible in the point cloud if they had been there
+        during the acquisition</p>
+      </list-item>
+      <list-item>
+        <p>“Tree_covered”: trees that are visible in the point cloud
+        only because they are covered by other trees.</p>
       </list-item>
     </list>
+    <p>All these labels theoretically correspond to situations that have
+    no intersection, even though it is more complicated in practice.</p>
+    <p>The next challenge was the misalignment of images and point
+    cloud. This misalignment comes from the images not being perfectly
+    orthonormal. Point clouds don’t have this problem, because the data
+    is acquired and represented in 3D, but images have to be projected
+    to a 2D plane after being acquired with an angle that is not
+    perfectly orthogonal to the plane. Despite the post-processing that
+    was surely performed on the images, they are therefore not perfect,
+    and there is a shift between the positions of each object in the
+    point cloud and in the images. This shift cannot really be solved,
+    because it depends on the position. Because of this misalignment, a
+    choice had to be made as to where tree annotations should be placed,
+    using either the point clouds or the RGB images. I chose to the RGB
+    images as it is simpler to visualize and annotate, but there was not
+    really a perfect choice.</p>
+    <p>Finally, the last challenge comes from the definition of what we
+    consider as a tree and what we don’t. There are two main
+    sub-problems. The first one comes from the threshold to set between
+    bushes and trees. Large bushes can be much larger than small trees,
+    and sometimes have a similar shape. Therefore, it is hard to keep
+    coherent rules when annotating them. The second sub-problem comes
+    from multi-stemmed and close trees. It can be very difficult to see,
+    even with the point cloud, if a there is only one tree with two or
+    more trunks dividing at the bottom, or multiple trees which are
+    simply close to one another. (Un)fortunately I know that I was not
+    the only one to face this problem because it was also mentioned in
+    another paper
+    (<xref alt="B. G. Weinstein et al. 2019" rid="ref-DeepForestBefore-nb-article" ref-type="bibr">B.
+    G. Weinstein et al. 2019</xref>). In the end, it was just an
+    unsolvable problem for which the most important was to remain
+    consistent in the whole dataset.</p>
   </sec>
   <sec id="augmentation-methods-nb-article">
     <title>Augmentation methods</title>
+    <p>Dataset augmentation methods are in the middle between dataset
+    creation and deep learning model training, because they are a way to
+    enhance the dataset but depend on the objective for which the model
+    is trained. Their importance is inversely proportional with the size
+    of the dataset, which made them very important for my small
+    dataset.</p>
+    <p>As it was already explained in
+    <xref alt="Section 1.2.4" rid="sec-sota-dataset-augment-nb-article">Section 1.2.4</xref>,
+    I used Albumentations
+    (<xref alt="Buslaev et al. 2020" rid="ref-albumentations-nb-article" ref-type="bibr">Buslaev
+    et al. 2020</xref>) to apply two types of augmentations: pixel-level
+    and spatial-level.</p>
+    <p>Spatial-level augmentations had to be in the exact same way to
+    the whole dataset, to maintain the spatial coherence between RGB
+    images, infrared images and the CHM layers. I used three different
+    spatial transformations, applied with random parameters. The first
+    one chooses one of the eight possible images we can get when
+    flipping and rotating the image by angles that are multiples of 90°.
+    The second one adds a perspective effect to the images. The third
+    one adds a small distortion to the image.</p>
+    <p>On the contrary, Pixel-level augmentations must be applied
+    differently to RGB images and CHM layers because they represent
+    different kinds of data, so the values of the pixels do not have the
+    same meaning. In practice, a lot of transformations were conceived
+    to reproduce camera effects on RGB images or to shift the color
+    spectrum. Among others, I used random modifications of the
+    brightness, the gamma value and added noise and a blurring effect
+    randomly to RGB images. For both types of data, a channel dropout is
+    also randomly applied, leaving a random number of channels and
+    removing the others. A better way to augment the CHM data would have
+    been to apply random displacements and deletions of points in the
+    point cloud, before computing the CHM layers. However, these
+    operations are too costly to be integrated in the training pipeline
+    without consequently increasing the training time, so this idea was
+    discarded.</p>
   </sec>
 </sec>
 <sec id="deep-learning-model-nb-article">
@@ -2007,14 +2358,57 @@ sns.catplot(
     palette=&quot;colorblind&quot;
 )</code>
     <boxed-text>
+      <preformat>/home/alexandre/Documents/projects/Geodan_internship/report/env/lib/python3.12/site-packages/seaborn/categorical.py:3399: UserWarning:
+
+22.2% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+      </preformat>
+    </boxed-text>
+    <boxed-text>
       <fig id="fig-training-parameters-nb-article">
         <caption><p>Figure 1: Results with different training
         parameters</p></caption>
-        <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-1.png" />
+        <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-2.png" />
       </fig>
     </boxed-text>
     </sec>
-    <sec id="cell-8dccdc43-nb-article" specific-use="notebook-content">
+    <sec id="cell-fig-training-parameters-experiments-nb-article" specific-use="notebook-content">
+    <code language="python">import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv(&quot;data/training_params_experiment_all.csv&quot;)
+df = df[df[&quot;Data used for evaluation&quot;] == &quot;RGB, CIR and CHM&quot;]
+df[&quot;Proba drop&quot;] = df[&quot;proba_drop_chm&quot;]
+df.rename(columns = {
+    &quot;accumulate&quot;: &quot;Accum. count&quot;,
+    &quot;Data used for evaluation&quot;: &quot;Evaluation data&quot;,
+    &quot;lr&quot;: &quot;Learn. rate&quot;,
+    &quot;repartition_name&quot;: &quot;Exp. name&quot;
+  },
+  inplace=True)
+sns.set_style(&quot;ticks&quot;, {&quot;axes.grid&quot;: True})
+sns.catplot(
+    data=df,
+    kind=&quot;swarm&quot;,
+    x=&quot;Accum. count&quot;,
+    y=&quot;Best sortedAP&quot;,
+    hue=&quot;Exp. name&quot;,
+    hue_order=[&quot;exp0&quot;, &quot;exp1&quot;, &quot;exp2&quot;, &quot;exp3&quot;, &quot;exp4&quot;],
+    col=&quot;Learn. rate&quot;,
+    row=&quot;Proba drop&quot;,
+    margin_titles=True,
+    height=2,
+    aspect=1,
+    palette=&quot;colorblind&quot;
+)</code>
+    <boxed-text>
+      <fig id="fig-training-parameters-experiments-nb-article">
+        <caption><p>Figure 2: Results with different training parameters
+        for all experiments</p></caption>
+        <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-experiments-output-1.png" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-5fe1cca5-nb-article" specific-use="notebook-content">
   </sec>
   <sec id="data-used-nb-article">
     <title>Data used</title>
