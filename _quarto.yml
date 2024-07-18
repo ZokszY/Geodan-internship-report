@@ -9,6 +9,7 @@ format:
   html:
     comments:
       hypothesis: true
+    number-sections: true
   docx: default
   typst:
     toc: true
