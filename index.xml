@@ -156,7 +156,7 @@ d’informatique</institution>
                   <p>LiDAR point clouds (preferably aerial)</p>
                 </list-item>
                 <list-item>
-                  <p>(Optional) Aerial infrared images</p>
+                  <p>(Optional) Aerial infrared (CIR) images</p>
                 </list-item>
               </list>
             </list-item>
@@ -291,7 +291,7 @@ d’informatique</institution>
       looking for three different data types independently:</p>
           <list list-type="bullet">
             <list-item>
-              <p>RGB (and eventually infrared) images</p>
+              <p>RGB (and if possible CIR) images</p>
             </list-item>
             <list-item>
               <p>LiDAR point clouds</p>
@@ -608,17 +608,16 @@ d’informatique</institution>
         <p>As explained in the section
     <xref alt="Section 1.2.1" rid="sec-sota-datasets-requirements">Section 1.2.1</xref>,
     the main requirements of the dataset that I wanted to create were to
-    contain at the same time LiDAR data, RGB data and infrared data,
-    with simple bounding box annotations for all trees. And as explained
-    in
+    contain at the same time LiDAR data, RGB data and CIR data, with
+    simple bounding box annotations for all trees. And as explained in
     <xref alt="Section 2.2" rid="sec-obj-covered_trees">Section 2.2</xref>,
     all trees means also annotating trees that are partially or
     completely covered by other trees.</p>
         <p>Then, to make the most out of the point cloud resolution and the
     RGB images resolution, I decided to use a CHM resolution of 8 cm,
     which is also the resolution of the RGB images. However, the
-    resolution of infrared images is 25 cm, which made it less optimal,
-    but still usable.</p>
+    resolution of CIR images is 25 cm, which made it less optimal, but
+    still usable.</p>
         <p>To be able to get results even with a small dataset, I decided to
     focus on one specific area, to limit the diversity of trees and
     environments to something that could hopefully still be learnt with
@@ -720,7 +719,7 @@ d’informatique</institution>
     and spatial-level.</p>
         <p>Spatial-level augmentations had to be in the exact same way to
     the whole dataset, to maintain the spatial coherence between RGB
-    images, infrared images and the CHM layers. I used three different
+    images, CIR images and the CHM layers. I used three different
     spatial transformations, applied with random parameters. The first
     one chooses one of the eight possible images we can get when
     flipping and rotating the image by angles that are multiples of 90°.
@@ -770,16 +769,16 @@ d’informatique</institution>
     <inline-formula><alternatives><tex-math><![CDATA[640 \times 640 \times c_{\text{RGB}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">RGB</mml:mtext></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>
     and <inline-formula><alternatives><tex-math><![CDATA[640 \times 640 \times c_{\text{CHM}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>,
     where <inline-formula><alternatives><tex-math><![CDATA[c_{\text{RGB}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">RGB</mml:mtext></mml:msub></mml:math></alternatives></inline-formula>
-    is equal to 6 when using RGB and infrared images, and 3 when using
-    only one of them, and <inline-formula><alternatives><tex-math><![CDATA[c_{\text{CHM}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub></mml:math></alternatives></inline-formula>
+    is equal to 6 when using RGB and CIR images, and 3 when using only
+    one of them, and <inline-formula><alternatives><tex-math><![CDATA[c_{\text{CHM}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub></mml:math></alternatives></inline-formula>
     is the number of CHM layers that we decide to use for the model.
     Since the resolution that is used is 0.08 m, this means that each
     image spans over 51.2 m.</p>
         <p>The only real modification that I made to the architecture
     compared to the initial paper is adding any number of channels in
     the CHM input, while we had <inline-formula><alternatives><tex-math><![CDATA[c_{\text{CHM}} = 1]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub><mml:mo>=</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
-    originally. Using infrared images in addition to RGB images is also
-    new, but this is a less important modification.</p>
+    originally. Using CIR images in addition to RGB images is also new,
+    but this is a less important modification.</p>
       </sec>
       <sec id="training-pipeline">
         <title>Training pipeline</title>
@@ -789,36 +788,336 @@ d’informatique</institution>
     final model is evaluated on all the datasets.</p>
         <sec id="data-preprocessing">
           <title>Data preprocessing</title>
+          <p>Data pre-processing is quite straightforward. The first step is
+      to divide the dataset into a grid of
+      <inline-formula><alternatives><tex-math><![CDATA[640 \times 640]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+      tiles. Then, all these tiles are placed into one of the training,
+      validation and test sets.</p>
+          <p>As for RGB and CIR images, preprocessing only contains two
+      simple steps: tiling the large images into small
+      <inline-formula><alternatives><tex-math><![CDATA[640 \times 640]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+      images, and normalizing all images along each channel. When both
+      data sources are used, RGB and CIR images are also merged into
+      images with 6 channels, which will be the input of the model.</p>
+          <p>As for CHM layers, there are more steps. The first step is to
+      compute a sort of flattened point cloud, by computing the DTM,
+      which represents the height of the ground, and removing this
+      height to the point cloud. Then, for each CHM layer, if the height
+      interval is <inline-formula><alternatives><tex-math><![CDATA[[z_\text{bot}, z_\text{top}]]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">bot</mml:mtext></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">top</mml:mtext></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+      we first extract all the points which have a height
+      <inline-formula><alternatives><tex-math><![CDATA[h]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>h</mml:mi></mml:math></alternatives></inline-formula>
+      such that <inline-formula><alternatives><tex-math><![CDATA[z_\text{bot} \leq h \leq z_\text{top}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">bot</mml:mtext></mml:msub><mml:mo>≤</mml:mo><mml:mi>h</mml:mi><mml:mo>≤</mml:mo><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">top</mml:mtext></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>,
+      and we then compute the DSM for this smaller point cloud. Since
+      the ground height was already removed from the point cloud, this
+      DSM is the CHM. Then, all the layers are merged into one raster
+      with multiple channels and we normalize the whole raster with the
+      average and the standard deviation over all channels. Finally, we
+      can simply tile these rasters exactly like RGB and CIR images,
+      which gives us the inputs of the model.</p>
+          <p>All these operations are conceptually simple, but they can be
+      computationally expensive. Therefore, I had to put a certain
+      effort into accelerating with different methods. First, I made
+      sure to save the most important and generic elements to avoid
+      useless computations every time the model is trained again,
+      without saturating the memory. Then, I also implemented
+      multi-threading for every possible step to improve the raw speed
+      of preprocessing. Finally, performance is also the reason why
+      normalization if performed during preprocessing instead of during
+      the initialization of the data in the training loop.</p>
         </sec>
         <sec id="training-loop">
           <title>Training loop</title>
+          <p>The training loop is very generic, so I will only mention the
+      most interesting parts. First, we use an Adam optimizer and a
+      simple learning rate scheduler with a multiplier at each epoch i
+      which is <inline-formula><alternatives><tex-math><![CDATA[1/\sqrt{i+2}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>1</mml:mn><mml:mi>/</mml:mi><mml:msqrt><mml:mrow><mml:mi>i</mml:mi><mml:mo>+</mml:mo><mml:mn>2</mml:mn></mml:mrow></mml:msqrt></mml:mrow></mml:math></alternatives></inline-formula>.</p>
+          <p>Then, since the batch size cannot be very large because of the
+      space required by all the images, there is the possibility to
+      perform gradient accumulation, which means that backward
+      propagation won’t be performed with each batch, but instead every
+      two or more batches. The idea behind this is to add more stability
+      to the training, since back-propagating on only a few images is
+      prone to overfitting on a set of examples which are not
+      representative of the whole dataset.</p>
+          <p>As for the criterion to stop the training session, we use the
+      loss on the validation set. Once this loss didn’t improve during
+      50 iterations over the whole dataset, we stop and keep the model
+      that had the best validation loss.</p>
+          <p>Besides these details, the training loop is very generic. We
+      loop over the entire training set with batches to compute the loss
+      and perform gradient back-propagation,. Then we compute the loss
+      on the validation set and store this loss as the metric that
+      decides when to stop.</p>
         </sec>
         <sec id="output-postprocessing">
           <title>Output postprocessing</title>
-          <p>sortedAP:
+          <p>Regarding postprocessing of the output of the model, there a
+      few things to mention. First, the model outputs a lot of bounding
+      boxes, which have to be cleaned using two criteria. The first
+      criterion is the confidence score. We can just set a threshold
+      below which bounding boxes are discarded. The second criterion is
+      the intersection over union (IoU) with other bounding boxes. IoU
+      is a metrics used to quantify how similar two bounding boxes are.
+      It is a value between 0 and 1, which formula is:</p>
+          <p>
+            <disp-formula>
+              <alternatives>
+                <tex-math><![CDATA[
+      \text{IoU}(A, B) = \frac{\text{area}(A \cap B)}{\text{area}(A \cup B)}
+      ]]></tex-math>
+                <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block">
+                  <mml:mrow>
+                    <mml:mtext mathvariant="normal">IoU</mml:mtext>
+                    <mml:mrow>
+                      <mml:mo stretchy="true" form="prefix">(</mml:mo>
+                      <mml:mi>A</mml:mi>
+                      <mml:mo>,</mml:mo>
+                      <mml:mi>B</mml:mi>
+                      <mml:mo stretchy="true" form="postfix">)</mml:mo>
+                    </mml:mrow>
+                    <mml:mo>=</mml:mo>
+                    <mml:mfrac>
+                      <mml:mrow>
+                        <mml:mtext mathvariant="normal">area</mml:mtext>
+                        <mml:mrow>
+                          <mml:mo stretchy="true" form="prefix">(</mml:mo>
+                          <mml:mi>A</mml:mi>
+                          <mml:mo>∩</mml:mo>
+                          <mml:mi>B</mml:mi>
+                          <mml:mo stretchy="true" form="postfix">)</mml:mo>
+                        </mml:mrow>
+                      </mml:mrow>
+                      <mml:mrow>
+                        <mml:mtext mathvariant="normal">area</mml:mtext>
+                        <mml:mrow>
+                          <mml:mo stretchy="true" form="prefix">(</mml:mo>
+                          <mml:mi>A</mml:mi>
+                          <mml:mo>∪</mml:mo>
+                          <mml:mi>B</mml:mi>
+                          <mml:mo stretchy="true" form="postfix">)</mml:mo>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mfrac>
+                  </mml:mrow>
+                </mml:math>
+              </alternatives>
+            </disp-formula>
+          </p>
+          <p>Using this metrics, we can detect bounding boxes which are too
+      similar to each other, and simply keep the bounding box with the
+      highest confidence score when two bounding boxes have an IoU
+      larger than a certain threshold.</p>
+          <p>For the evaluation, the process is a little different, because
+      we only perform the clean up relying on IoU, and keep all other
+      bounding boxes. The main metric that we compute is called sortedAP
       (<xref alt="Chen et al. 2023" rid="ref-sortedAP" ref-type="bibr">Chen
-      et al. 2023</xref>)</p>
+      et al. 2023</xref>), which is an evolution of the mean (point)
+      average precision (mAP). mAP is defined as follows:</p>
+          <p>
+            <disp-formula>
+              <alternatives>
+                <tex-math><![CDATA[
+      \begin{array}{rcl}
+      \text{mAP} & = & \frac{1}{N} \sum\limits_{t\in T} \text{AP}_t \\
+      \text{AP}_t & = & \frac{{TP}_t}{{TP}_t + {FP}_t + {FN}_t}
+      \end{array}
+      ]]></tex-math>
+                <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block">
+                  <mml:mtable>
+                    <mml:mtr>
+                      <mml:mtd columnalign="right" style="text-align: right">
+                        <mml:mtext mathvariant="normal">mAP</mml:mtext>
+                      </mml:mtd>
+                      <mml:mtd columnalign="center" style="text-align: center">
+                        <mml:mo>=</mml:mo>
+                      </mml:mtd>
+                      <mml:mtd columnalign="left" style="text-align: left">
+                        <mml:mfrac>
+                          <mml:mn>1</mml:mn>
+                          <mml:mi>N</mml:mi>
+                        </mml:mfrac>
+                        <mml:munder>
+                          <mml:mo>∑</mml:mo>
+                          <mml:mrow>
+                            <mml:mi>t</mml:mi>
+                            <mml:mo>∈</mml:mo>
+                            <mml:mi>T</mml:mi>
+                          </mml:mrow>
+                        </mml:munder>
+                        <mml:msub>
+                          <mml:mtext mathvariant="normal">AP</mml:mtext>
+                          <mml:mi>t</mml:mi>
+                        </mml:msub>
+                      </mml:mtd>
+                    </mml:mtr>
+                    <mml:mtr>
+                      <mml:mtd columnalign="right" style="text-align: right">
+                        <mml:msub>
+                          <mml:mtext mathvariant="normal">AP</mml:mtext>
+                          <mml:mi>t</mml:mi>
+                        </mml:msub>
+                      </mml:mtd>
+                      <mml:mtd columnalign="center" style="text-align: center">
+                        <mml:mo>=</mml:mo>
+                      </mml:mtd>
+                      <mml:mtd columnalign="left" style="text-align: left">
+                        <mml:mfrac>
+                          <mml:msub>
+                            <mml:mrow>
+                              <mml:mi>T</mml:mi>
+                              <mml:mi>P</mml:mi>
+                            </mml:mrow>
+                            <mml:mi>t</mml:mi>
+                          </mml:msub>
+                          <mml:mrow>
+                            <mml:msub>
+                              <mml:mrow>
+                                <mml:mi>T</mml:mi>
+                                <mml:mi>P</mml:mi>
+                              </mml:mrow>
+                              <mml:mi>t</mml:mi>
+                            </mml:msub>
+                            <mml:mo>+</mml:mo>
+                            <mml:msub>
+                              <mml:mrow>
+                                <mml:mi>F</mml:mi>
+                                <mml:mi>P</mml:mi>
+                              </mml:mrow>
+                              <mml:mi>t</mml:mi>
+                            </mml:msub>
+                            <mml:mo>+</mml:mo>
+                            <mml:msub>
+                              <mml:mrow>
+                                <mml:mi>F</mml:mi>
+                                <mml:mi>N</mml:mi>
+                              </mml:mrow>
+                              <mml:mi>t</mml:mi>
+                            </mml:msub>
+                          </mml:mrow>
+                        </mml:mfrac>
+                      </mml:mtd>
+                    </mml:mtr>
+                  </mml:mtable>
+                </mml:math>
+              </alternatives>
+            </disp-formula>
+          </p>
+          <p>where <inline-formula><alternatives><tex-math><![CDATA[T=\{t_1, t_2, \dots, t_N\}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>T</mml:mi><mml:mo>=</mml:mo><mml:mo stretchy="false" form="prefix">{</mml:mo><mml:msub><mml:mi>t</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>t</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:mi>…</mml:mi><mml:mo>,</mml:mo><mml:msub><mml:mi>t</mml:mi><mml:mi>N</mml:mi></mml:msub><mml:mo stretchy="false" form="postfix">}</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+      is a list of IoU threshold values, <inline-formula><alternatives><tex-math><![CDATA[{TP}_t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mrow><mml:mi>T</mml:mi><mml:mi>P</mml:mi></mml:mrow><mml:mi>t</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+      are the true positives when the the IoU threshold is
+      <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>,
+      <inline-formula><alternatives><tex-math><![CDATA[{FP}_t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mrow><mml:mi>F</mml:mi><mml:mi>P</mml:mi></mml:mrow><mml:mi>t</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+      are false positives and <inline-formula><alternatives><tex-math><![CDATA[{FN}_t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mrow><mml:mi>F</mml:mi><mml:mi>N</mml:mi></mml:mrow><mml:mi>t</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+      are false negatives. The reason why <inline-formula><alternatives><tex-math><![CDATA[TP]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>T</mml:mi><mml:mi>P</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>,
+      <inline-formula><alternatives><tex-math><![CDATA[FP]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>F</mml:mi><mml:mi>P</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+      and <inline-formula><alternatives><tex-math><![CDATA[FN]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>F</mml:mi><mml:mi>N</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+      depend on <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>
+      is that a bounding box is considered to be true if its IoU with
+      one of the ground-truth bounding boxes is larger than
+      <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>.</p>
+          <p>sortedAP is an improvement over this method because there is no
+      need to select a list of IoU threshold values. Predicted bounding
+      boxes are sorted according to their confidence score which allows
+      to compute <inline-formula><alternatives><tex-math><![CDATA[\text{AP}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mtext mathvariant="normal">AP</mml:mtext></mml:math></alternatives></inline-formula>
+      incrementally for any value of <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>.
+      Then, the area of the curve of the AP with respect to the IoU
+      threshold is used as a metric, between 0 and 1, 1 being the best
+      possible value.</p>
         </sec>
       </sec>
     </sec>
     <sec id="results">
       <title>Results</title>
+      <p>In this section are the results of the experiments performed with
+  the model and the dataset presented before.</p>
       <sec id="training-parameters">
         <title>Training parameters</title>
-        <fig id="fig-training-parameters">
-          <caption>
-            <p>Figure 1: Results with different training
-      parameters</p>
-          </caption>
-          <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-2.png"/>
-        </fig>
+        <p>The first experiment was a simple test over the different
+    parameters regarding the training loop. There were two goals to this
+    experiment. The first one was to find the best training parameters
+    for the next experiments. The second one was to see if randomly
+    dropping one of the inputs of the model (either RGB/CIR or CHM)
+    could help the model by pushing it to learn to make the best out of
+    the two types of data.</p>
+        <p>The different parameters that are tested here are:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p>“Learn. rate”: the initial learning rate.</p>
+          </list-item>
+          <list-item>
+            <p>“Prob. drop”: the probability to drop either RGB/CIR or CHM.
+        The probability is the same for the two types, which means that
+        if the displayed value is 0.1, then all data will be used 80% of
+        the time, while only RGB/CIR and only CHM both happen 10% of the
+        time.</p>
+          </list-item>
+          <list-item>
+            <p>“Accum. count”: the accumulation count, which means the
+        amount of training data to process and compute the loss on
+        before performing gradient back-propagation.</p>
+          </list-item>
+        </list>
+        <p>As you can see on
+    <xref alt="Figure 1" rid="fig-training-parameters-experiments">Figure 1</xref>,
+    sortedAP reaches at best values just above 0.3. The reason why the
+    column name is “Best sortedAP” is due to the dataset being too
+    small. Since the dataset is small, the training process overfits
+    quickly, and the model doesn’t have enough training steps to have
+    confidence scores which reach very high values. As a consequence, it
+    is difficult to know beforehand which confidence threshold to
+    choose. Therefore, the sortedAP metric is computed over several
+    different confidence thresholds, and the one that gives the best
+    value of sortedAP is kept.</p>
+        <p>With this experiment, we can see that a learning rate of 0.01
+    seems to make the training too much unstable, while 0.001 doesn’t
+    give very high score. Then, we can also see how unstable the
+    training process is in general, which comes mostly from the dataset
+    being too small. However, a learning rate between 0.0025 and 0.006
+    seems to give the most stable results, when the drop probability is
+    0. This seems to show that the idea of randomly dropping one of the
+    two inputs doesn’t really help the model to learn.</p>
         <fig id="fig-training-parameters-experiments">
           <caption>
-            <p>Figure 2: Results with different training parameters
+            <p>Figure 1: Results with different training parameters
       for all experiments</p>
           </caption>
           <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-experiments-output-1.png"/>
         </fig>
+        <p>In the next plot
+    <xref alt="Figure 2" rid="fig-training-parameters-data">Figure 2</xref>,
+    we can see more results for the same experiments. Here, the results
+    are colored according to the data that we use to evaluate the model.
+    In blue, we see the value of sortedAP when we evaluate the model
+    with the CHM layers data and dummy zero arrays as RGB/CIR data.
+    These dummy arrays are also those that are used as input when one of
+    the channel is dropped during training, when we have a drop
+    probability larger than 0. Some interesting patterns appear in some
+    of the cells in this plot. Firstly, it looks like randomly dropping
+    one of the two inputs with the same probability has a much larger
+    influence over the results using RGB/CIR than CHM. While CHM gives
+    better results than RGB/CIR when always training using everything,
+    RGB/CIR seems to perform better alone when also trained alone, even
+    outperforming the combination of both inputs in certain cases.</p>
+        <fig id="fig-training-parameters-data">
+          <caption>
+            <p>Figure 2: Results with different training
+      parameters</p>
+          </caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-2.png"/>
+        </fig>
+        <p>From the results of this experiment, I decided to pick the
+    following parameters for the next experiments:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p>Initial learning rate: 0.004</p>
+          </list-item>
+          <list-item>
+            <p>Drop probability: 0</p>
+          </list-item>
+          <list-item>
+            <p>Accumulation count: 10</p>
+          </list-item>
+        </list>
       </sec>
       <sec id="data-used">
         <title>Data used</title>
@@ -2531,7 +2830,7 @@ d’informatique</institution>
                     <p>LiDAR point clouds (preferably aerial)</p>
                   </list-item>
                   <list-item>
-                    <p>(Optional) Aerial infrared images</p>
+                    <p>(Optional) Aerial infrared (CIR) images</p>
                   </list-item>
                 </list>
               </list-item>
@@ -2666,7 +2965,7 @@ d’informatique</institution>
       looking for three different data types independently:</p>
             <list list-type="bullet">
               <list-item>
-                <p>RGB (and eventually infrared) images</p>
+                <p>RGB (and if possible CIR) images</p>
               </list-item>
               <list-item>
                 <p>LiDAR point clouds</p>
@@ -2983,17 +3282,16 @@ d’informatique</institution>
           <p>As explained in the section
     <xref alt="Section 1.2.1" rid="sec-sota-datasets-requirements-nb-article">Section 1.2.1</xref>,
     the main requirements of the dataset that I wanted to create were to
-    contain at the same time LiDAR data, RGB data and infrared data,
-    with simple bounding box annotations for all trees. And as explained
-    in
+    contain at the same time LiDAR data, RGB data and CIR data, with
+    simple bounding box annotations for all trees. And as explained in
     <xref alt="Section 2.2" rid="sec-obj-covered_trees-nb-article">Section 2.2</xref>,
     all trees means also annotating trees that are partially or
     completely covered by other trees.</p>
           <p>Then, to make the most out of the point cloud resolution and the
     RGB images resolution, I decided to use a CHM resolution of 8 cm,
     which is also the resolution of the RGB images. However, the
-    resolution of infrared images is 25 cm, which made it less optimal,
-    but still usable.</p>
+    resolution of CIR images is 25 cm, which made it less optimal, but
+    still usable.</p>
           <p>To be able to get results even with a small dataset, I decided to
     focus on one specific area, to limit the diversity of trees and
     environments to something that could hopefully still be learnt with
@@ -3095,7 +3393,7 @@ d’informatique</institution>
     and spatial-level.</p>
           <p>Spatial-level augmentations had to be in the exact same way to
     the whole dataset, to maintain the spatial coherence between RGB
-    images, infrared images and the CHM layers. I used three different
+    images, CIR images and the CHM layers. I used three different
     spatial transformations, applied with random parameters. The first
     one chooses one of the eight possible images we can get when
     flipping and rotating the image by angles that are multiples of 90°.
@@ -3145,16 +3443,16 @@ d’informatique</institution>
     <inline-formula><alternatives><tex-math><![CDATA[640 \times 640 \times c_{\text{RGB}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">RGB</mml:mtext></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>
     and <inline-formula><alternatives><tex-math><![CDATA[640 \times 640 \times c_{\text{CHM}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>,
     where <inline-formula><alternatives><tex-math><![CDATA[c_{\text{RGB}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">RGB</mml:mtext></mml:msub></mml:math></alternatives></inline-formula>
-    is equal to 6 when using RGB and infrared images, and 3 when using
-    only one of them, and <inline-formula><alternatives><tex-math><![CDATA[c_{\text{CHM}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub></mml:math></alternatives></inline-formula>
+    is equal to 6 when using RGB and CIR images, and 3 when using only
+    one of them, and <inline-formula><alternatives><tex-math><![CDATA[c_{\text{CHM}}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub></mml:math></alternatives></inline-formula>
     is the number of CHM layers that we decide to use for the model.
     Since the resolution that is used is 0.08 m, this means that each
     image spans over 51.2 m.</p>
           <p>The only real modification that I made to the architecture
     compared to the initial paper is adding any number of channels in
     the CHM input, while we had <inline-formula><alternatives><tex-math><![CDATA[c_{\text{CHM}} = 1]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mtext mathvariant="normal">CHM</mml:mtext></mml:msub><mml:mo>=</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
-    originally. Using infrared images in addition to RGB images is also
-    new, but this is a less important modification.</p>
+    originally. Using CIR images in addition to RGB images is also new,
+    but this is a less important modification.</p>
         </sec>
         <sec id="training-pipeline-nb-article">
           <title>Training pipeline</title>
@@ -3164,23 +3462,351 @@ d’informatique</institution>
     final model is evaluated on all the datasets.</p>
           <sec id="data-preprocessing-nb-article">
             <title>Data preprocessing</title>
+            <p>Data pre-processing is quite straightforward. The first step is
+      to divide the dataset into a grid of
+      <inline-formula><alternatives><tex-math><![CDATA[640 \times 640]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+      tiles. Then, all these tiles are placed into one of the training,
+      validation and test sets.</p>
+            <p>As for RGB and CIR images, preprocessing only contains two
+      simple steps: tiling the large images into small
+      <inline-formula><alternatives><tex-math><![CDATA[640 \times 640]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>640</mml:mn><mml:mo>×</mml:mo><mml:mn>640</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+      images, and normalizing all images along each channel. When both
+      data sources are used, RGB and CIR images are also merged into
+      images with 6 channels, which will be the input of the model.</p>
+            <p>As for CHM layers, there are more steps. The first step is to
+      compute a sort of flattened point cloud, by computing the DTM,
+      which represents the height of the ground, and removing this
+      height to the point cloud. Then, for each CHM layer, if the height
+      interval is <inline-formula><alternatives><tex-math><![CDATA[[z_\text{bot}, z_\text{top}]]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">bot</mml:mtext></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">top</mml:mtext></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+      we first extract all the points which have a height
+      <inline-formula><alternatives><tex-math><![CDATA[h]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>h</mml:mi></mml:math></alternatives></inline-formula>
+      such that <inline-formula><alternatives><tex-math><![CDATA[z_\text{bot} \leq h \leq z_\text{top}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">bot</mml:mtext></mml:msub><mml:mo>≤</mml:mo><mml:mi>h</mml:mi><mml:mo>≤</mml:mo><mml:msub><mml:mi>z</mml:mi><mml:mtext mathvariant="normal">top</mml:mtext></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>,
+      and we then compute the DSM for this smaller point cloud. Since
+      the ground height was already removed from the point cloud, this
+      DSM is the CHM. Then, all the layers are merged into one raster
+      with multiple channels and we normalize the whole raster with the
+      average and the standard deviation over all channels. Finally, we
+      can simply tile these rasters exactly like RGB and CIR images,
+      which gives us the inputs of the model.</p>
+            <p>All these operations are conceptually simple, but they can be
+      computationally expensive. Therefore, I had to put a certain
+      effort into accelerating with different methods. First, I made
+      sure to save the most important and generic elements to avoid
+      useless computations every time the model is trained again,
+      without saturating the memory. Then, I also implemented
+      multi-threading for every possible step to improve the raw speed
+      of preprocessing. Finally, performance is also the reason why
+      normalization if performed during preprocessing instead of during
+      the initialization of the data in the training loop.</p>
           </sec>
           <sec id="training-loop-nb-article">
             <title>Training loop</title>
+            <p>The training loop is very generic, so I will only mention the
+      most interesting parts. First, we use an Adam optimizer and a
+      simple learning rate scheduler with a multiplier at each epoch i
+      which is <inline-formula><alternatives><tex-math><![CDATA[1/\sqrt{i+2}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>1</mml:mn><mml:mi>/</mml:mi><mml:msqrt><mml:mrow><mml:mi>i</mml:mi><mml:mo>+</mml:mo><mml:mn>2</mml:mn></mml:mrow></mml:msqrt></mml:mrow></mml:math></alternatives></inline-formula>.</p>
+            <p>Then, since the batch size cannot be very large because of the
+      space required by all the images, there is the possibility to
+      perform gradient accumulation, which means that backward
+      propagation won’t be performed with each batch, but instead every
+      two or more batches. The idea behind this is to add more stability
+      to the training, since back-propagating on only a few images is
+      prone to overfitting on a set of examples which are not
+      representative of the whole dataset.</p>
+            <p>As for the criterion to stop the training session, we use the
+      loss on the validation set. Once this loss didn’t improve during
+      50 iterations over the whole dataset, we stop and keep the model
+      that had the best validation loss.</p>
+            <p>Besides these details, the training loop is very generic. We
+      loop over the entire training set with batches to compute the loss
+      and perform gradient back-propagation,. Then we compute the loss
+      on the validation set and store this loss as the metric that
+      decides when to stop.</p>
           </sec>
           <sec id="output-postprocessing-nb-article">
             <title>Output postprocessing</title>
-            <p>sortedAP:
+            <p>Regarding postprocessing of the output of the model, there a
+      few things to mention. First, the model outputs a lot of bounding
+      boxes, which have to be cleaned using two criteria. The first
+      criterion is the confidence score. We can just set a threshold
+      below which bounding boxes are discarded. The second criterion is
+      the intersection over union (IoU) with other bounding boxes. IoU
+      is a metrics used to quantify how similar two bounding boxes are.
+      It is a value between 0 and 1, which formula is:</p>
+            <p>
+              <disp-formula>
+                <alternatives>
+                  <tex-math><![CDATA[
+      \text{IoU}(A, B) = \frac{\text{area}(A \cap B)}{\text{area}(A \cup B)}
+      ]]></tex-math>
+                  <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block">
+                    <mml:mrow>
+                      <mml:mtext mathvariant="normal">IoU</mml:mtext>
+                      <mml:mrow>
+                        <mml:mo stretchy="true" form="prefix">(</mml:mo>
+                        <mml:mi>A</mml:mi>
+                        <mml:mo>,</mml:mo>
+                        <mml:mi>B</mml:mi>
+                        <mml:mo stretchy="true" form="postfix">)</mml:mo>
+                      </mml:mrow>
+                      <mml:mo>=</mml:mo>
+                      <mml:mfrac>
+                        <mml:mrow>
+                          <mml:mtext mathvariant="normal">area</mml:mtext>
+                          <mml:mrow>
+                            <mml:mo stretchy="true" form="prefix">(</mml:mo>
+                            <mml:mi>A</mml:mi>
+                            <mml:mo>∩</mml:mo>
+                            <mml:mi>B</mml:mi>
+                            <mml:mo stretchy="true" form="postfix">)</mml:mo>
+                          </mml:mrow>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mtext mathvariant="normal">area</mml:mtext>
+                          <mml:mrow>
+                            <mml:mo stretchy="true" form="prefix">(</mml:mo>
+                            <mml:mi>A</mml:mi>
+                            <mml:mo>∪</mml:mo>
+                            <mml:mi>B</mml:mi>
+                            <mml:mo stretchy="true" form="postfix">)</mml:mo>
+                          </mml:mrow>
+                        </mml:mrow>
+                      </mml:mfrac>
+                    </mml:mrow>
+                  </mml:math>
+                </alternatives>
+              </disp-formula>
+            </p>
+            <p>Using this metrics, we can detect bounding boxes which are too
+      similar to each other, and simply keep the bounding box with the
+      highest confidence score when two bounding boxes have an IoU
+      larger than a certain threshold.</p>
+            <p>For the evaluation, the process is a little different, because
+      we only perform the clean up relying on IoU, and keep all other
+      bounding boxes. The main metric that we compute is called sortedAP
       (<xref alt="Chen et al. 2023" rid="ref-sortedAP-nb-article" ref-type="bibr">Chen
-      et al. 2023</xref>)</p>
+      et al. 2023</xref>), which is an evolution of the mean (point)
+      average precision (mAP). mAP is defined as follows:</p>
+            <p>
+              <disp-formula>
+                <alternatives>
+                  <tex-math><![CDATA[
+      \begin{array}{rcl}
+      \text{mAP} & = & \frac{1}{N} \sum\limits_{t\in T} \text{AP}_t \\
+      \text{AP}_t & = & \frac{{TP}_t}{{TP}_t + {FP}_t + {FN}_t}
+      \end{array}
+      ]]></tex-math>
+                  <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block">
+                    <mml:mtable>
+                      <mml:mtr>
+                        <mml:mtd columnalign="right" style="text-align: right">
+                          <mml:mtext mathvariant="normal">mAP</mml:mtext>
+                        </mml:mtd>
+                        <mml:mtd columnalign="center" style="text-align: center">
+                          <mml:mo>=</mml:mo>
+                        </mml:mtd>
+                        <mml:mtd columnalign="left" style="text-align: left">
+                          <mml:mfrac>
+                            <mml:mn>1</mml:mn>
+                            <mml:mi>N</mml:mi>
+                          </mml:mfrac>
+                          <mml:munder>
+                            <mml:mo>∑</mml:mo>
+                            <mml:mrow>
+                              <mml:mi>t</mml:mi>
+                              <mml:mo>∈</mml:mo>
+                              <mml:mi>T</mml:mi>
+                            </mml:mrow>
+                          </mml:munder>
+                          <mml:msub>
+                            <mml:mtext mathvariant="normal">AP</mml:mtext>
+                            <mml:mi>t</mml:mi>
+                          </mml:msub>
+                        </mml:mtd>
+                      </mml:mtr>
+                      <mml:mtr>
+                        <mml:mtd columnalign="right" style="text-align: right">
+                          <mml:msub>
+                            <mml:mtext mathvariant="normal">AP</mml:mtext>
+                            <mml:mi>t</mml:mi>
+                          </mml:msub>
+                        </mml:mtd>
+                        <mml:mtd columnalign="center" style="text-align: center">
+                          <mml:mo>=</mml:mo>
+                        </mml:mtd>
+                        <mml:mtd columnalign="left" style="text-align: left">
+                          <mml:mfrac>
+                            <mml:msub>
+                              <mml:mrow>
+                                <mml:mi>T</mml:mi>
+                                <mml:mi>P</mml:mi>
+                              </mml:mrow>
+                              <mml:mi>t</mml:mi>
+                            </mml:msub>
+                            <mml:mrow>
+                              <mml:msub>
+                                <mml:mrow>
+                                  <mml:mi>T</mml:mi>
+                                  <mml:mi>P</mml:mi>
+                                </mml:mrow>
+                                <mml:mi>t</mml:mi>
+                              </mml:msub>
+                              <mml:mo>+</mml:mo>
+                              <mml:msub>
+                                <mml:mrow>
+                                  <mml:mi>F</mml:mi>
+                                  <mml:mi>P</mml:mi>
+                                </mml:mrow>
+                                <mml:mi>t</mml:mi>
+                              </mml:msub>
+                              <mml:mo>+</mml:mo>
+                              <mml:msub>
+                                <mml:mrow>
+                                  <mml:mi>F</mml:mi>
+                                  <mml:mi>N</mml:mi>
+                                </mml:mrow>
+                                <mml:mi>t</mml:mi>
+                              </mml:msub>
+                            </mml:mrow>
+                          </mml:mfrac>
+                        </mml:mtd>
+                      </mml:mtr>
+                    </mml:mtable>
+                  </mml:math>
+                </alternatives>
+              </disp-formula>
+            </p>
+            <p>where <inline-formula><alternatives><tex-math><![CDATA[T=\{t_1, t_2, \dots, t_N\}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>T</mml:mi><mml:mo>=</mml:mo><mml:mo stretchy="false" form="prefix">{</mml:mo><mml:msub><mml:mi>t</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>t</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:mi>…</mml:mi><mml:mo>,</mml:mo><mml:msub><mml:mi>t</mml:mi><mml:mi>N</mml:mi></mml:msub><mml:mo stretchy="false" form="postfix">}</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+      is a list of IoU threshold values, <inline-formula><alternatives><tex-math><![CDATA[{TP}_t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mrow><mml:mi>T</mml:mi><mml:mi>P</mml:mi></mml:mrow><mml:mi>t</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+      are the true positives when the the IoU threshold is
+      <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>,
+      <inline-formula><alternatives><tex-math><![CDATA[{FP}_t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mrow><mml:mi>F</mml:mi><mml:mi>P</mml:mi></mml:mrow><mml:mi>t</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+      are false positives and <inline-formula><alternatives><tex-math><![CDATA[{FN}_t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mrow><mml:mi>F</mml:mi><mml:mi>N</mml:mi></mml:mrow><mml:mi>t</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+      are false negatives. The reason why <inline-formula><alternatives><tex-math><![CDATA[TP]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>T</mml:mi><mml:mi>P</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>,
+      <inline-formula><alternatives><tex-math><![CDATA[FP]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>F</mml:mi><mml:mi>P</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+      and <inline-formula><alternatives><tex-math><![CDATA[FN]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>F</mml:mi><mml:mi>N</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+      depend on <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>
+      is that a bounding box is considered to be true if its IoU with
+      one of the ground-truth bounding boxes is larger than
+      <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>.</p>
+            <p>sortedAP is an improvement over this method because there is no
+      need to select a list of IoU threshold values. Predicted bounding
+      boxes are sorted according to their confidence score which allows
+      to compute <inline-formula><alternatives><tex-math><![CDATA[\text{AP}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mtext mathvariant="normal">AP</mml:mtext></mml:math></alternatives></inline-formula>
+      incrementally for any value of <inline-formula><alternatives><tex-math><![CDATA[t]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>t</mml:mi></mml:math></alternatives></inline-formula>.
+      Then, the area of the curve of the AP with respect to the IoU
+      threshold is used as a metric, between 0 and 1, 1 being the best
+      possible value.</p>
           </sec>
         </sec>
       </sec>
       <sec id="results-nb-article">
         <title>Results</title>
+        <p>In this section are the results of the experiments performed with
+  the model and the dataset presented before.</p>
         <sec id="training-parameters-nb-article">
           <title>Training parameters</title>
-          <sec id="cell-fig-training-parameters-nb-article" specific-use="notebook-content">
+          <p>The first experiment was a simple test over the different
+    parameters regarding the training loop. There were two goals to this
+    experiment. The first one was to find the best training parameters
+    for the next experiments. The second one was to see if randomly
+    dropping one of the inputs of the model (either RGB/CIR or CHM)
+    could help the model by pushing it to learn to make the best out of
+    the two types of data.</p>
+          <p>The different parameters that are tested here are:</p>
+          <list list-type="bullet">
+            <list-item>
+              <p>“Learn. rate”: the initial learning rate.</p>
+            </list-item>
+            <list-item>
+              <p>“Prob. drop”: the probability to drop either RGB/CIR or CHM.
+        The probability is the same for the two types, which means that
+        if the displayed value is 0.1, then all data will be used 80% of
+        the time, while only RGB/CIR and only CHM both happen 10% of the
+        time.</p>
+            </list-item>
+            <list-item>
+              <p>“Accum. count”: the accumulation count, which means the
+        amount of training data to process and compute the loss on
+        before performing gradient back-propagation.</p>
+            </list-item>
+          </list>
+          <p>As you can see on
+    <xref alt="Figure 1" rid="fig-training-parameters-experiments-nb-article">Figure 1</xref>,
+    sortedAP reaches at best values just above 0.3. The reason why the
+    column name is “Best sortedAP” is due to the dataset being too
+    small. Since the dataset is small, the training process overfits
+    quickly, and the model doesn’t have enough training steps to have
+    confidence scores which reach very high values. As a consequence, it
+    is difficult to know beforehand which confidence threshold to
+    choose. Therefore, the sortedAP metric is computed over several
+    different confidence thresholds, and the one that gives the best
+    value of sortedAP is kept.</p>
+          <p>With this experiment, we can see that a learning rate of 0.01
+    seems to make the training too much unstable, while 0.001 doesn’t
+    give very high score. Then, we can also see how unstable the
+    training process is in general, which comes mostly from the dataset
+    being too small. However, a learning rate between 0.0025 and 0.006
+    seems to give the most stable results, when the drop probability is
+    0. This seems to show that the idea of randomly dropping one of the
+    two inputs doesn’t really help the model to learn.</p>
+          <sec id="cell-fig-training-parameters-experiments-nb-article" specific-use="notebook-content">
+            <code language="python">import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv("data/training_params_experiment_all.csv")
+df = df[df["Data used for evaluation"] == "RGB, CIR and CHM"]
+df["Prob. drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate",
+    "repartition_name": "Exp. name"
+  },
+  inplace=True)
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Accum. count",
+    y="Best sortedAP",
+    hue="Exp. name",
+    hue_order=["exp0", "exp1", "exp2", "exp3", "exp4"],
+    col="Learn. rate",
+    row="Prob. drop",
+    margin_titles=True,
+    height=2,
+    aspect=1,
+    palette="colorblind"
+)</code>
+            <boxed-text>
+              <fig id="fig-training-parameters-experiments-nb-article">
+                <caption>
+                  <p>Figure 1: Results with different training parameters
+        for all experiments</p>
+                </caption>
+                <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-experiments-output-1.png"/>
+              </fig>
+            </boxed-text>
+          </sec>
+          <sec id="e5acd32c-nb-article" specific-use="notebook-content">
+            <p>In the next plot
+    <xref alt="Figure 2" rid="fig-training-parameters-data-nb-article">Figure 2</xref>,
+    we can see more results for the same experiments. Here, the results
+    are colored according to the data that we use to evaluate the model.
+    In blue, we see the value of sortedAP when we evaluate the model
+    with the CHM layers data and dummy zero arrays as RGB/CIR data.
+    These dummy arrays are also those that are used as input when one of
+    the channel is dropped during training, when we have a drop
+    probability larger than 0. Some interesting patterns appear in some
+    of the cells in this plot. Firstly, it looks like randomly dropping
+    one of the two inputs with the same probability has a much larger
+    influence over the results using RGB/CIR than CHM. While CHM gives
+    better results than RGB/CIR when always training using everything,
+    RGB/CIR seems to perform better alone when also trained alone, even
+    outperforming the combination of both inputs in certain cases.</p>
+          </sec>
+          <sec id="cell-fig-training-parameters-data-nb-article" specific-use="notebook-content">
             <code language="python">import pandas as pd
 import seaborn as sns
 
@@ -3189,7 +3815,7 @@ df.sort_values(
     by=["proba_drop_chm", "Data used for evaluation"],
     inplace=True,
 )
-df["Proba drop"] = df["proba_drop_chm"]
+df["Prob. drop"] = df["proba_drop_chm"]
 df.rename(columns = {
     "accumulate": "Accum. count",
     "Data used for evaluation": "Evaluation data",
@@ -3204,7 +3830,7 @@ sns.catplot(
     y="Best sortedAP",
     hue="Evaluation data",
     col="Learn. rate",
-    row="Proba drop",
+    row="Prob. drop",
     margin_titles=True,
     height=2,
     aspect=1,
@@ -3225,56 +3851,30 @@ sns.catplot(
       </preformat>
             </boxed-text>
             <boxed-text>
-              <fig id="fig-training-parameters-nb-article">
+              <fig id="fig-training-parameters-data-nb-article">
                 <caption>
-                  <p>Figure 1: Results with different training
+                  <p>Figure 2: Results with different training
         parameters</p>
                 </caption>
-                <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-output-2.png"/>
+                <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-2.png"/>
               </fig>
             </boxed-text>
           </sec>
-          <sec id="cell-fig-training-parameters-experiments-nb-article" specific-use="notebook-content">
-            <code language="python">import pandas as pd
-import seaborn as sns
-
-df = pd.read_csv("data/training_params_experiment_all.csv")
-df = df[df["Data used for evaluation"] == "RGB, CIR and CHM"]
-df["Proba drop"] = df["proba_drop_chm"]
-df.rename(columns = {
-    "accumulate": "Accum. count",
-    "Data used for evaluation": "Evaluation data",
-    "lr": "Learn. rate",
-    "repartition_name": "Exp. name"
-  },
-  inplace=True)
-sns.set_style("ticks", {"axes.grid": True})
-sns.catplot(
-    data=df,
-    kind="swarm",
-    x="Accum. count",
-    y="Best sortedAP",
-    hue="Exp. name",
-    hue_order=["exp0", "exp1", "exp2", "exp3", "exp4"],
-    col="Learn. rate",
-    row="Proba drop",
-    margin_titles=True,
-    height=2,
-    aspect=1,
-    palette="colorblind"
-)</code>
-            <boxed-text>
-              <fig id="fig-training-parameters-experiments-nb-article">
-                <caption>
-                  <p>Figure 2: Results with different training parameters
-        for all experiments</p>
-                </caption>
-                <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-experiments-output-1.png"/>
-              </fig>
-            </boxed-text>
+          <sec id="cell-0ba5e364-nb-article" specific-use="notebook-content">
+            <p>From the results of this experiment, I decided to pick the
+    following parameters for the next experiments:</p>
+            <list list-type="bullet">
+              <list-item>
+                <p>Initial learning rate: 0.004</p>
+              </list-item>
+              <list-item>
+                <p>Drop probability: 0</p>
+              </list-item>
+              <list-item>
+                <p>Accumulation count: 10</p>
+              </list-item>
+            </list>
           </sec>
-          <sec id="cell-5c120ce3-nb-article" specific-use="notebook-content">
-  </sec>
           <sec id="data-used-nb-article">
             <title>Data used</title>
           </sec>

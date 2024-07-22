@@ -65,7 +65,7 @@ Before presenting the different promising datasets and the reasons why they were
 - Multiple types of data:
   - Aerial RGB images
   - LiDAR point clouds (preferably aerial)
-  - (Optional) Aerial infrared images
+  - (Optional) Aerial infrared (CIR) images
 - Tree crown annotations or bounding boxes
 - High-enough resolution:
   - For images, about 25 cm
@@ -97,7 +97,7 @@ After rejecting all the available datasets I had found, the only solution I had 
 
 For practical reasons, the two countries where I mostly searched for available data are France and the Netherlands. I was looking for three different data types independently:
 
-- RGB (and eventually infrared) images
+- RGB (and if possible CIR) images
 - LiDAR point clouds
 - Tree annotations
 
@@ -175,9 +175,9 @@ The highest resolution of the CHM which keeps a high enough quality depends enti
 
 ### Definition and content
 
-As explained in the section [@sec-sota-datasets-requirements], the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and infrared data, with simple bounding box annotations for all trees. And as explained in [@sec-obj-covered_trees], all trees means also annotating trees that are partially or completely covered by other trees.
+As explained in the section [@sec-sota-datasets-requirements], the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and CIR data, with simple bounding box annotations for all trees. And as explained in [@sec-obj-covered_trees], all trees means also annotating trees that are partially or completely covered by other trees.
 
-Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8 cm, which is also the resolution of the RGB images. However, the resolution of infrared images is 25 cm, which made it less optimal, but still usable.
+Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8 cm, which is also the resolution of the RGB images. However, the resolution of CIR images is 25 cm, which made it less optimal, but still usable.
 
 To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km × 1 km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640 px × 640 px i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section [@sec-dataset-challenges], and each tree belongs to one class.
 
@@ -206,7 +206,7 @@ Dataset augmentation methods are in the middle between dataset creation and deep
 
 As it was already explained in [@sec-sota-dataset-augment], I used Albumentations [@albumentations] to apply two types of augmentations: pixel-level and spatial-level.
 
-Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, infrared images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images we can get when flipping and rotating the image by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.
+Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, CIR images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images we can get when flipping and rotating the image by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.
 
 <!-- TODO: Add an example of an image before and after the transformations -->
 
@@ -222,9 +222,9 @@ The architecture of the model is conceptually simple. The model takes two inputs
 
 <!-- TODO: Add a diagram with the model structure -->
 
-In practical terms, the input rasters have a shape of $640 \times 640 \times c_{\text{RGB}}$ and $640 \times 640 \times c_{\text{CHM}}$, where $c_{\text{RGB}}$ is equal to 6 when using RGB and infrared images, and 3 when using only one of them, and $c_{\text{CHM}}$ is the number of CHM layers that we decide to use for the model. Since the resolution that is used is 0.08 m, this means that each image spans over 51.2 m.
+In practical terms, the input rasters have a shape of $640 \times 640 \times c_{\text{RGB}}$ and $640 \times 640 \times c_{\text{CHM}}$, where $c_{\text{RGB}}$ is equal to 6 when using RGB and CIR images, and 3 when using only one of them, and $c_{\text{CHM}}$ is the number of CHM layers that we decide to use for the model. Since the resolution that is used is 0.08 m, this means that each image spans over 51.2 m.
 
-The only real modification that I made to the architecture compared to the initial paper is adding any number of channels in the CHM input, while we had $c_{\text{CHM}} = 1$ originally. Using infrared images in addition to RGB images is also new, but this is a less important modification.
+The only real modification that I made to the architecture compared to the initial paper is adding any number of channels in the CHM input, while we had $c_{\text{CHM}} = 1$ originally. Using CIR images in addition to RGB images is also new, but this is a less important modification.
 
 ### Training pipeline
 
@@ -232,51 +232,64 @@ The training pipeline consists of three steps. First, the data is pre-processed 
 
 #### Data preprocessing
 
+Data pre-processing is quite straightforward. The first step is to divide the dataset into a grid of $640 \times 640$ tiles. Then, all these tiles are placed into one of the training, validation and test sets.
 
+As for RGB and CIR images, preprocessing only contains two simple steps: tiling the large images into small $640 \times 640$ images, and normalizing all images along each channel. When both data sources are used, RGB and CIR images are also merged into images with 6 channels, which will be the input of the model.
+
+As for CHM layers, there are more steps. The first step is to compute a sort of flattened point cloud, by computing the DTM, which represents the height of the ground, and removing this height to the point cloud. Then, for each CHM layer, if the height interval is $[z_\text{bot}, z_\text{top}]$, we first extract all the points which have a height $h$ such that $z_\text{bot} \leq h \leq z_\text{top}$, and we then compute the DSM for this smaller point cloud. Since the ground height was already removed from the point cloud, this DSM is the CHM. Then, all the layers are merged into one raster with multiple channels and we normalize the whole raster with the average and the standard deviation over all channels. Finally, we can simply tile these rasters exactly like RGB and CIR images, which gives us the inputs of the model.
+
+All these operations are conceptually simple, but they can be computationally expensive. Therefore, I had to put a certain effort into accelerating with different methods. First, I made sure to save the most important and generic elements to avoid useless computations every time the model is trained again, without saturating the memory. Then, I also implemented multi-threading for every possible step to improve the raw speed of preprocessing. Finally, performance is also the reason why normalization if performed during preprocessing instead of during the initialization of the data in the training loop.
 
 #### Training loop
 
+The training loop is very generic, so I will only mention the most interesting parts. First, we use an Adam optimizer and a simple learning rate scheduler with a multiplier at each epoch i which is $1/\sqrt{i+2}$.
+
+Then, since the batch size cannot be very large because of the space required by all the images, there is the possibility to perform gradient accumulation, which means that backward propagation won't be performed with each batch, but instead every two or more batches. The idea behind this is to add more stability to the training, since back-propagating on only a few images is prone to overfitting on a set of examples which are not representative of the whole dataset.
+
+As for the criterion to stop the training session, we use the loss on the validation set. Once this loss didn't improve during 50 iterations over the whole dataset, we stop and keep the model that had the best validation loss.
+
+Besides these details, the training loop is very generic. We loop over the entire training set with batches to compute the loss and perform gradient back-propagation,. Then we compute the loss on the validation set and store this loss as the metric that decides when to stop.
+
 #### Output postprocessing
 
-sortedAP: [@sortedAP]
+Regarding postprocessing of the output of the model, there a few things to mention. First, the model outputs a lot of bounding boxes, which have to be cleaned using two criteria. The first criterion is the confidence score. We can just set a threshold below which bounding boxes are discarded. The second criterion is the intersection over union (IoU) with other bounding boxes. IoU is a metrics used to quantify how similar two bounding boxes are. It is a value between 0 and 1, which formula is:
+
+$$
+\text{IoU}(A, B) = \frac{\text{area}(A \cap B)}{\text{area}(A \cup B)}
+$$
+
+Using this metrics, we can detect bounding boxes which are too similar to each other, and simply keep the bounding box with the highest confidence score when two bounding boxes have an IoU larger than a certain threshold.
+
+For the evaluation, the process is a little different, because we only perform the clean up relying on IoU, and keep all other bounding boxes. The main metric that we compute is called sortedAP [@sortedAP], which is an evolution of the mean (point) average precision (mAP). mAP is defined as follows:
+
+$$
+\begin{array}{rcl}
+\text{mAP} & = & \frac{1}{N} \sum\limits_{t\in T} \text{AP}_t \\
+\text{AP}_t & = & \frac{{TP}_t}{{TP}_t + {FP}_t + {FN}_t}
+\end{array}
+$$
+
+where $T=\{t_1, t_2, \dots, t_N\}$ is a list of IoU threshold values, ${TP}_t$ are the true positives when the the IoU threshold is $t$, ${FP}_t$ are false positives and ${FN}_t$ are false negatives. The reason why $TP$, $FP$ and $FN$ depend on $t$ is that a bounding box is considered to be true if its IoU with one of the ground-truth bounding boxes is larger than $t$.
+
+sortedAP is an improvement over this method because there is no need to select a list of IoU threshold values. Predicted bounding boxes are sorted according to their confidence score which allows to compute $\text{AP}$ incrementally for any value of $t$. Then, the area of the curve of the AP with respect to the IoU threshold is used as a metric, between 0 and 1, 1 being the best possible value.
 
 ## Results
 
+In this section are the results of the experiments performed with the model and the dataset presented before.
+
 ### Training parameters
 
-```{python}
-#| label: fig-training-parameters
-#| fig-cap: "Results with different training parameters"
-import pandas as pd
-import seaborn as sns
+The first experiment was a simple test over the different parameters regarding the training loop. There were two goals to this experiment. The first one was to find the best training parameters for the next experiments. The second one was to see if randomly dropping one of the inputs of the model (either RGB/CIR or CHM) could help the model by pushing it to learn to make the best out of the two types of data.
 
-df = pd.read_csv("data/training_params_experiment_all.csv")
-df.sort_values(
-    by=["proba_drop_chm", "Data used for evaluation"],
-    inplace=True,
-)
-df["Proba drop"] = df["proba_drop_chm"]
-df.rename(columns = {
-    "accumulate": "Accum. count",
-    "Data used for evaluation": "Evaluation data",
-    "lr": "Learn. rate"
-  },
-  inplace=True)
-sns.set_style("ticks", {"axes.grid": True})
-sns.catplot(
-    data=df,
-    kind="swarm",
-    x="Accum. count",
-    y="Best sortedAP",
-    hue="Evaluation data",
-    col="Learn. rate",
-    row="Proba drop",
-    margin_titles=True,
-    height=2,
-    aspect=1,
-    palette="colorblind"
-)
-```
+The different parameters that are tested here are:
+
+- "Learn. rate": the initial learning rate.
+- "Prob. drop": the probability to drop either RGB/CIR or CHM. The probability is the same for the two types, which means that if the displayed value is 0.1, then all data will be used 80% of the time, while only RGB/CIR and only CHM both happen 10% of the time.
+- "Accum. count": the accumulation count, which means the amount of training data to process and compute the loss on before performing gradient back-propagation.
+
+As you can see on [@fig-training-parameters-experiments], sortedAP reaches at best values just above 0.3. The reason why the column name is "Best sortedAP" is due to the dataset being too small. Since the dataset is small, the training process overfits quickly, and the model doesn't have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept.
+
+With this experiment, we can see that a learning rate of 0.01 seems to make the training too much unstable, while 0.001 doesn't give very high score. Then, we can also see how unstable the training process is in general, which comes mostly from the dataset being too small. However, a learning rate between 0.0025 and 0.006 seems to give the most stable results, when the drop probability is 0. This seems to show that the idea of randomly dropping one of the two inputs doesn't really help the model to learn.
 
 ```{python}
 #| label: fig-training-parameters-experiments
@@ -286,7 +299,7 @@ import seaborn as sns
 
 df = pd.read_csv("data/training_params_experiment_all.csv")
 df = df[df["Data used for evaluation"] == "RGB, CIR and CHM"]
-df["Proba drop"] = df["proba_drop_chm"]
+df["Prob. drop"] = df["proba_drop_chm"]
 df.rename(columns = {
     "accumulate": "Accum. count",
     "Data used for evaluation": "Evaluation data",
@@ -303,13 +316,55 @@ sns.catplot(
     hue="Exp. name",
     hue_order=["exp0", "exp1", "exp2", "exp3", "exp4"],
     col="Learn. rate",
-    row="Proba drop",
+    row="Prob. drop",
     margin_titles=True,
     height=2,
     aspect=1,
     palette="colorblind"
 )
 ```
+
+In the next plot [@fig-training-parameters-data], we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.
+
+```{python}
+#| label: fig-training-parameters-data
+#| fig-cap: "Results with different training parameters"
+import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv("data/training_params_experiment_all.csv")
+df.sort_values(
+    by=["proba_drop_chm", "Data used for evaluation"],
+    inplace=True,
+)
+df["Prob. drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate"
+  },
+  inplace=True)
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Accum. count",
+    y="Best sortedAP",
+    hue="Evaluation data",
+    col="Learn. rate",
+    row="Prob. drop",
+    margin_titles=True,
+    height=2,
+    aspect=1,
+    palette="colorblind"
+)
+```
+
+From the results of this experiment, I decided to pick the following parameters for the next experiments:
+
+- Initial learning rate: 0.004
+- Drop probability: 0
+- Accumulation count: 10
 
 ### Data used
 
