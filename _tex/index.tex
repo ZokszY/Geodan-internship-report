@@ -156,7 +156,7 @@
 \title{Tree object detection using airborne images and LiDAR point
 clouds}
 \author{Alexandre Bry}
-\date{2024-07-18}
+\date{2024-07-22}
 
 \begin{document}
 \maketitle
@@ -797,17 +797,56 @@ these operations are too costly to be integrated in the training
 pipeline without consequently increasing the training time, so this idea
 was discarded.
 
-\chapter{Deep learning model}\label{deep-learning-model}
+\chapter{Model and training}\label{model-and-training}
 
-\section{Architecture}\label{architecture}
+The deep learning model that is used is based on AMF GD YOLOv8, the
+model proposed in this paper \autocite{amf_gd_yolov8}.
 
-\section{Training loop}\label{training-loop}
+\section{Model architecture}\label{model-architecture}
 
-\chapter{Results}\label{results}
+The architecture of the model is conceptually simple. The model takes
+two inputs in the form of two rasters with the same height and width.
+The two inputs are processed using the backbone of the YOLOv8 model
+\autocite{yolo} to extract features at different scales. Then Attention
+Multi-level Fusion (AMF) layers are used to fuse the features of the two
+inputs at each scale level. Then, a Gather-and-Distribute (GD) mechanism
+is used to propagate information between the different scales. This
+mechanism fuses the features from all scales before redistributing them
+to the features, two times in a row. Finally, the features of the three
+smallest scales are fed into detection layers responsible for extracting
+bounding boxes and assigning confidence scores and class probabilities
+to them.
 
-\section{Evaluation method}\label{evaluation-method}
+In practical terms, the input rasters have a shape of
+\(640 \times 640 \times c_{\text{RGB}}\) and
+\(640 \times 640 \times c_{\text{CHM}}\), where \(c_{\text{RGB}}\) is
+equal to 6 when using RGB and infrared images, and 3 when using only one
+of them, and \(c_{\text{CHM}}\) is the number of CHM layers that we
+decide to use for the model. Since the resolution that is used is
+0.08~m, this means that each image spans over 51.2~m.
+
+The only real modification that I made to the architecture compared to
+the initial paper is adding any number of channels in the CHM input,
+while we had \(c_{\text{CHM}} = 1\) originally. Using infrared images in
+addition to RGB images is also new, but this is a less important
+modification.
+
+\section{Training pipeline}\label{training-pipeline}
+
+The training pipeline consists of three steps. First, the data is
+pre-processed to create the inputs to feed into the model. Then, the
+training loop runs until the end condition is reached. Finally, the
+final model is evaluated on all the datasets.
+
+\subsection{Data preprocessing}\label{data-preprocessing}
+
+\subsection{Training loop}\label{training-loop}
+
+\subsection{Output postprocessing}\label{output-postprocessing}
 
 sortedAP: \autocite{sortedAP}
+
+\chapter{Results}\label{results}
 
 \section{Training parameters}\label{training-parameters}
 

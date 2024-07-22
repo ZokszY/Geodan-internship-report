@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
     <meta name="author" content="Alexandre Bry">
-    <meta name="dcterms.date" content="2024-07-18">
+    <meta name="dcterms.date" content="2024-07-22">
     <meta name="keywords" content="tree detection, deep learning">
 
     <title>Tree object detection using airborne images and LiDAR point clouds</title>
@@ -187,17 +187,17 @@
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>  
+</script>   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
       <meta name="citation_title" content="Tree object detection using airborne images and LiDAR point clouds">
 <meta name="citation_abstract" content="This is the abstract.
 It can be on multiple lines and contain **Markdown**.
 ">
 <meta name="citation_keywords" content="tree detection,deep learning">
 <meta name="citation_author" content="Alexandre Bry">
-<meta name="citation_publication_date" content="2024-07-18">
-<meta name="citation_cover_date" content="2024-07-18">
+<meta name="citation_publication_date" content="2024-07-22">
+<meta name="citation_cover_date" content="2024-07-22">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-07-18">
+<meta name="citation_online_date" content="2024-07-22">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=FoMo-bench: A multi-modal, multi-scale and multi-task forest monitoring benchmark for remote sensing foundation models;,citation_author=Nikolaos Ioannis Bountos;,citation_author=Arthur Ouaknine;,citation_author=David Rolnick;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://arxiv.org/abs/2312.10114;,citation_journal_title=arXiv preprint arXiv:2312.10114;">
 <meta name="citation_reference" content="citation_title=OpenForest: A data catalogue for machine learning in forest monitoring;,citation_author=Arthur Ouaknine;,citation_author=Teja Kattenborn;,citation_author=Etienne Laliberté;,citation_author=David Rolnick;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://arxiv.org/abs/2311.00277;">
@@ -235,6 +235,7 @@ It can be on multiple lines and contain **Markdown**.
 <meta name="citation_reference" content="citation_title=Local maximum filtering for the extraction of tree locations and basal area from high spatial resolution imagery;,citation_abstract=In this study we investigate the use of local maximum (LM) filtering to locate trees on high spatial resolution (1-m) imagery. Results are considered in terms of commission error (falsely indicated trees) and omission error (missed trees). Tree isolation accuracy is also considered as a function of tree crown size. The success of LM filtering in locating trees depends on the size and distribution of trees in relation to the image spatial resolution. A static-sized 3×3 pixel LM filter provides an indication of the maximum number of trees that may be found in the imagery, yet high errors of commission reduce the integrity of the results. Variable window-size techniques may be applied to reduce both the errors of commission and omission, especially for larger trees. The distribution of the error by tree size is important since the large trees account for a greater proportion of the stand basal area than the smaller trees. An investigation of the success of tree identification by tree crown radius demonstrates the relationship between image spatial resolution and LM filtering success. At an image spatial resolution of 1 m, a tree crown radius of 1.5 m appears to be the minimum size for reliable identification of tree locations using LM filtering.;,citation_author=Mike Wulder;,citation_author=K.Olaf Niemann;,citation_author=David G. Goodenough;,citation_publication_date=2000;,citation_cover_date=2000;,citation_year=2000;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S0034425700001012;,citation_issue=1;,citation_doi=10.1016/S0034-4257(00)00101-2;,citation_issn=0034-4257;,citation_volume=73;,citation_journal_title=Remote Sensing of Environment;">
 <meta name="citation_reference" content="citation_title=Automatic individual tree crown delineation using a valley-following algorithm and rule-based system;,citation_author=François A Gougeon;,citation_author=others;,citation_publication_date=1998;,citation_cover_date=1998;,citation_year=1998;,citation_fulltext_html_url=https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf;,citation_conference_title=Proc. International forum on automated interpretation of high spatial resolution digital imagery for forestry, victoria, british columbia, canada;,citation_conference=Citeseer;">
 <meta name="citation_reference" content="citation_title=The automatic recognition of individual trees in aerial images of forests based on a synthetic tree crown image model;,citation_abstract=The thesis of this work is that individual tree crowns can be automatically recognized in monocular high spatial resolution optical images of scenes containing boreal or cool temperate forests in a leaved state. The thesis was advanced by developing and testing an automatic tree crown recognition procedure that is based on a model of the image formation process at the scale of an individual tree. This model provides a means of applying specific scene and image formation knowledge to the recognition task. The procedure associates instances of a three-dimensional shape description with locations in a scene image such that the descriptions estimate the visible scene extent of tree crowns that existed at the corresponding scene locations when the image was acquired. This provides an estimate of the average horizontal diameter of the vertical projection of individual recognized tree crowns, and a basis for species classification. This work makes a contribution to the overall effort to increase the level of automation in forest type mapping. This work also introduces and demonstrates the use of a pre-defined image model to support the manual acquisition of a sample of unmodelled tree crown image properties, and the use of constraints related to the spatial relationships among multiple neighbouring candidate recognition instances to resolve image interpretation conflicts.The procedure was tested with a scene of mixed uneven-aged forests in which the trees represent a wide variety of species, size, and growing conditions. The results were assessed on the basis of ground reference data and compared to those produced by human interpreters. The scene represented a greater level of difficulty than that which has been addressed by previous attempts at automating the tree crown recognition task. The test results show that the procedure was able to largely accommodate the variation represented by the test scene, but that human interpreters were better able to accommodate irregularities in tree crown form and irradiance that were caused by tight vertical and horizontal spacing of the crowns.;,citation_author=Richard James Pollock;,citation_publication_date=1996;,citation_cover_date=1996;,citation_year=1996;,citation_fulltext_html_url=https://dx.doi.org/10.14288/1.0051597;,citation_isbn=0612148157;,citation_dissertation_institution=The University of British Columbia (Canada);">
+<meta name="citation_reference" content="citation_title=You only look once: Unified, real-time object detection;,citation_author=Joseph Redmon;,citation_author=Santosh Divvala;,citation_author=Ross Girshick;,citation_author=Ali Farhadi;,citation_publication_date=2016;,citation_cover_date=2016;,citation_year=2016;,citation_doi=10.1109/CVPR.2016.91;,citation_conference_title=2016 IEEE conference on computer vision and pattern recognition (CVPR);">
 </head>
 
   <body class="quarto-notebook">
@@ -282,7 +283,7 @@ It can be on multiple lines and contain **Markdown**.
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">July 18, 2024</p>
+              <p class="date">July 22, 2024</p>
             </div>
           </div>
           
@@ -334,15 +335,14 @@ It can be on multiple lines and contain **Markdown**.
   <li><a href="#sec-dataset-challenges" id="toc-sec-dataset-challenges" class="nav-link" data-scroll-target="#sec-dataset-challenges"><span class="header-section-number">3.2</span> Challenges and solutions</a></li>
   <li><a href="#augmentation-methods" id="toc-augmentation-methods" class="nav-link" data-scroll-target="#augmentation-methods"><span class="header-section-number">3.3</span> Augmentation methods</a></li>
   </ul></li>
-  <li><a href="#deep-learning-model" id="toc-deep-learning-model" class="nav-link" data-scroll-target="#deep-learning-model"><span class="header-section-number">4</span> Deep learning model</a>
+  <li><a href="#model-and-training" id="toc-model-and-training" class="nav-link" data-scroll-target="#model-and-training"><span class="header-section-number">4</span> Model and training</a>
   <ul class="collapse">
-  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">4.1</span> Architecture</a></li>
-  <li><a href="#training-loop" id="toc-training-loop" class="nav-link" data-scroll-target="#training-loop"><span class="header-section-number">4.2</span> Training loop</a></li>
+  <li><a href="#model-architecture" id="toc-model-architecture" class="nav-link" data-scroll-target="#model-architecture"><span class="header-section-number">4.1</span> Model architecture</a></li>
+  <li><a href="#training-pipeline" id="toc-training-pipeline" class="nav-link" data-scroll-target="#training-pipeline"><span class="header-section-number">4.2</span> Training pipeline</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a>
   <ul class="collapse">
-  <li><a href="#evaluation-method" id="toc-evaluation-method" class="nav-link" data-scroll-target="#evaluation-method"><span class="header-section-number">5.1</span> Evaluation method</a></li>
-  <li><a href="#training-parameters" id="toc-training-parameters" class="nav-link" data-scroll-target="#training-parameters"><span class="header-section-number">5.2</span> Training parameters</a></li>
+  <li><a href="#training-parameters" id="toc-training-parameters" class="nav-link" data-scroll-target="#training-parameters"><span class="header-section-number">5.1</span> Training parameters</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -502,23 +502,35 @@ It can be on multiple lines and contain **Markdown**.
 <p>On the contrary, Pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.</p>
 </section>
 </section>
-<section id="deep-learning-model" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="deep-learning-model"><span class="header-section-number">4</span> Deep learning model</h2>
-<section id="architecture" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="architecture"><span class="header-section-number">4.1</span> Architecture</h3>
+<section id="model-and-training" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="model-and-training"><span class="header-section-number">4</span> Model and training</h2>
+<p>The deep learning model that is used is based on AMF GD YOLOv8, the model proposed in this paper <span class="citation" data-cites="amf_gd_yolov8">(<a href="#ref-amf_gd_yolov8" role="doc-biblioref">Zhong et al. 2024</a>)</span>.</p>
+<section id="model-architecture" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="model-architecture"><span class="header-section-number">4.1</span> Model architecture</h3>
+<p>The architecture of the model is conceptually simple. The model takes two inputs in the form of two rasters with the same height and width. The two inputs are processed using the backbone of the YOLOv8 model <span class="citation" data-cites="yolo">(<a href="#ref-yolo" role="doc-biblioref">Redmon et al. 2016</a>)</span> to extract features at different scales. Then Attention Multi-level Fusion (AMF) layers are used to fuse the features of the two inputs at each scale level. Then, a Gather-and-Distribute (GD) mechanism is used to propagate information between the different scales. This mechanism fuses the features from all scales before redistributing them to the features, two times in a row. Finally, the features of the three smallest scales are fed into detection layers responsible for extracting bounding boxes and assigning confidence scores and class probabilities to them.</p>
+<!-- TODO: Add a diagram with the model structure -->
+<p>In practical terms, the input rasters have a shape of <span class="math inline">\(640&nbsp;\times&nbsp;640&nbsp;\times&nbsp;c_{\text{RGB}}\)</span> and <span class="math inline">\(640&nbsp;\times&nbsp;640&nbsp;\times&nbsp;c_{\text{CHM}}\)</span>, where <span class="math inline">\(c_{\text{RGB}}\)</span> is equal to 6 when using RGB and infrared images, and 3 when using only one of them, and <span class="math inline">\(c_{\text{CHM}}\)</span> is the number of CHM layers that we decide to use for the model. Since the resolution that is used is 0.08&nbsp;m, this means that each image spans over 51.2&nbsp;m.</p>
+<p>The only real modification that I made to the architecture compared to the initial paper is adding any number of channels in the CHM input, while we had <span class="math inline">\(c_{\text{CHM}} = 1\)</span> originally. Using infrared images in addition to RGB images is also new, but this is a less important modification.</p>
 </section>
-<section id="training-loop" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="training-loop"><span class="header-section-number">4.2</span> Training loop</h3>
+<section id="training-pipeline" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="training-pipeline"><span class="header-section-number">4.2</span> Training pipeline</h3>
+<p>The training pipeline consists of three steps. First, the data is pre-processed to create the inputs to feed into the model. Then, the training loop runs until the end condition is reached. Finally, the final model is evaluated on all the datasets.</p>
+<section id="data-preprocessing" class="level4" data-number="4.2.1">
+<h4 data-number="4.2.1" class="anchored" data-anchor-id="data-preprocessing"><span class="header-section-number">4.2.1</span> Data preprocessing</h4>
+</section>
+<section id="training-loop" class="level4" data-number="4.2.2">
+<h4 data-number="4.2.2" class="anchored" data-anchor-id="training-loop"><span class="header-section-number">4.2.2</span> Training loop</h4>
+</section>
+<section id="output-postprocessing" class="level4" data-number="4.2.3">
+<h4 data-number="4.2.3" class="anchored" data-anchor-id="output-postprocessing"><span class="header-section-number">4.2.3</span> Output postprocessing</h4>
+<p>sortedAP: <span class="citation" data-cites="sortedAP">(<a href="#ref-sortedAP" role="doc-biblioref">Chen et al. 2023</a>)</span></p>
+</section>
 </section>
 </section>
 <section id="results" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="results"><span class="header-section-number">5</span> Results</h2>
-<section id="evaluation-method" class="level3" data-number="5.1">
-<h3 data-number="5.1" class="anchored" data-anchor-id="evaluation-method"><span class="header-section-number">5.1</span> Evaluation method</h3>
-<p>sortedAP: <span class="citation" data-cites="sortedAP">(<a href="#ref-sortedAP" role="doc-biblioref">Chen et al. 2023</a>)</span></p>
-</section>
-<section id="training-parameters" class="level3" data-number="5.2">
-<h3 data-number="5.2" class="anchored" data-anchor-id="training-parameters"><span class="header-section-number">5.2</span> Training parameters</h3>
+<section id="training-parameters" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="training-parameters"><span class="header-section-number">5.1</span> Training parameters</h3>
 <div class="cell-container"><div class="cell-decorator"><pre>In [1]:</pre></div><div id="cell-fig-training-parameters" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -550,16 +562,24 @@ It can be on multiple lines and contain **Markdown**.
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    palette<span class="op">=</span><span class="st">"colorblind"</span></span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/home/alexandre/Documents/projects/Geodan_internship/report/env/lib/python3.12/site-packages/seaborn/categorical.py:3399: UserWarning:
+<pre><code>/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
 
-22.2% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+6.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+
+/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
+
+20.0% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+
+/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
+
+16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
 </code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="">
-<a href="index_files/figure-html/fig-training-parameters-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Results with different training parameters"><img src="index_files/figure-html/fig-training-parameters-output-2.png" width="924" height="566" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Results with different training parameters"><img src="index_files/figure-html/fig-training-parameters-output-2.png" width="922" height="563" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Results with different training parameters
@@ -601,7 +621,7 @@ Figure&nbsp;1: Results with different training parameters
 <div id="fig-training-parameters-experiments" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="">
-<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="840" height="563" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Results with different training parameters for all experiments
@@ -611,15 +631,15 @@ Figure&nbsp;2: Results with different training parameters for all experiments
 </div>
 </div></div>
 </section>
-<div id="ab7efc98" class="cell markdown">
-<section id="data-used" class="level3" data-number="5.3">
-<h3 data-number="5.3" class="anchored" data-anchor-id="data-used"><span class="header-section-number">5.3</span> Data used</h3>
+<div id="6e9b4ccc" class="cell markdown">
+<section id="data-used" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="data-used"><span class="header-section-number">5.2</span> Data used</h3>
 </section>
-<section id="chm-layers" class="level3" data-number="5.4">
-<h3 data-number="5.4" class="anchored" data-anchor-id="chm-layers"><span class="header-section-number">5.4</span> CHM layers</h3>
+<section id="chm-layers" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="chm-layers"><span class="header-section-number">5.3</span> CHM layers</h3>
 </section>
-<section id="hard-trees" class="level3" data-number="5.5">
-<h3 data-number="5.5" class="anchored" data-anchor-id="hard-trees"><span class="header-section-number">5.5</span> Hard trees</h3>
+<section id="hard-trees" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="hard-trees"><span class="header-section-number">5.4</span> Hard trees</h3>
 </section>
 <section id="discussion" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="discussion"><span class="header-section-number">6</span> Discussion</h2>
@@ -713,6 +733,9 @@ Puliti, Stefano, Grant Pearse, Peter Surový, Luke Wallace, Markus Hollaus, Maci
 </div>
 <div id="ref-lidar_rgb_wst" class="csl-entry" role="listitem">
 Qin, Haiming, Weiqi Zhou, Yang Yao, and Weimin Wang. 2022. <span>“Individual Tree Segmentation and Tree Species Classification in Subtropical Broadleaf Forests Using UAV-Based LiDAR, Hyperspectral, and Ultrahigh-Resolution RGB Data.”</span> <em>Remote Sensing of Environment</em> 280:113143. <a href="https://doi.org/10.1016/j.rse.2022.113143">https://doi.org/10.1016/j.rse.2022.113143</a>.
+</div>
+<div id="ref-yolo" class="csl-entry" role="listitem">
+Redmon, Joseph, Santosh Divvala, Ross Girshick, and Ali Farhadi. 2016. <span>“You Only Look Once: Unified, Real-Time Object Detection.”</span> In <em>2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</em>, 779–88. <a href="https://doi.org/10.1109/CVPR.2016.91">https://doi.org/10.1109/CVPR.2016.91</a>.
 </div>
 <div id="ref-ReforesTree" class="csl-entry" role="listitem">
 Reiersen, Gyri, David Dao, Björn Lütjens, Konstantin Klemmer, Kenza Amara, Attila Steinegger, Ce Zhang, and Xiaoxiang Zhu. 2022. <span>“ReforesTree: A Dataset for Estimating Tropical Forest Carbon Stock with Deep Learning and Aerial Imagery.”</span> <a href="https://arxiv.org/abs/2201.11192">https://arxiv.org/abs/2201.11192</a>.
@@ -1169,7 +1192,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"selector":".lightbox","closeEffect":"zoom","descPosition":"bottom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","closeEffect":"zoom","descPosition":"bottom","loop":false});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
