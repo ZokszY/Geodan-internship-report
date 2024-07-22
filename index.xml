@@ -1103,7 +1103,7 @@ d’informatique</institution>
             <p>Figure 2: Results with different training parameters
       for all evaluation data setups</p>
           </caption>
-          <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-2.png"/>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-1.png"/>
         </fig>
         <p>From the results of this experiment, I decided to pick the
     following parameters for the next experiments:</p>
@@ -3779,7 +3779,8 @@ sns.catplot(
     margin_titles=True,
     height=2,
     aspect=1,
-    palette="colorblind"
+    palette="colorblind",
+    s=25
 )
 plt.show()</code>
             <boxed-text>
@@ -3792,7 +3793,7 @@ plt.show()</code>
               </fig>
             </boxed-text>
           </sec>
-          <sec id="cell-6128a698-nb-article" specific-use="notebook-content">
+          <sec id="cell-5d32dcc4-nb-article" specific-use="notebook-content">
             <p>In the next graph
     (<xref alt="Figure 2" rid="fig-training-parameters-data-nb-article">Figure 2</xref>),
     we can see more results for the same experiments. Here, the results
@@ -3838,46 +3839,21 @@ sns.catplot(
     margin_titles=True,
     height=1.7,
     aspect=1.2,
-    palette="colorblind"
+    palette="colorblind",
+    s=9
 )
 plt.show()</code>
-            <boxed-text>
-              <preformat>/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-8.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-6.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-20.0% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-33.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-13.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-      </preformat>
-            </boxed-text>
             <boxed-text>
               <fig id="fig-training-parameters-data-nb-article">
                 <caption>
                   <p>Figure 2: Results with different training parameters
         for all evaluation data setups</p>
                 </caption>
-                <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-2.png"/>
+                <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-1.png"/>
               </fig>
             </boxed-text>
           </sec>
-          <sec id="cell-12bc24d4-nb-article" specific-use="notebook-content">
+          <sec id="cell-1ff66f56-nb-article" specific-use="notebook-content">
             <p>From the results of this experiment, I decided to pick the
     following parameters for the next experiments:</p>
             <list list-type="bullet">

@@ -319,7 +319,8 @@ sns.catplot(
     margin_titles=True,
     height=2,
     aspect=1,
-    palette="colorblind"
+    palette="colorblind",
+    s=25
 )
 plt.show()
 ```
@@ -357,7 +358,8 @@ sns.catplot(
     margin_titles=True,
     height=1.7,
     aspect=1.2,
-    palette="colorblind"
+    palette="colorblind",
+    s=9
 )
 plt.show()
 ```

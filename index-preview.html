@@ -590,9 +590,10 @@ It can be on multiple lines and contain **Markdown**.
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    margin_titles<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">2</span>,</span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    aspect<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    palette<span class="op">=</span><span class="st">"colorblind"</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    palette<span class="op">=</span><span class="st">"colorblind"</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">25</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters-experiments" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -606,7 +607,7 @@ Figure&nbsp;1: Results with different training parameters for all experiments
 </div>
 </div>
 </div></div>
-<div id="ff397728" class="cell markdown">
+<div id="2f834ee8" class="cell markdown">
 <p>In the next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;2</a>), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.</p>
 </div>
 <div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div id="cell-fig-training-parameters-data" class="cell" data-execution_count="2">
@@ -638,40 +639,15 @@ Figure&nbsp;1: Results with different training parameters for all experiments
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    margin_titles<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="fl">1.7</span>,</span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    aspect<span class="op">=</span><span class="fl">1.2</span>,</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    palette<span class="op">=</span><span class="st">"colorblind"</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-8.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-6.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-20.0% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-33.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-13.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-
-/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
-
-16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
-</code></pre>
-</div>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    palette<span class="op">=</span><span class="st">"colorblind"</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">9</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters-data" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="">
-<a href="index_files/figure-html/fig-training-parameters-data-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results with different training parameters for all evaluation data setups"><img src="index_files/figure-html/fig-training-parameters-data-output-2.png" width="938" height="477" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-data-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results with different training parameters for all evaluation data setups"><img src="index_files/figure-html/fig-training-parameters-data-output-1.png" width="938" height="477" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Results with different training parameters for all evaluation data setups
@@ -680,7 +656,7 @@ Figure&nbsp;2: Results with different training parameters for all evaluation dat
 </div>
 </div>
 </div></div>
-<div id="415b0282" class="cell markdown">
+<div id="d1e4fb30" class="cell markdown">
 <p>From the results of this experiment, I decided to pick the following parameters for the next experiments:</p>
 <ul>
 <li>Initial learning rate: 0.004</li>
@@ -1248,7 +1224,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"descPosition":"bottom","selector":".lightbox","openEffect":"zoom","loop":false,"closeEffect":"zoom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"descPosition":"bottom","selector":".lightbox","closeEffect":"zoom","loop":false,"openEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
