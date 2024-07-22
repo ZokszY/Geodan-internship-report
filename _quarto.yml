@@ -10,7 +10,6 @@ format:
     comments:
       hypothesis: true
     number-sections: true
-  jats: default
   pdf:
     documentclass: scrartcl
     toc: true
