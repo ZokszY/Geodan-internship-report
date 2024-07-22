@@ -4,7 +4,9 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-]{report}
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
 
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
@@ -90,6 +92,11 @@
 \def\fps@figure{htbp}
 \makeatother
 
+\KOMAoption{captions}{tableheading}
+\usepackage{biblatex}
+\usepackage{sectsty}
+\sectionfont{\clearpage}
+\ExecuteBibliographyOptions{sorting=none,defernumbers=true}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -168,12 +175,12 @@ This is the abstract. It can be on multiple lines and contain
 \renewcommand*\contentsname{Table of contents}
 {
 \hypersetup{linkcolor=}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 \tableofcontents
 }
 
-\chapter*{Introduction}\label{introduction}
-\addcontentsline{toc}{chapter}{Introduction}
+\section*{Introduction}\label{introduction}
+\addcontentsline{toc}{section}{Introduction}
 
 The goal of the internship was to study the possibility of combining
 LiDAR point clouds and aerial images in a deep learning model to
@@ -190,9 +197,9 @@ do this, I had to create my own tree annotations dataset, with which I
 also tried to study the ability of this new model to detect trees that
 are covered by other trees.
 
-\chapter{State-of-the-art}\label{state-of-the-art}
+\section{State-of-the-art}\label{state-of-the-art}
 
-\section{Computer vision tasks related to
+\subsection{Computer vision tasks related to
 trees}\label{computer-vision-tasks-related-to-trees}
 
 Before talking about models and datasets, let's define properly the task
@@ -254,9 +261,9 @@ compromising the ability to experiment with different possible
 improvements of the model. The difficulties and the experiments are
 developed below.
 
-\section{Datasets}\label{datasets}
+\subsection{Datasets}\label{datasets}
 
-\subsection{Requirements}\label{sec-sota-datasets-requirements}
+\subsubsection{Requirements}\label{sec-sota-datasets-requirements}
 
 Before presenting the different promising datasets and the reasons why
 they were not fully usable for the project, let's enumerate the
@@ -314,7 +321,7 @@ the next parts, I will go through the different kinds of datasets that
 exist, the reasons why they did not really fit for the project and the
 ideas I got when searching for a way to use them.
 
-\subsection{Existing tree datasets}\label{existing-tree-datasets}
+\subsubsection{Existing tree datasets}\label{existing-tree-datasets}
 
 As explained above, there were quite a lot of requirements to fulfill to
 have a complete dataset usable for the task. This means that almost all
@@ -379,7 +386,7 @@ more about later. My decision was also influenced by the quality of the
 images and the point clouds available in the Netherlands, which I will
 talk about in the next section.
 
-\subsection{Public data}\label{public-data}
+\subsubsection{Public data}\label{public-data}
 
 After rejecting all the available datasets I had found, the only
 solution I had left was to create my own dataset. I won't dive too much
@@ -447,7 +454,7 @@ diameter smaller than 4~m. Therefore, even it is a very impressive piece
 of work, we thought that it could not be used as training data for a
 deep learning models due to its biases and imperfections.
 
-\subsection{Dataset augmentation
+\subsubsection{Dataset augmentation
 techniques}\label{sec-sota-dataset-augment}
 
 When a dataset is too small to train a model, there are several ways of
@@ -480,12 +487,12 @@ random but realistic artificial data similar to the dataset. This method
 has for example been successfully used to generate artificial tree
 height maps \autocite{gan_data_augment}.
 
-\section{Algorithms and models}\label{algorithms-and-models}
+\subsection{Algorithms and models}\label{algorithms-and-models}
 
 In this section, the different algorithms and methods are grouped
 according to the type of data they use as input.
 
-\subsection{Images only}\label{images-only}
+\subsubsection{Images only}\label{images-only}
 
 Then, there are methods that perform tree detection using only visible
 or hyperspectral images or both. Several different algorithms have been
@@ -516,7 +523,7 @@ distance transforms which can then be the input of a watershed algorithm
 responsible of directly detecting tree masks or bounding boxes, often
 using CNNs, given the images \autocite{DeepForest}.
 
-\subsection{LiDAR only}\label{lidar-only}
+\subsubsection{LiDAR only}\label{lidar-only}
 
 Some of the methods to identify individual trees use LiDAR data only.
 There are a lot of different ways to use and analyze point clouds, but
@@ -556,7 +563,7 @@ Convolutional Point Networks use a continuous generalization of
 convolutions to apply convolution kernels to arbitrarily distributed
 point clouds.
 
-\subsection{LiDAR and images}\label{lidar-and-images}
+\subsubsection{LiDAR and images}\label{lidar-and-images}
 
 Let's now talk about the models of interest for this work, which are
 machine learning pipelines using both LiDAR point cloud data and RGB
@@ -580,12 +587,12 @@ convolution neural network (Mask R-CNN) and AMF GD YOLOv8
 proven to give much better results when using both the images and the
 LiDAR data as a CHM thant when using only one of them.
 
-\chapter{Objectives and motivations}\label{objectives-and-motivations}
+\section{Objectives and motivations}\label{objectives-and-motivations}
 
 In this section, I will explain the objectives that I set for this
 internship and the motivations that led to them.
 
-\section{Data and model}\label{data-and-model}
+\subsection{Data and model}\label{data-and-model}
 
 The basis for this internship was to look at deep learning models to
 detect trees using LiDAR and aerial images. In fourth months, it would
@@ -602,7 +609,7 @@ available could be a great contribution. The second reason was to have
 more control over the definition and the characteristics of the dataset,
 to be able to experiment on the detection of specific trees.
 
-\section{Covered trees}\label{sec-obj-covered_trees}
+\subsection{Covered trees}\label{sec-obj-covered_trees}
 
 The main thing that I wanted to experiment on was the possibility to
 make a better use of the LiDAR point cloud to be able to detect covered
@@ -620,7 +627,7 @@ not visible. This means that creating my own dataset was the only
 solution to have a dataset containing really all trees including covered
 trees and be able to easily identify them.
 
-\section{Multiple layers of CHM}\label{multiple-layers-of-chm}
+\subsection{Multiple layers of CHM}\label{multiple-layers-of-chm}
 
 Being able to find covered trees meant finding a way to find more
 information out of the LiDAR point cloud than what is contained by the
@@ -657,7 +664,7 @@ the CHM height and 0.5~m below, before computing an additional layer. It
 could be interesting to see if this method works better than dropping
 the points at pre-determined heights.
 
-\chapter{Dataset creation}\label{sec-dataset}
+\section{Dataset creation}\label{sec-dataset}
 
 The highest resolution of the CHM which keeps a high enough quality
 depends entirely on the density of the point cloud. Also, depending on
@@ -665,7 +672,7 @@ the season when the point cloud is acquired, using a CHM might imply
 throwing away the majority of the information contained in the point
 cloud.
 
-\section{Definition and content}\label{definition-and-content}
+\subsection{Definition and content}\label{definition-and-content}
 
 As explained in the section
 Section~\ref{sec-sota-datasets-requirements}, the main requirements of
@@ -696,7 +703,7 @@ Annotating all these trees took me about 100 hours, with a very high
 variation of the time spent on each tree depending on the complexity of
 the area.
 
-\section{Challenges and solutions}\label{sec-dataset-challenges}
+\subsection{Challenges and solutions}\label{sec-dataset-challenges}
 
 The creation of this dataset raised a number of challenges. The first
 one was the interval of time between the acquisition of the different
@@ -761,7 +768,7 @@ because it was also mentioned in another paper
 problem for which the most important was to remain consistent in the
 whole dataset.
 
-\section{Augmentation methods}\label{augmentation-methods}
+\subsection{Augmentation methods}\label{augmentation-methods}
 
 Dataset augmentation methods are in the middle between dataset creation
 and deep learning model training, because they are a way to enhance the
@@ -797,12 +804,12 @@ these operations are too costly to be integrated in the training
 pipeline without consequently increasing the training time, so this idea
 was discarded.
 
-\chapter{Model and training}\label{model-and-training}
+\section{Model and training}\label{model-and-training}
 
 The deep learning model that is used is based on AMF GD YOLOv8, the
 model proposed in this paper \autocite{amf_gd_yolov8}.
 
-\section{Model architecture}\label{model-architecture}
+\subsection{Model architecture}\label{model-architecture}
 
 The architecture of the model is conceptually simple. The model takes
 two inputs in the form of two rasters with the same height and width.
@@ -831,14 +838,14 @@ while we had \(c_{\text{CHM}} = 1\) originally. Using CIR images in
 addition to RGB images is also new, but this is a less important
 modification.
 
-\section{Training pipeline}\label{training-pipeline}
+\subsection{Training pipeline}\label{training-pipeline}
 
 The training pipeline consists of three steps. First, the data is
 pre-processed to create the inputs to feed into the model. Then, the
 training loop runs until the end condition is reached. Finally, the
 final model is evaluated on all the datasets.
 
-\subsection{Data preprocessing}\label{data-preprocessing}
+\subsubsection{Data preprocessing}\label{data-preprocessing}
 
 Data pre-processing is quite straightforward. The first step is to
 divide the dataset into a grid of \(640 \times 640\) tiles. Then, all
@@ -875,7 +882,7 @@ speed of preprocessing. Finally, performance is also the reason why
 normalization if performed during preprocessing instead of during the
 initialization of the data in the training loop.
 
-\subsection{Training loop}\label{training-loop}
+\subsubsection{Training loop}\label{training-loop}
 
 The training loop is very generic, so I will only mention the most
 interesting parts. First, we use an Adam optimizer and a simple learning
@@ -900,7 +907,7 @@ the entire training set with batches to compute the loss and perform
 gradient back-propagation,. Then we compute the loss on the validation
 set and store this loss as the metric that decides when to stop.
 
-\subsection{Output postprocessing}\label{output-postprocessing}
+\subsubsection{Output postprocessing}\label{output-postprocessing}
 
 Regarding postprocessing of the output of the model, there a few things
 to mention. First, the model outputs a lot of bounding boxes, which have
@@ -946,12 +953,12 @@ sorted according to their confidence score which allows to compute
 the curve of the AP with respect to the IoU threshold is used as a
 metric, between 0 and 1, 1 being the best possible value.
 
-\chapter{Results}\label{results}
+\section{Results}\label{results}
 
 In this section are the results of the experiments performed with the
 model and the dataset presented before.
 
-\section{Training parameters}\label{training-parameters}
+\subsection{Training parameters}\label{training-parameters}
 
 The first experiment was a simple test over the different parameters
 regarding the training loop. There were two goals to this experiment.
@@ -1010,11 +1017,11 @@ different training parameters for all experiments}
 \end{figure}%
 
 \textsubscript{Source:
-\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+\href{https://ZokszY.github.io/Geodan-internship-report/index.qmd.html}{Article
 Notebook}}
 
-In the next plot Figure~\ref{fig-training-parameters-data}, we can see
-more results for the same experiments. Here, the results are colored
+In the next graph (Figure~\ref{fig-training-parameters-data}), we can
+see more results for the same experiments. Here, the results are colored
 according to the data that we use to evaluate the model. In blue, we see
 the value of sortedAP when we evaluate the model with the CHM layers
 data and dummy zero arrays as RGB/CIR data. These dummy arrays are also
@@ -1029,7 +1036,7 @@ also trained alone, even outperforming the combination of both inputs in
 certain cases.
 
 \textsubscript{Source:
-\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+\href{https://ZokszY.github.io/Geodan-internship-report/index.qmd.html}{Article
 Notebook}}
 
 \begin{figure}[H]
@@ -1041,12 +1048,12 @@ Notebook}}
 }
 
 \caption{\label{fig-training-parameters-data}Results with different
-training parameters}
+training parameters for all evaluation data setups}
 
 \end{figure}%
 
 \textsubscript{Source:
-\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+\href{https://ZokszY.github.io/Geodan-internship-report/index.qmd.html}{Article
 Notebook}}
 
 From the results of this experiment, I decided to pick the following
@@ -1062,15 +1069,15 @@ parameters for the next experiments:
   Accumulation count: 10
 \end{itemize}
 
-\section{Data used}\label{data-used}
+\subsection{Data used}\label{data-used}
 
-\section{CHM layers}\label{chm-layers}
+\subsection{CHM layers}\label{chm-layers}
 
-\section{Hard trees}\label{hard-trees}
+\subsection{Hard trees}\label{hard-trees}
 
-\chapter{Discussion}\label{discussion}
+\section{Discussion}\label{discussion}
 
-\section{Dataset}\label{dataset}
+\subsection{Dataset}\label{dataset}
 
 \begin{itemize}
 \tightlist
@@ -1082,15 +1089,15 @@ parameters for the next experiments:
   finalize and specialize the training on a certain area.
 \end{itemize}
 
-\section{Combination of data types}\label{combination-of-data-types}
+\subsection{Combination of data types}\label{combination-of-data-types}
 
-\chapter*{Conclusion}\label{conclusion}
-\addcontentsline{toc}{chapter}{Conclusion}
+\section*{Conclusion}\label{conclusion}
+\addcontentsline{toc}{section}{Conclusion}
 
 Blablabla
 
 \textsubscript{Source:
-\href{https://ZokszY.github.io/Geodan-internship-report/index-preview.html}{Article
+\href{https://ZokszY.github.io/Geodan-internship-report/index.qmd.html}{Article
 Notebook}}
 
 

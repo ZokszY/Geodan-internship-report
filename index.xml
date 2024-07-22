@@ -1083,8 +1083,8 @@ d’informatique</institution>
           </caption>
           <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-experiments-output-1.png"/>
         </fig>
-        <p>In the next plot
-    <xref alt="Figure 2" rid="fig-training-parameters-data">Figure 2</xref>,
+        <p>In the next graph
+    (<xref alt="Figure 2" rid="fig-training-parameters-data">Figure 2</xref>),
     we can see more results for the same experiments. Here, the results
     are colored according to the data that we use to evaluate the model.
     In blue, we see the value of sortedAP when we evaluate the model
@@ -1100,8 +1100,8 @@ d’informatique</institution>
     outperforming the combination of both inputs in certain cases.</p>
         <fig id="fig-training-parameters-data">
           <caption>
-            <p>Figure 2: Results with different training
-      parameters</p>
+            <p>Figure 2: Results with different training parameters
+      for all evaluation data setups</p>
           </caption>
           <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-2.png"/>
         </fig>
@@ -1924,7 +1924,8 @@ d’informatique</institution>
           </person-group>
           <article-title>SortedAP: Rethinking evaluation metrics for instance segmentation</article-title>
           <source>Proceedings of the IEEE/CVF international conference on computer vision (ICCV) workshops</source>
-          <year iso-8601-date="2023">2023</year>
+          <year iso-8601-date="2023-10">2023</year>
+          <month>10</month>
           <uri>https://openaccess.thecvf.com/content/ICCV2023W/BIC/html/Chen_SortedAP_Rethinking_Evaluation_Metrics_for_Instance_Segmentation_ICCVW_2023_paper.html</uri>
           <fpage>3923</fpage>
           <lpage>3929</lpage>
@@ -2682,7 +2683,7 @@ d’informatique</institution>
       </ref>
     </ref-list>
   </back>
-  <sub-article article-type="notebook" id="nb-2-nb-article">
+  <sub-article article-type="notebook" id="nb-4-nb-article">
     <front-stub>
       <title-group>
         <article-title>Tree object detection using airborne images and LiDAR
@@ -3753,6 +3754,7 @@ d’informatique</institution>
           <sec id="cell-fig-training-parameters-experiments-nb-article" specific-use="notebook-content">
             <code language="python">import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 df = pd.read_csv("data/training_params_experiment_all.csv")
 df = df[df["Data used for evaluation"] == "RGB, CIR and CHM"]
@@ -3778,7 +3780,8 @@ sns.catplot(
     height=2,
     aspect=1,
     palette="colorblind"
-)</code>
+)
+plt.show()</code>
             <boxed-text>
               <fig id="fig-training-parameters-experiments-nb-article">
                 <caption>
@@ -3789,9 +3792,9 @@ sns.catplot(
               </fig>
             </boxed-text>
           </sec>
-          <sec id="e5acd32c-nb-article" specific-use="notebook-content">
-            <p>In the next plot
-    <xref alt="Figure 2" rid="fig-training-parameters-data-nb-article">Figure 2</xref>,
+          <sec id="cell-6128a698-nb-article" specific-use="notebook-content">
+            <p>In the next graph
+    (<xref alt="Figure 2" rid="fig-training-parameters-data-nb-article">Figure 2</xref>),
     we can see more results for the same experiments. Here, the results
     are colored according to the data that we use to evaluate the model.
     In blue, we see the value of sortedAP when we evaluate the model
@@ -3809,6 +3812,7 @@ sns.catplot(
           <sec id="cell-fig-training-parameters-data-nb-article" specific-use="notebook-content">
             <code language="python">import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 df = pd.read_csv("data/training_params_experiment_all.csv")
 df.sort_values(
@@ -3832,12 +3836,17 @@ sns.catplot(
     col="Learn. rate",
     row="Prob. drop",
     margin_titles=True,
-    height=2,
-    aspect=1,
+    height=1.7,
+    aspect=1.2,
     palette="colorblind"
-)</code>
+)
+plt.show()</code>
             <boxed-text>
               <preformat>/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
+
+8.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+
+/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
 
 6.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
 
@@ -3847,20 +3856,28 @@ sns.catplot(
 
 /home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
 
+33.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+
+/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
+
+13.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+
+/home/alexandre/anaconda3/envs/tree-segment/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning:
+
 16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
       </preformat>
             </boxed-text>
             <boxed-text>
               <fig id="fig-training-parameters-data-nb-article">
                 <caption>
-                  <p>Figure 2: Results with different training
-        parameters</p>
+                  <p>Figure 2: Results with different training parameters
+        for all evaluation data setups</p>
                 </caption>
                 <graphic mimetype="image" mime-subtype="png" xlink:href="index_files/figure-jats/fig-training-parameters-data-output-2.png"/>
               </fig>
             </boxed-text>
           </sec>
-          <sec id="cell-0ba5e364-nb-article" specific-use="notebook-content">
+          <sec id="cell-12bc24d4-nb-article" specific-use="notebook-content">
             <p>From the results of this experiment, I decided to pick the
     following parameters for the next experiments:</p>
             <list list-type="bullet">
@@ -4681,7 +4698,8 @@ sns.catplot(
             </person-group>
             <article-title>SortedAP: Rethinking evaluation metrics for instance segmentation</article-title>
             <source>Proceedings of the IEEE/CVF international conference on computer vision (ICCV) workshops</source>
-            <year iso-8601-date="2023">2023</year>
+            <year iso-8601-date="2023-10">2023</year>
+            <month>10</month>
             <uri>https://openaccess.thecvf.com/content/ICCV2023W/BIC/html/Chen_SortedAP_Rethinking_Evaluation_Metrics_for_Instance_Segmentation_ICCVW_2023_paper.html</uri>
             <fpage>3923</fpage>
             <lpage>3929</lpage>
