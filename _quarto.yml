@@ -10,23 +10,20 @@ format:
     comments:
       hypothesis: true
     number-sections: true
-  docx: default
-  typst:
-    toc: true
-    number-sections: true
-    columns: 2
-    output-file: "index_typst.pdf"
-    number-offset: 1
   jats: default
   pdf:
-    documentclass: report
+    documentclass: scrartcl
     toc: true
     number-sections: true
     colorlinks: true
-    output-file: "index_pdf.pdf"
+    output-file: "index.pdf"
     biblio-title: "Bibliography"
     cite-method: biblatex
     number-offset: 1
-
+    header-includes:
+      - \usepackage{biblatex}
+      - \usepackage{sectsty}
+      - \sectionfont{\clearpage}
+      - \ExecuteBibliographyOptions{sorting=none,defernumbers=true}
 execute:
   freeze: auto
