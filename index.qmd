@@ -183,13 +183,13 @@ Annotating all these trees took me about 100 hours, with a very high variation o
 
 ::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
 
-![RGB image](images/Training_image/RGB_image_with_GT_boxes.png)
+![RGB image](images/Training_image/RGB_image.png)
 
-![CIR image](images/Training_image/CIR_image_with_GT_boxes.png)
+![CIR image](images/Training_image/CIR_image.png)
 
-![LiDAR point cloud](images/Training_image/LiDAR_with_GT_boxes.png)
+![LiDAR point cloud](images/Training_image/LiDAR.png)
 
-![CHM raster](images/Training_image/CHM_all_color_with_GT_boxes.png)
+![CHM raster](images/Training_image/CHM_all_color.png)
 
 One data instance with ground-truth bounding boxes
 :::

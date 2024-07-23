@@ -485,7 +485,7 @@ It can be on multiple lines and contain **Markdown**.
 <div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/Training_image/RGB_image_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="RGB image"><img src="images/Training_image/RGB_image_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<p><a href="images/Training_image/RGB_image.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="RGB image"><img src="images/Training_image/RGB_image.png" class="img-fluid figure-img"></a></p>
 <figcaption>RGB image</figcaption>
 </figure>
 </div>
@@ -496,7 +496,7 @@ It can be on multiple lines and contain **Markdown**.
 <div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/Training_image/CIR_image_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="CIR image"><img src="images/Training_image/CIR_image_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<p><a href="images/Training_image/CIR_image.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="CIR image"><img src="images/Training_image/CIR_image.png" class="img-fluid figure-img"></a></p>
 <figcaption>CIR image</figcaption>
 </figure>
 </div>
@@ -511,7 +511,7 @@ It can be on multiple lines and contain **Markdown**.
 <div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/Training_image/LiDAR_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="LiDAR point cloud"><img src="images/Training_image/LiDAR_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<p><a href="images/Training_image/LiDAR.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="LiDAR point cloud"><img src="images/Training_image/LiDAR.png" class="img-fluid figure-img"></a></p>
 <figcaption>LiDAR point cloud</figcaption>
 </figure>
 </div>
@@ -522,7 +522,7 @@ It can be on multiple lines and contain **Markdown**.
 <div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/Training_image/CHM_all_color_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="CHM raster"><img src="images/Training_image/CHM_all_color_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<p><a href="images/Training_image/CHM_all_color.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="CHM raster"><img src="images/Training_image/CHM_all_color.png" class="img-fluid figure-img"></a></p>
 <figcaption>CHM raster</figcaption>
 </figure>
 </div>
@@ -718,7 +718,7 @@ Figure&nbsp;3: Results with different training parameters for all experiments
 </div>
 </div>
 </div></div>
-<div id="93e1a836" class="cell markdown">
+<div id="9b0275f9" class="cell markdown">
 <p>In the next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;4</a>), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.</p>
 </div>
 <div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div id="cell-fig-training-parameters-data" class="cell" data-execution_count="2">
@@ -767,7 +767,7 @@ Figure&nbsp;4: Results with different training parameters for all evaluation dat
 </div>
 </div>
 </div></div>
-<div id="abfbb649" class="cell markdown">
+<div id="ce9b0659" class="cell markdown">
 <p>From the results of this experiment, I decided to pick the following parameters for the next experiments:</p>
 <ul>
 <li>Initial learning rate: 0.004</li>
@@ -1339,7 +1339,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","descPosition":"bottom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","loop":false,"descPosition":"bottom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
