@@ -393,7 +393,63 @@ It can be on multiple lines and contain **Markdown**.
 <p>As explained in the section <a href="#sec-sota-datasets-requirements" class="quarto-xref">Section&nbsp;1.2.1</a>, the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and CIR data, with simple bounding box annotations for all trees. And as explained in <a href="#sec-obj-covered_trees" class="quarto-xref">Section&nbsp;2.2</a>, all trees means also annotating trees that are partially or completely covered by other trees.</p>
 <p>Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8&nbsp;cm, which is also the resolution of the RGB images. However, the resolution of CIR images is 25&nbsp;cm, which made it less optimal, but still usable.</p>
 <p>To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km&nbsp;×&nbsp;1&nbsp;km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640&nbsp;px&nbsp;×&nbsp;640&nbsp;px i.e.&nbsp;51.2&nbsp;m&nbsp;×&nbsp;51.2&nbsp;m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section <a href="#sec-dataset-challenges" class="quarto-xref">Section&nbsp;3.2</a>, and each tree belongs to one class.</p>
-<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area.</p>
+<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. In <a href="#fig-dataset-gt-boxes" class="quarto-xref">Figure&nbsp;2</a>, you can see what the dataset finally looks like.</p>
+<div id="fig-dataset-gt-boxes" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Training_image/RGB_image_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="RGB image"><img src="images/Training_image/RGB_image_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<figcaption>RGB image</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 4.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Training_image/CIR_image_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="CIR image"><img src="images/Training_image/CIR_image_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<figcaption>CIR image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Training_image/LiDAR_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="LiDAR point cloud"><img src="images/Training_image/LiDAR_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<figcaption>LiDAR point cloud</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 4.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Training_image/CHM_all_color_with_GT_boxes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="CHM raster"><img src="images/Training_image/CHM_all_color_with_GT_boxes.png" class="img-fluid figure-img"></a></p>
+<figcaption>CHM raster</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: One data instance with ground-truth bounding boxes
+</figcaption>
+</figure>
+</div>
 </section>
 <section id="sec-dataset-challenges" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="sec-dataset-challenges"><span class="header-section-number">3.2</span> Challenges and solutions</h3>
@@ -406,7 +462,62 @@ It can be on multiple lines and contain **Markdown**.
 </ul>
 <p>All these labels theoretically correspond to situations that have no intersection, even though it is more complicated in practice.</p>
 <p>The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthonormal. Point clouds don’t have this problem, because the data is acquired and represented in 3D, but images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.</p>
-<!-- TODO: PUT AN IMAGE TO SHOW THE MISALIGNMENT HERE -->
+<div id="fig-dataset-gt-boxes" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Data_shift/RGB_image.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="RGB image"><img src="images/Data_shift/RGB_image.png" class="img-fluid figure-img"></a></p>
+<figcaption>RGB image</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 4.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Data_shift/CIR_image.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="CIR image"><img src="images/Data_shift/CIR_image.png" class="img-fluid figure-img"></a></p>
+<figcaption>CIR image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Data_shift/LiDAR.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="LiDAR point cloud"><img src="images/Data_shift/LiDAR.png" class="img-fluid figure-img"></a></p>
+<figcaption>LiDAR point cloud</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 4.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Data_shift/CHM_all_color.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="CHM raster"><img src="images/Data_shift/CHM_all_color.png" class="img-fluid figure-img"></a></p>
+<figcaption>CHM raster</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Example of data misalignment
+</figcaption>
+</figure>
+</div>
 <p>Finally, the last challenge comes from the definition of what we consider as a tree and what we don’t. There are two main sub-problems. The first one comes from the threshold to set between bushes and trees. Large bushes can be much larger than small trees, and sometimes have a similar shape. Therefore, it is hard to keep coherent rules when annotating them. The second sub-problem comes from multi-stemmed and close trees. It can be very difficult to see, even with the point cloud, if a there is only one tree with two or more trunks dividing at the bottom, or multiple trees which are simply close to one another. (Un)fortunately I know that I was not the only one to face this problem because it was also mentioned in another paper <span class="citation" data-cites="DeepForestBefore">(<a href="#ref-DeepForestBefore" role="doc-biblioref">B. G. Weinstein et al. 2019</a>)</span>. In the end, it was just an unsolvable problem for which the most important was to remain consistent in the whole dataset.</p>
 </section>
 <section id="augmentation-methods" class="level3" data-number="3.3">
@@ -476,32 +587,32 @@ It can be on multiple lines and contain **Markdown**.
 <li>“Prob. drop”: the probability to drop either RGB/CIR or CHM. The probability is the same for the two types, which means that if the displayed value is 0.1, then all data will be used 80% of the time, while only RGB/CIR and only CHM both happen 10% of the time.</li>
 <li>“Accum. count”: the accumulation count, which means the amount of training data to process and compute the loss on before performing gradient back-propagation.</li>
 </ul>
-<p>As you can see on <a href="#fig-training-parameters-experiments" class="quarto-xref">Figure&nbsp;1</a>, sortedAP reaches at best values just above 0.3. The reason why the column name is “Best sortedAP” is due to the dataset being too small. Since the dataset is small, the training process overfits quickly, and the model doesn’t have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept.</p>
+<p>As you can see on <a href="#fig-training-parameters-experiments" class="quarto-xref">Figure&nbsp;3</a>, sortedAP reaches at best values just above 0.3. The reason why the column name is “Best sortedAP” is due to the dataset being too small. Since the dataset is small, the training process overfits quickly, and the model doesn’t have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept.</p>
 <p>With this experiment, we can see that a learning rate of 0.01 seems to make the training too much unstable, while 0.001 doesn’t give very high score. Then, we can also see how unstable the training process is in general, which comes mostly from the dataset being too small. However, a learning rate between 0.0025 and 0.006 seems to give the most stable results, when the drop probability is 0. This seems to show that the idea of randomly dropping one of the two inputs doesn’t really help the model to learn.</p>
 <div id="cell-fig-training-parameters-experiments" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters-experiments" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;3: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Results with different training parameters for all experiments
+Figure&nbsp;3: Results with different training parameters for all experiments
 </figcaption>
 </figure>
 </div>
 </div>
 <a class="quarto-notebook-link" id="nblink-1" href="index-preview.html#cell-fig-training-parameters-experiments">Source: Article Notebook</a></div>
-<p>In the next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;2</a>), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.</p>
+<p>In the next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;4</a>), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.</p>
 <div id="cell-fig-training-parameters-data" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters-data" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-training-parameters-data-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results with different training parameters for all evaluation data setups"><img src="index_files/figure-html/fig-training-parameters-data-output-1.png" width="939" height="480" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-data-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;4: Results with different training parameters for all evaluation data setups"><img src="index_files/figure-html/fig-training-parameters-data-output-1.png" width="939" height="480" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Results with different training parameters for all evaluation data setups
+Figure&nbsp;4: Results with different training parameters for all evaluation data setups
 </figcaption>
 </figure>
 </div>
@@ -1081,7 +1192,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","loop":false,"descPosition":"bottom","selector":".lightbox"});
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","selector":".lightbox","descPosition":"bottom","openEffect":"zoom","loop":false});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

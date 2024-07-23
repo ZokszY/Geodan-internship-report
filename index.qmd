@@ -179,7 +179,20 @@ Then, to make the most out of the point cloud resolution and the RGB images reso
 
 To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km × 1 km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640 px × 640 px i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section [@sec-dataset-challenges], and each tree belongs to one class.
 
-Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area.
+Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. In [@fig-dataset-gt-boxes], you can see what the dataset finally looks like.
+
+::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
+
+![RGB image](images/Training_image/RGB_image_with_GT_boxes.png)
+
+![CIR image](images/Training_image/CIR_image_with_GT_boxes.png)
+
+![LiDAR point cloud](images/Training_image/LiDAR_with_GT_boxes.png)
+
+![CHM raster](images/Training_image/CHM_all_color_with_GT_boxes.png)
+
+One data instance with ground-truth bounding boxes
+:::
 
 ### Challenges and solutions {#sec-dataset-challenges}
 
@@ -194,7 +207,18 @@ All these labels theoretically correspond to situations that have no intersectio
 
 The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthonormal. Point clouds don't have this problem, because the data is acquired and represented in 3D, but images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.
 
-<!-- TODO: PUT AN IMAGE TO SHOW THE MISALIGNMENT HERE -->
+::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
+
+![RGB image](images/Data_shift/RGB_image.png)
+
+![CIR image](images/Data_shift/CIR_image.png)
+
+![LiDAR point cloud](images/Data_shift/LiDAR.png)
+
+![CHM raster](images/Data_shift/CHM_all_color.png)
+
+Example of data misalignment
+:::
 
 Finally, the last challenge comes from the definition of what we consider as a tree and what we don't. There are two main sub-problems. The first one comes from the threshold to set between bushes and trees. Large bushes can be much larger than small trees, and sometimes have a similar shape. Therefore, it is hard to keep coherent rules when annotating them. The second sub-problem comes from multi-stemmed and close trees. It can be very difficult to see, even with the point cloud, if a there is only one tree with two or more trunks dividing at the bottom, or multiple trees which are simply close to one another. (Un)fortunately I know that I was not the only one to face this problem because it was also mentioned in another paper [@DeepForestBefore]. In the end, it was just an unsolvable problem for which the most important was to remain consistent in the whole dataset.
 
