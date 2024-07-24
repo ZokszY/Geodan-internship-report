@@ -1,0 +1,104 @@
+# Results
+
+In this section are the results of the experiments performed with the model and the dataset presented before.
+
+## Training parameters
+
+The first experiment was a simple test over the different parameters regarding the training loop. There were two goals to this experiment. The first one was to find the best training parameters for the next experiments. The second one was to see if randomly dropping one of the inputs of the model (either RGB/CIR or CHM) could help the model by pushing it to learn to make the best out of the two types of data.
+
+The different parameters that are tested here are:
+
+- "Learn. rate": the initial learning rate.
+- "Prob. drop": the probability to drop either RGB/CIR or CHM. The probability is the same for the two types, which means that if the displayed value is 0.1, then all data will be used 80% of the time, while only RGB/CIR and only CHM both happen 10% of the time.
+- "Accum. count": the accumulation count, which means the amount of training data to process and compute the loss on before performing gradient back-propagation.
+
+As you can see on [@fig-training-parameters-experiments], sortedAP reaches at best values just above 0.3. The reason why the column name is "Best sortedAP" is due to the dataset being too small. Since the dataset is small, the training process overfits quickly, and the model doesn't have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept.
+
+With this experiment, we can see that a learning rate of 0.01 seems to make the training too much unstable, while 0.001 doesn't give very high score. Then, we can also see how unstable the training process is in general, which comes mostly from the dataset being too small. However, a learning rate between 0.0025 and 0.006 seems to give the most stable results, when the drop probability is 0. This seems to show that the idea of randomly dropping one of the two inputs doesn't really help the model to learn.
+
+```{python}
+#| label: fig-training-parameters-experiments
+#| fig-cap: "Results with different training parameters for all experiments"
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("../data/training_params_experiment_all.csv")
+df = df[df["Data used for evaluation"] == "RGB, CIR and CHM"]
+df["Prob. drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate",
+    "repartition_name": "Exp. name"
+  },
+  inplace=True)
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Accum. count",
+    y="Best sortedAP",
+    hue="Exp. name",
+    hue_order=["exp0", "exp1", "exp2", "exp3", "exp4"],
+    col="Learn. rate",
+    row="Prob. drop",
+    margin_titles=True,
+    height=2,
+    aspect=1,
+    palette="colorblind",
+    s=25
+)
+plt.show()
+```
+
+In the next graph ([@fig-training-parameters-data]), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.
+
+```{python}
+#| label: fig-training-parameters-data
+#| fig-cap: "Results with different training parameters for all evaluation data setups"
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("../data/training_params_experiment_all.csv")
+df.sort_values(
+    by=["proba_drop_chm", "Data used for evaluation"],
+    inplace=True,
+)
+df["Prob. drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate"
+  },
+  inplace=True)
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Accum. count",
+    y="Best sortedAP",
+    hue="Evaluation data",
+    col="Learn. rate",
+    row="Prob. drop",
+    margin_titles=True,
+    height=1.7,
+    aspect=1.2,
+    palette="colorblind",
+    s=9
+)
+plt.show()
+```
+
+From the results of this experiment, I decided to pick the following parameters for the next experiments:
+
+- Initial learning rate: 0.004
+- Drop probability: 0
+- Accumulation count: 10
+
+## Data used
+
+## CHM layers
+
+## Hard trees

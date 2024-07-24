@@ -1,0 +1,110 @@
+# Dataset creation {#sec-dataset}
+
+## Definition and content
+
+As explained in the section [@sec-sota-datasets-requirements], the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and CIR data, with simple bounding box annotations for all trees. And as explained in [@sec-obj-covered_trees], all trees means also annotating trees that are partially or completely covered by other trees.
+
+Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8 cm, which is also the resolution of the RGB images. However, the resolution of CIR images is 25 cm, which made it less optimal, but still usable.
+
+To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km × 1 km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640 px × 640 px i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section [@sec-dataset-challenges], and each tree belongs to one class.
+
+Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. On [@fig-dataset-gt-boxes], you can see what the dataset finally looks like, with all data sources and bounding boxes.
+
+::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]" fig-pos="H"}
+
+![RGB image](../images/Training_image/RGB_image.png){#fig-dataset-gt-boxes-rgb fig-align="center"}
+
+![CIR image](../images/Training_image/CIR_image.png){#fig-dataset-gt-boxes-cir fig-align="center"}
+
+![LiDAR point cloud](../images/Training_image/LiDAR.png){#fig-dataset-gt-boxes-lidar fig-align="center"}
+
+![CHM raster](../images/Training_image/CHM_all_color.png){#fig-dataset-gt-boxes-chm fig-align="center"}
+
+One data instance with ground-truth bounding boxes
+:::
+
+## Challenges and solutions {#sec-dataset-challenges}
+
+The creation of this dataset raised a number of challenges. The first one was the interval of time between the acquisition of the different types of data. While the point cloud data dated from 2020, the RGB images were acquired in 2023. It would have been possible to use images from 2021 or 2022 with the same resolution, but the quality of the 2023 images was much better. Consequently, there were a certain amount of changes regarding trees between these two periods of acquisition. Some large trees were cut off, while small trees were planted, sometimes even at the position of old trees that were previously cut off in the same time frame. For this reason, a non negligible number of trees were either present only in the point cloud, or only in the images. An example of such a situation can be found in [@fig-dataset-tree-replaced]To try to handle this situation, I created two new class labels corresponding to these situation. This amounted up to 4 class labels:
+
+- "Tree": trees which are visible in the point cloud and the images
+- "Tree_LiDAR": trees which are visible in the point cloud only but would be visible in the images if they had been there during the acquisition
+- "Tree_RGB": trees which are visible in the images only but would be visible in the point cloud if they had been there during the acquisition
+- "Tree_covered": trees that are visible in the point cloud only because they are covered by other trees.
+
+::: {#fig-dataset-tree-replaced layout="[[48, -4, 48], [-4],  [48, -4, 48]]" fig-pos="H"}
+
+![RGB image](../images/Data_discrepancies//RGB_image.png){#fig-dataset-tree-replaced-rgb fig-align="center"}
+
+![CHM raster](../images/Data_discrepancies/CHM_all_color.png){#fig-dataset-tree-replaced-chm fig-align="center"}
+
+A tree that was cut off and replaced
+:::
+
+The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthonormal. Point clouds don't have this problem, because the data is acquired and represented in 3D, but images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.
+
+On the example below ([@fig-dataset-shift]), you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.
+
+::: {#fig-dataset-shift layout="[[48, -4, 48], [-4],  [48, -4, 48]]" fig-pos="H"}
+
+![RGB image](../images/Data_shift/RGB_image.png){#fig-dataset-shift-rgb fig-align="center"}
+
+![CIR image](../images/Data_shift/CIR_image.png){#fig-dataset-shift-cir fig-align="center"}
+
+![LiDAR point cloud](../images/Data_shift/LiDAR.png){#fig-dataset-shift-lidar fig-align="center"}
+
+![CHM raster](../images/Data_shift/CHM_all_color.png){#fig-dataset-shift-chm fig-align="center"}
+
+Example of data misalignment
+:::
+
+Finally, the last challenge comes from the definition of what we consider as a tree and what we don't. There are two main sub-problems. The first one comes from the threshold to set between bushes and trees. Large bushes can be much larger than small trees, and sometimes have a similar shape. Therefore, it is hard to keep coherent rules when annotating them. The second sub-problem comes from multi-stemmed and close trees. It can be very difficult to see, even with the point cloud, if a there is only one tree with two or more trunks dividing at the bottom, or multiple trees which are simply close to one another. (Un)fortunately I know that I was not the only one to face this problem because it was also mentioned in another paper [@DeepForestBefore]. In the end, it was just an unsolvable problem for which the most important was to remain consistent in the whole dataset.
+
+## Augmentation methods
+
+Dataset augmentation methods are in the middle between dataset creation and deep learning model training, because they are a way to enhance the dataset but depend on the objective for which the model is trained. Their importance is inversely proportional with the size of the dataset, which made them very important for my small dataset.
+
+As it was already explained in [@sec-sota-dataset-augment], I used Albumentations [@albumentations] to apply two types of augmentations: pixel-level and spatial-level.
+
+Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, CIR images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images we can get when flipping and rotating the image by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.
+
+On the contrary, pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.
+
+On [@fig-dataset-augmentation], you can see an RGB image and 15 random augmentations of this image, generated with the transformations and the probabilities used during training. The most visible change happens when one or two color channels are dropped, but we can also see luminosity changes in images n°4 and 14, perspective changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in n°10 and 12. All these effects and some other less identifiable augmentations (like noise), are randomly combined to produce many different images, with bounding boxes being modified accordingly.
+
+::: {#fig-dataset-augmentation layout="[[48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48]]" fig-pos="H"}
+
+![Initial image](../images/Augmentations/RGB_image.png){#fig-dataset-augmentation-initial fig-align="center"}
+
+![Transformed image n°1](../images/Augmentations/RGB_image_transformed_1.png){#fig-dataset-augmentation-1 fig-align="center"}
+
+![Transformed image n°2](../images/Augmentations/RGB_image_transformed_2.png){#fig-dataset-augmentation-2 fig-align="center"}
+
+![Transformed image n°3](../images/Augmentations/RGB_image_transformed_3.png){#fig-dataset-augmentation-3 fig-align="center"}
+
+![Transformed image n°4](../images/Augmentations/RGB_image_transformed_4.png){#fig-dataset-augmentation-4 fig-align="center"}
+
+![Transformed image n°5](../images/Augmentations/RGB_image_transformed_5.png){#fig-dataset-augmentation-5 fig-align="center"}
+
+![Transformed image n°6](../images/Augmentations/RGB_image_transformed_6.png){#fig-dataset-augmentation-6 fig-align="center"}
+
+![Transformed image n°7](../images/Augmentations/RGB_image_transformed_7.png){#fig-dataset-augmentation-7 fig-align="center"}
+
+![Transformed image n°8](../images/Augmentations/RGB_image_transformed_8.png){#fig-dataset-augmentation-8 fig-align="center"}
+
+![Transformed image n°9](../images/Augmentations/RGB_image_transformed_9.png){#fig-dataset-augmentation-9 fig-align="center"}
+
+![Transformed image n°10](../images/Augmentations/RGB_image_transformed_10.png){#fig-dataset-augmentation-10 fig-align="center"}
+
+![Transformed image n°11](../images/Augmentations/RGB_image_transformed_11.png){#fig-dataset-augmentation-11 fig-align="center"}
+
+![Transformed image n°12](../images/Augmentations/RGB_image_transformed_12.png){#fig-dataset-augmentation-12 fig-align="center"}
+
+![Transformed image n°13](../images/Augmentations/RGB_image_transformed_13.png){#fig-dataset-augmentation-13 fig-align="center"}
+
+![Transformed image n°14](../images/Augmentations/RGB_image_transformed_14.png){#fig-dataset-augmentation-14 fig-align="center"}
+
+![Transformed image n°15](../images/Augmentations/RGB_image_transformed_15.png){#fig-dataset-augmentation-15 fig-align="center"}
+
+Examples of data augmentations on an RGB image with the probabilities used when training the model. Multiple effects can be seen, such as channel dropouts, luminosity changes, perspective changes, blurring and distortion.
+:::

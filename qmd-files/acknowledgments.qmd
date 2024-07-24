@@ -1,0 +1,6 @@
+# Acknowledgments {.unnumbered .unlisted}
+
+I would like to express my gratitude to...
+
+\tableofcontents
+\listoffigures

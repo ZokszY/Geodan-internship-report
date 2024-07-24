@@ -1,0 +1,68 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$if(title)$
+\cleardoublepage
+\thispagestyle{empty}
+{\centering
+
+\hbox{}\vskip 0cm plus 1fill
+
+{\Huge\bfseries $title$ \par}
+$if(subtitle)$
+\vspace{3ex}
+{\Large\bfseries $subtitle$ \par}
+$endif$
+
+\hbox{}\vskip 0cm plus 1fill
+
+\hypersetup{linkcolor=black, citecolor=black, urlcolor=black}
+$for(by-author)$
+{\Large\bfseries $by-author.name.literal$ \par}
+\vspace{3ex}
+{\bfseries\large $date$ \par}
+
+% \vspace{12ex}
+\hbox{}\vskip 0cm plus 1fill
+
+% Define the number of columns (adjust as needed)
+\newcommand{\numcolumns}{2} % Set this manually if needed
+% Calculate the width for each minipage
+\newcommand{\minipagewidth}{\textwidth / \numcolumns - 4ex}
+\noindent % Prevent indentation
+% Initialize counter for columns
+\newcounter{row}
+\setcounter{row}{0}
+\newcounter{col}
+\setcounter{col}{0}
+% Start loop for affiliations
+$for(by-author.affiliations)$%
+\stepcounter{col}
+\ifnum\value{row} > 0 \vspace{4ex} \fi % Add space before if not the first row
+\hfill
+\begin{minipage}[t]{\minipagewidth}
+    {\centering
+    $if(it.department)$%
+    \href{$it.url$}{\bfseries\large $it.department$} \par
+    \vspace{1ex}
+    $endif$%
+    {\bfseries\large $it.name$, $it.city$, $it.country$ \par}
+    }
+\end{minipage}%
+\hfill
+\ifnum\value{col} = \numcolumns \setcounter{col}{0} \stepcounter{row} \par \fi % Reset counter and start a new row if necessary
+$endfor$$endfor$%
+\hypersetup{
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor={$if(linkcolor)$$linkcolor$$else$Maroon$endif$},
+  filecolor={$if(filecolor)$$filecolor$$else$Maroon$endif$},
+  citecolor={$if(citecolor)$$citecolor$$else$Blue$endif$},
+  urlcolor={$if(urlcolor)$$urlcolor$$else$Blue$endif$},
+$endif$
+}
+
+\hbox{}\vskip 0cm plus 1fill
+
+}
+$endif$

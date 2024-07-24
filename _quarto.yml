@@ -1,28 +1,66 @@
 project:
-  type: manuscript
-  # output-dir: _manuscript
+  type: book
 
-manuscript:
-  article: index.qmd
+book:
+  title: Internship Report
+  subtitle: Tree object detection using airborne images and LiDAR point clouds
+  date: today
+  date-format: "MMMM YYYY"
+  author:
+    - name: Alexandre Bry
+      email: alexandre.bry.21@polytechnique.org
+      affiliation:
+        - name: École polytechnique
+          department: Computer Science Department
+          city: Palaiseau
+          country: France
+          url: https://portail.polytechnique.edu/informatique/fr/page-daccueil
+        - name: Geodan B.V.
+          department: Research Department
+          city: Amsterdam
+          country: The Netherlands
+          url: https://research.geodan.nl/
+      roles: writing
+      corresponding: true
+  sidebar:
+    alignment: center
+    search: true
+  repo-url: https://github.com/ZokszY/Geodan-internship-report
+  downloads: [pdf]
+  chapters:
+    - index.qmd
+    - qmd-files/acknowledgments.qmd
+    - qmd-files/intro.qmd
+    - qmd-files/sota.qmd
+    - qmd-files/objectives.qmd
+    - qmd-files/dataset.qmd
+    - qmd-files/model.qmd
+    - qmd-files/results.qmd
+    - qmd-files/discussion.qmd
+    - qmd-files/conclusion.qmd
+    - qmd-files/references.qmd
+
+lightbox: true
+bibliography: references.bib
+csl: chicago-author-date.csl
 
 format:
   html:
-    comments:
-      hypothesis: true
+    theme: cosmo
     number-sections: true
   pdf:
-    documentclass: scrartcl
+    documentclass: scrreprt
+    papersize: a4
     toc: true
+    lof: true
     number-sections: true
     colorlinks: true
-    output-file: "index.pdf"
-    biblio-title: "Bibliography"
     cite-method: biblatex
-    number-offset: 1
-    header-includes:
-      - \usepackage{biblatex}
-      - \usepackage{sectsty}
-      - \sectionfont{\clearpage}
-      - \ExecuteBibliographyOptions{sorting=none,defernumbers=true}
-execute:
-  freeze: auto
+    template-partials:
+      - tex-files/template.tex
+      - tex-files/before-body.tex
+      - tex-files/before-toc.tex
+      - tex-files/toc.tex
+    keep-tex: true
+
+

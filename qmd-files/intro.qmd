@@ -1,0 +1,5 @@
+# Introduction {.unnumbered .unlisted}
+
+The goal of the internship was to study the possibility of combining LiDAR point clouds and aerial images in a deep learning model to identify individual trees. The two types of data are indeed complementary, as point clouds capture geometric shapes, while images capture colors. However, combining them into a format that allows a model to handle them simultaneously is not a straightforward task because they inherently have a very different spatial repartition and encoding.
+
+In this work, I focused on one specific deep learning model, and tried to improve it by using more information from the LiDAR point cloud. To do this, I had to create my own tree annotations dataset, with which I also tried to study the ability of this new model to detect trees that are covered by other trees.

@@ -1,5 +1,7 @@
 /env/
 /.quarto/
-/_manuscript/
+/_book/
 /_freeze/
 /site_libs/
+/images/
+Internship-Report.tex

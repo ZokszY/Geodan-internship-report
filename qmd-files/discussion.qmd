@@ -1,0 +1,15 @@
+# Discussion and improvements
+
+## Dataset
+
+From the results of this work, the only certain outcome is that more training data would be necessary to confirm any conclusion. Even with augmentation techniques, the dataset is too small to completely train a model and really experiment with the small changes applied to it. Since the training loop quickly reaches overfitting, we don't really get to see how the model could perform in the most interesting cases, which are the small, covered or hardly visible trees.
+
+Therefore, the biggest and conceptually simplest improvement that could be done to this work would be to improve and extend the dataset. Improving with more diversity, covering a larger part of the Netherlands (or even beyond, but we can only ensure consistency over images and point clouds in this country), and extending with more images and more trees.
+
+At the time of writing this report, the newest version of the point cloud has also been released for one third of the Netherlands, including the area of the current dataset. This new data could be better for this project, because it was acquired in 2023, the same year as the images that are used in the dataset.
+
+Another approach to generate a larger dataset could be to create a large artificially annotated dataset, like it was done in another paper [@DeepForest]. Their approach was to create a very large dataset with medium-quality data which can be used to pre-train the model. Then, they use hand-annotated data to finish the training. They created this large dataset using classical non-machine learning techniques, using only the point cloud.
+
+## Combination of data types
+
+## Covered trees
