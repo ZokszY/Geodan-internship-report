@@ -179,7 +179,7 @@ Then, to make the most out of the point cloud resolution and the RGB images reso
 
 To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km × 1 km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640 px × 640 px i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section [@sec-dataset-challenges], and each tree belongs to one class.
 
-Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. In [@fig-dataset-gt-boxes], you can see what the dataset finally looks like.
+Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. On [@fig-dataset-gt-boxes], you can see what the dataset finally looks like, with all data sources and bounding boxes.
 
 ::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
 
@@ -207,6 +207,8 @@ All these labels theoretically correspond to situations that have no intersectio
 
 The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthonormal. Point clouds don't have this problem, because the data is acquired and represented in 3D, but images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.
 
+On the example below ([@fig-dataset-gt-boxes]), you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.
+
 ::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
 
 ![RGB image](images/Data_shift/RGB_image.png)
@@ -230,9 +232,46 @@ As it was already explained in [@sec-sota-dataset-augment], I used Albumentation
 
 Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, CIR images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images we can get when flipping and rotating the image by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.
 
-<!-- TODO: Add an example of an image before and after the transformations -->
+On the contrary, pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.
 
-On the contrary, Pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.
+On [@fig-dataset-augmentation], you can see an RGB image and 15 random augmentations of this image, generated with the transformations and the probabilities used during training. The most visible change happens when one or two color channels are dropped, but we can also see luminosity changes in images n°4 and 14, perspective changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in n°10 and 12. All these effects and some other less identifiable augmentations (like noise), are randomly combined to produce many different images, with bounding boxes being modified accordingly.
+
+::: {#fig-dataset-augmentation layout="[[48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48]]" layout-valign="top"}
+
+![Initial image](images/Augmentations/RGB_image.png)
+
+![Transformed image n°1](images/Augmentations/RGB_image_transformed_1.png)
+
+![Transformed image n°2](images/Augmentations/RGB_image_transformed_2.png)
+
+![Transformed image n°3](images/Augmentations/RGB_image_transformed_3.png)
+
+![Transformed image n°4](images/Augmentations/RGB_image_transformed_4.png)
+
+![Transformed image n°5](images/Augmentations/RGB_image_transformed_5.png)
+
+![Transformed image n°6](images/Augmentations/RGB_image_transformed_6.png)
+
+![Transformed image n°7](images/Augmentations/RGB_image_transformed_7.png)
+
+![Transformed image n°8](images/Augmentations/RGB_image_transformed_8.png)
+
+![Transformed image n°9](images/Augmentations/RGB_image_transformed_9.png)
+
+![Transformed image n°10](images/Augmentations/RGB_image_transformed_10.png)
+
+![Transformed image n°11](images/Augmentations/RGB_image_transformed_11.png)
+
+![Transformed image n°12](images/Augmentations/RGB_image_transformed_12.png)
+
+![Transformed image n°13](images/Augmentations/RGB_image_transformed_13.png)
+
+![Transformed image n°14](images/Augmentations/RGB_image_transformed_14.png)
+
+![Transformed image n°15](images/Augmentations/RGB_image_transformed_15.png)
+
+Examples of data augmentations on an RGB image with the probabilities used when training the model. Multiple effects can be seen, such as channel dropouts, luminosity changes, perspective changes, blurring and distortion.
+:::
 
 ## Model and training
 
@@ -400,7 +439,7 @@ From the results of this experiment, I decided to pick the following parameters 
 
 ### Hard trees
 
-## Discussion
+## Discussion and improvements
 
 ### Dataset
 

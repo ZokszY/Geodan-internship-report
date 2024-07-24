@@ -163,7 +163,7 @@
 \title{Tree object detection using airborne images and LiDAR point
 clouds}
 \author{Alexandre Bry}
-\date{2024-07-23}
+\date{2024-07-24}
 
 \begin{document}
 \maketitle
@@ -700,8 +700,8 @@ class.
 
 Annotating all these trees took me about 100 hours, with a very high
 variation of the time spent on each tree depending on the complexity of
-the area. In Figure~\ref{fig-dataset-gt-boxes}, you can see what the
-dataset finally looks like.
+the area. On Figure~\ref{fig-dataset-gt-boxes}, you can see what the
+dataset finally looks like, with all data sources and bounding boxes.
 
 \begin{figure}
 
@@ -797,6 +797,15 @@ annotations should be placed, using either the point clouds or the RGB
 images. I chose to the RGB images as it is simpler to visualize and
 annotate, but there was not really a perfect choice.
 
+On the example below (Figure~\ref{fig-dataset-gt-boxes}), you can see
+two of the issues. First, you can see that a bounding box that is
+well-centered around the tree in the RGB image is completely off on the
+CIR image, and also not really centered on the CHM raster. Then, you can
+see that the bounding box is much smaller on the CHM, mainly for two
+reasons: the tree grew between the acquisition of the LiDAR point cloud
+and the RGB image and small branches on the outside of the tree are hard
+to capture for LiDAR beams.
+
 \begin{figure}
 
 \begin{minipage}{0.48\linewidth}
@@ -876,7 +885,7 @@ the image by angles that are multiples of 90°. The second one adds a
 perspective effect to the images. The third one adds a small distortion
 to the image.
 
-On the contrary, Pixel-level augmentations must be applied differently
+On the contrary, pixel-level augmentations must be applied differently
 to RGB images and CHM layers because they represent different kinds of
 data, so the values of the pixels do not have the same meaning. In
 practice, a lot of transformations were conceived to reproduce camera
@@ -890,6 +899,182 @@ points in the point cloud, before computing the CHM layers. However,
 these operations are too costly to be integrated in the training
 pipeline without consequently increasing the training time, so this idea
 was discarded.
+
+On Figure~\ref{fig-dataset-augmentation}, you can see an RGB image and
+15 random augmentations of this image, generated with the
+transformations and the probabilities used during training. The most
+visible change happens when one or two color channels are dropped, but
+we can also see luminosity changes in images n°4 and 14, perspective
+changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in
+n°10 and 12. All these effects and some other less identifiable
+augmentations (like noise), are randomly combined to produce many
+different images, with bounding boxes being modified accordingly.
+
+\begin{figure}
+
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image.png}
+
+\subcaption{\label{}Initial image}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_1.png}
+
+\subcaption{\label{}Transformed image n°1}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_2.png}
+
+\subcaption{\label{}Transformed image n°2}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_3.png}
+
+\subcaption{\label{}Transformed image n°3}
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+~\end{minipage}%
+\newline
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_4.png}
+
+\subcaption{\label{}Transformed image n°4}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_5.png}
+
+\subcaption{\label{}Transformed image n°5}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_6.png}
+
+\subcaption{\label{}Transformed image n°6}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_7.png}
+
+\subcaption{\label{}Transformed image n°7}
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+~\end{minipage}%
+\newline
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_8.png}
+
+\subcaption{\label{}Transformed image n°8}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_9.png}
+
+\subcaption{\label{}Transformed image n°9}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_10.png}
+
+\subcaption{\label{}Transformed image n°10}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_11.png}
+
+\subcaption{\label{}Transformed image n°11}
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+~\end{minipage}%
+\newline
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_12.png}
+
+\subcaption{\label{}Transformed image n°12}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_13.png}
+
+\subcaption{\label{}Transformed image n°13}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_14.png}
+
+\subcaption{\label{}Transformed image n°14}
+\end{minipage}%
+%
+\begin{minipage}{0.02\linewidth}
+~\end{minipage}%
+%
+\begin{minipage}{0.23\linewidth}
+
+\includegraphics{images/Augmentations/RGB_image_transformed_15.png}
+
+\subcaption{\label{}Transformed image n°15}
+\end{minipage}%
+
+\caption{\label{fig-dataset-augmentation}Examples of data augmentations
+on an RGB image with the probabilities used when training the model.
+Multiple effects can be seen, such as channel dropouts, luminosity
+changes, perspective changes, blurring and distortion.}
+
+\end{figure}%
 
 \section{Model and training}\label{model-and-training}
 
@@ -1162,7 +1347,7 @@ parameters for the next experiments:
 
 \subsection{Hard trees}\label{hard-trees}
 
-\section{Discussion}\label{discussion}
+\section{Discussion and improvements}\label{discussion-and-improvements}
 
 \subsection{Dataset}\label{dataset}
 

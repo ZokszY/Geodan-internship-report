@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Alexandre Bry">
-<meta name="dcterms.date" content="2024-07-23">
+<meta name="dcterms.date" content="2024-07-24">
 <meta name="keywords" content="tree detection, deep learning">
 
 <title>Tree object detection using airborne images and LiDAR point clouds</title>
@@ -102,10 +102,10 @@ It can be on multiple lines and contain **Markdown**.
 ">
 <meta name="citation_keywords" content="tree detection,deep learning">
 <meta name="citation_author" content="Alexandre Bry">
-<meta name="citation_publication_date" content="2024-07-23">
-<meta name="citation_cover_date" content="2024-07-23">
+<meta name="citation_publication_date" content="2024-07-24">
+<meta name="citation_cover_date" content="2024-07-24">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-07-23">
+<meta name="citation_online_date" content="2024-07-24">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=FoMo-bench: A multi-modal, multi-scale and multi-task forest monitoring benchmark for remote sensing foundation models;,citation_author=Nikolaos Ioannis Bountos;,citation_author=Arthur Ouaknine;,citation_author=David Rolnick;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://arxiv.org/abs/2312.10114;,citation_journal_title=arXiv preprint arXiv:2312.10114;">
 <meta name="citation_reference" content="citation_title=OpenForest: A data catalogue for machine learning in forest monitoring;,citation_author=Arthur Ouaknine;,citation_author=Teja Kattenborn;,citation_author=Etienne Laliberté;,citation_author=David Rolnick;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://arxiv.org/abs/2311.00277;">
@@ -184,7 +184,7 @@ It can be on multiple lines and contain **Markdown**.
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">July 23, 2024</p>
+              <p class="date">July 24, 2024</p>
             </div>
           </div>
           
@@ -248,7 +248,7 @@ It can be on multiple lines and contain **Markdown**.
   <li><a href="#chm-layers" id="toc-chm-layers" class="nav-link" data-scroll-target="#chm-layers"><span class="header-section-number">5.3</span> CHM layers</a></li>
   <li><a href="#hard-trees" id="toc-hard-trees" class="nav-link" data-scroll-target="#hard-trees"><span class="header-section-number">5.4</span> Hard trees</a></li>
   </ul></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">6</span> Discussion</a>
+  <li><a href="#discussion-and-improvements" id="toc-discussion-and-improvements" class="nav-link" data-scroll-target="#discussion-and-improvements"><span class="header-section-number">6</span> Discussion and improvements</a>
   <ul class="collapse">
   <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">6.1</span> Dataset</a></li>
   <li><a href="#combination-of-data-types" id="toc-combination-of-data-types" class="nav-link" data-scroll-target="#combination-of-data-types"><span class="header-section-number">6.2</span> Combination of data types</a></li>
@@ -393,7 +393,7 @@ It can be on multiple lines and contain **Markdown**.
 <p>As explained in the section <a href="#sec-sota-datasets-requirements" class="quarto-xref">Section&nbsp;1.2.1</a>, the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and CIR data, with simple bounding box annotations for all trees. And as explained in <a href="#sec-obj-covered_trees" class="quarto-xref">Section&nbsp;2.2</a>, all trees means also annotating trees that are partially or completely covered by other trees.</p>
 <p>Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8&nbsp;cm, which is also the resolution of the RGB images. However, the resolution of CIR images is 25&nbsp;cm, which made it less optimal, but still usable.</p>
 <p>To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that could hopefully still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km&nbsp;×&nbsp;1&nbsp;km square around Geodan office, in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640&nbsp;px&nbsp;×&nbsp;640&nbsp;px i.e.&nbsp;51.2&nbsp;m&nbsp;×&nbsp;51.2&nbsp;m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section <a href="#sec-dataset-challenges" class="quarto-xref">Section&nbsp;3.2</a>, and each tree belongs to one class.</p>
-<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. In <a href="#fig-dataset-gt-boxes" class="quarto-xref">Figure&nbsp;2</a>, you can see what the dataset finally looks like.</p>
+<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. On <a href="#fig-dataset-gt-boxes" class="quarto-xref">Figure&nbsp;2</a>, you can see what the dataset finally looks like, with all data sources and bounding boxes.</p>
 <div id="fig-dataset-gt-boxes" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -462,6 +462,7 @@ Figure&nbsp;1: One data instance with ground-truth bounding boxes
 </ul>
 <p>All these labels theoretically correspond to situations that have no intersection, even though it is more complicated in practice.</p>
 <p>The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthonormal. Point clouds don’t have this problem, because the data is acquired and represented in 3D, but images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.</p>
+<p>On the example below (<a href="#fig-dataset-gt-boxes" class="quarto-xref">Figure&nbsp;2</a>), you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.</p>
 <div id="fig-dataset-gt-boxes" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -525,8 +526,204 @@ Figure&nbsp;2: Example of data misalignment
 <p>Dataset augmentation methods are in the middle between dataset creation and deep learning model training, because they are a way to enhance the dataset but depend on the objective for which the model is trained. Their importance is inversely proportional with the size of the dataset, which made them very important for my small dataset.</p>
 <p>As it was already explained in <a href="#sec-sota-dataset-augment" class="quarto-xref">Section&nbsp;1.2.4</a>, I used Albumentations <span class="citation" data-cites="albumentations">(<a href="#ref-albumentations" role="doc-biblioref">Buslaev et al. 2020</a>)</span> to apply two types of augmentations: pixel-level and spatial-level.</p>
 <p>Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, CIR images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images we can get when flipping and rotating the image by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.</p>
-<!-- TODO: Add an example of an image before and after the transformations -->
-<p>On the contrary, Pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.</p>
+<p>On the contrary, pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, so the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.</p>
+<p>On <a href="#fig-dataset-augmentation" class="quarto-xref">Figure&nbsp;3</a>, you can see an RGB image and 15 random augmentations of this image, generated with the transformations and the probabilities used during training. The most visible change happens when one or two color channels are dropped, but we can also see luminosity changes in images n°4 and 14, perspective changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in n°10 and 12. All these effects and some other less identifiable augmentations (like noise), are randomly combined to produce many different images, with bounding boxes being modified accordingly.</p>
+<div id="fig-dataset-augmentation" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dataset-augmentation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Initial image"><img src="images/Augmentations/RGB_image.png" class="img-fluid figure-img"></a></p>
+<figcaption>Initial image</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Transformed image n°1"><img src="images/Augmentations/RGB_image_transformed_1.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°1</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Transformed image n°2"><img src="images/Augmentations/RGB_image_transformed_2.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°2</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Transformed image n°3"><img src="images/Augmentations/RGB_image_transformed_3.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°3</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Transformed image n°4"><img src="images/Augmentations/RGB_image_transformed_4.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°4</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Transformed image n°5"><img src="images/Augmentations/RGB_image_transformed_5.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°5</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Transformed image n°6"><img src="images/Augmentations/RGB_image_transformed_6.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°6</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_7.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Transformed image n°7"><img src="images/Augmentations/RGB_image_transformed_7.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°7</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Transformed image n°8"><img src="images/Augmentations/RGB_image_transformed_8.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°8</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_9.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Transformed image n°9"><img src="images/Augmentations/RGB_image_transformed_9.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°9</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Transformed image n°10"><img src="images/Augmentations/RGB_image_transformed_10.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°10</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_11.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Transformed image n°11"><img src="images/Augmentations/RGB_image_transformed_11.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°11</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_12.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Transformed image n°12"><img src="images/Augmentations/RGB_image_transformed_12.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°12</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_13.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Transformed image n°13"><img src="images/Augmentations/RGB_image_transformed_13.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°13</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_14.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23" title="Transformed image n°14"><img src="images/Augmentations/RGB_image_transformed_14.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°14</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 23.5%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/Augmentations/RGB_image_transformed_15.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24" title="Transformed image n°15"><img src="images/Augmentations/RGB_image_transformed_15.png" class="img-fluid figure-img"></a></p>
+<figcaption>Transformed image n°15</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-augmentation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Examples of data augmentations on an RGB image with the probabilities used when training the model. Multiple effects can be seen, such as channel dropouts, luminosity changes, perspective changes, blurring and distortion.
+</figcaption>
+</figure>
+</div>
 </section>
 </section>
 <section id="model-and-training" class="level2" data-number="4">
@@ -587,32 +784,32 @@ Figure&nbsp;2: Example of data misalignment
 <li>“Prob. drop”: the probability to drop either RGB/CIR or CHM. The probability is the same for the two types, which means that if the displayed value is 0.1, then all data will be used 80% of the time, while only RGB/CIR and only CHM both happen 10% of the time.</li>
 <li>“Accum. count”: the accumulation count, which means the amount of training data to process and compute the loss on before performing gradient back-propagation.</li>
 </ul>
-<p>As you can see on <a href="#fig-training-parameters-experiments" class="quarto-xref">Figure&nbsp;3</a>, sortedAP reaches at best values just above 0.3. The reason why the column name is “Best sortedAP” is due to the dataset being too small. Since the dataset is small, the training process overfits quickly, and the model doesn’t have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept.</p>
+<p>As you can see on <a href="#fig-training-parameters-experiments" class="quarto-xref">Figure&nbsp;4</a>, sortedAP reaches at best values just above 0.3. The reason why the column name is “Best sortedAP” is due to the dataset being too small. Since the dataset is small, the training process overfits quickly, and the model doesn’t have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept.</p>
 <p>With this experiment, we can see that a learning rate of 0.01 seems to make the training too much unstable, while 0.001 doesn’t give very high score. Then, we can also see how unstable the training process is in general, which comes mostly from the dataset being too small. However, a learning rate between 0.0025 and 0.006 seems to give the most stable results, when the drop probability is 0. This seems to show that the idea of randomly dropping one of the two inputs doesn’t really help the model to learn.</p>
 <div id="cell-fig-training-parameters-experiments" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters-experiments" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;3: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25" title="Figure&nbsp;4: Results with different training parameters for all experiments"><img src="index_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Results with different training parameters for all experiments
+Figure&nbsp;4: Results with different training parameters for all experiments
 </figcaption>
 </figure>
 </div>
 </div>
 <a class="quarto-notebook-link" id="nblink-1" href="index-preview.html#cell-fig-training-parameters-experiments">Source: Article Notebook</a></div>
-<p>In the next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;4</a>), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.</p>
+<p>In the next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;5</a>), we can see more results for the same experiments. Here, the results are colored according to the data that we use to evaluate the model. In blue, we see the value of sortedAP when we evaluate the model with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Some interesting patterns appear in some of the cells in this plot. Firstly, it looks like randomly dropping one of the two inputs with the same probability has a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases.</p>
 <div id="cell-fig-training-parameters-data" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div id="fig-training-parameters-data" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-training-parameters-data-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;4: Results with different training parameters for all evaluation data setups"><img src="index_files/figure-html/fig-training-parameters-data-output-1.png" width="939" height="480" class="figure-img"></a>
+<a href="index_files/figure-html/fig-training-parameters-data-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-26" title="Figure&nbsp;5: Results with different training parameters for all evaluation data setups"><img src="index_files/figure-html/fig-training-parameters-data-output-1.png" width="939" height="480" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Results with different training parameters for all evaluation data setups
+Figure&nbsp;5: Results with different training parameters for all evaluation data setups
 </figcaption>
 </figure>
 </div>
@@ -635,8 +832,8 @@ Figure&nbsp;4: Results with different training parameters for all evaluation dat
 <h3 data-number="5.4" class="anchored" data-anchor-id="hard-trees"><span class="header-section-number">5.4</span> Hard trees</h3>
 </section>
 </section>
-<section id="discussion" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="discussion"><span class="header-section-number">6</span> Discussion</h2>
+<section id="discussion-and-improvements" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="discussion-and-improvements"><span class="header-section-number">6</span> Discussion and improvements</h2>
 <section id="dataset" class="level3" data-number="6.1">
 <h3 data-number="6.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">6.1</span> Dataset</h3>
 <p>From the results of this work, the only certain outcome is that more training data would be necessary to confirm any conclusion. Even with augmentation techniques, the dataset is too small to completely train a model and really experiment with the small changes applied to it. Since the training loop quickly reaches overfitting, we don’t really get to see how the model could perform in the most interesting cases, which are the small, covered or hardly visible trees.</p>
@@ -1192,7 +1389,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"selector":".lightbox","openEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","selector":".lightbox","descPosition":"bottom","openEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
