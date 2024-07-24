@@ -63,4 +63,6 @@ format:
       - tex-files/toc.tex
     keep-tex: true
 
+execute:
+  echo: false
 
