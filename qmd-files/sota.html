@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.54">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; State-of-the-art – Internship Report</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../qmd-files/objectives.html" rel="next">
+<link href="../qmd-files/intro.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../qmd-files/sota.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">State-of-the-art</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Internship Report</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ZokszY/Geodan-internship-report" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../Internship-Report.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Abstract</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/acknowledgments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/sota.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">State-of-the-art</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/objectives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Objectives and motivations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dataset creation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Model and training</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/results.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Results</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/discussion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Discussion and improvements</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusion</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../qmd-files/references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliography</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#computer-vision-tasks-related-to-trees" id="toc-computer-vision-tasks-related-to-trees" class="nav-link active" data-scroll-target="#computer-vision-tasks-related-to-trees"><span class="header-section-number">1.1</span> Computer vision tasks related to trees</a></li>
+  <li><a href="#datasets" id="toc-datasets" class="nav-link" data-scroll-target="#datasets"><span class="header-section-number">1.2</span> Datasets</a>
+  <ul class="collapse">
+  <li><a href="#sec-sota-datasets-requirements" id="toc-sec-sota-datasets-requirements" class="nav-link" data-scroll-target="#sec-sota-datasets-requirements"><span class="header-section-number">1.2.1</span> Requirements</a></li>
+  <li><a href="#existing-tree-datasets" id="toc-existing-tree-datasets" class="nav-link" data-scroll-target="#existing-tree-datasets"><span class="header-section-number">1.2.2</span> Existing tree datasets</a></li>
+  <li><a href="#public-data" id="toc-public-data" class="nav-link" data-scroll-target="#public-data"><span class="header-section-number">1.2.3</span> Public data</a></li>
+  <li><a href="#sec-sota-dataset-augment" id="toc-sec-sota-dataset-augment" class="nav-link" data-scroll-target="#sec-sota-dataset-augment"><span class="header-section-number">1.2.4</span> Dataset augmentation techniques</a></li>
+  </ul></li>
+  <li><a href="#algorithms-and-models" id="toc-algorithms-and-models" class="nav-link" data-scroll-target="#algorithms-and-models"><span class="header-section-number">1.3</span> Algorithms and models</a>
+  <ul class="collapse">
+  <li><a href="#images-only" id="toc-images-only" class="nav-link" data-scroll-target="#images-only"><span class="header-section-number">1.3.1</span> Images only</a></li>
+  <li><a href="#lidar-only" id="toc-lidar-only" class="nav-link" data-scroll-target="#lidar-only"><span class="header-section-number">1.3.2</span> LiDAR only</a></li>
+  <li><a href="#lidar-and-images" id="toc-lidar-and-images" class="nav-link" data-scroll-target="#lidar-and-images"><span class="header-section-number">1.3.3</span> LiDAR and images</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">State-of-the-art</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="computer-vision-tasks-related-to-trees" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="computer-vision-tasks-related-to-trees"><span class="header-section-number">1.1</span> Computer vision tasks related to trees</h2>
+<p>Before talking about models and datasets, let’s define properly the task that this project focused on, in the midst of all the various computer vision tasks, and specifically those related to tree detection.</p>
+<p>The first main differentiation between tree recognition tasks comes from the acquisition of the data. There are some very different tasks and methods using either ground data or aerial/satellite data. This is especially true when focusing on urban trees, since a lot of street view data is available <span class="citation" data-cites="urban-trees">(<a href="references.html#ref-urban-trees" role="doc-biblioref">Arevalo-Ramirez et al. 2024</a>)</span>.</p>
+<p>This leads to the second variation, which is related to the kind of environment that we are interested in. There are mainly three types of environments, which among other things, influence the organization of the trees in space: urban areas, tree plantations and forests. This is important, because the tasks and the difficulty depends on the type of environment. Tree plantations are much easier to work with than completely wild forests, while urban areas contain various levels of difficulty ranging from alignment trees to private and disorganized gardens and parks. For this project, we mainly focused on urban areas, but everything should still be applicable to tree plantations and forests.</p>
+<p>Then, the four fundamental computer vision tasks have their application when dealing with trees <span class="citation" data-cites="olive-tree">(<a href="references.html#ref-olive-tree" role="doc-biblioref">Safonova et al. 2021</a>)</span>:</p>
+<ul>
+<li>Classification, which consists in assigning one class to an image, although this is quite rare for airborne tree applications since there are multiple trees on each image most of the time</li>
+<li>Detection, which consists in detecting objects and placing boxes around them</li>
+<li>Semantic segmentation, which consists in associating a label to every pixel of an image</li>
+<li>Instance segmentation, which consists in adding a layer of complexity to semantic segmentation by also differentiating between the different instances of each class</li>
+</ul>
+<p>These generic tasks can be extended by trying to get more information about the trees. The most common information are the species and the height, but some models also try to predict the health of the trees, or their carbon stock.</p>
+<p>In this work, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used. The difficulties and the experiments are developed below.</p>
+</section>
+<section id="datasets" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="datasets"><span class="header-section-number">1.2</span> Datasets</h2>
+<section id="sec-sota-datasets-requirements" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="sec-sota-datasets-requirements"><span class="header-section-number">1.2.1</span> Requirements</h3>
+<p>Before presenting the different promising datasets and the reasons why they were not fully usable for the project, let’s enumerate the different conditions and requirements for the tree instance segmentation task:</p>
+<ul>
+<li>Multiple types of data:
+<ul>
+<li>Aerial RGB images</li>
+<li>LiDAR point clouds (preferably aerial)</li>
+<li>Aerial infrared (CIR) images (optional)</li>
+</ul></li>
+<li>Tree crown annotations or bounding boxes</li>
+<li>High-enough resolution:
+<ul>
+<li>For images, about 25&nbsp;cm</li>
+<li>For point clouds, about 10&nbsp;cm</li>
+</ul></li>
+</ul>
+<p>Here are the explanations for these requirements. As for the types of data, RGB images and point clouds were required to experiment on the ability of the model to combine the two very different kinds of information they hold. Having infrared data as well was beneficial, but it was not necessary. Regarding tree annotations, it was necessary to have a way to spatially identify them individually, using crown contours or simply bounding boxes. Since the model outputs bounding boxes, any kind of other format could easily be transformed to bounding boxes. Finally, the resolution had to be high enough to identify individual trees. For the point clouds especially, the whole idea was to see if and how the topology of the trees could be learnt, using at least the trunks and even the biggest branches if possible. Therefore, even if they were not really comparable, this is the reason why the required resolution is more precise for the point clouds.</p>
+<p>Unfortunately, none of the datasets that I found matched all these criteria. Furthermore, I didn’t find any overlapping datasets that I could merge to create a dataset with all the required types of data. In the next parts, I will go through the different kinds of datasets that exist, the reasons why they did not really fit for the project and the ideas I got when searching for a way to use them.</p>
+</section>
+<section id="existing-tree-datasets" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="existing-tree-datasets"><span class="header-section-number">1.2.2</span> Existing tree datasets</h3>
+<p>As explained above, there were quite a lot of requirements to fulfill to have a complete dataset usable for the task. This means that almost all the available datasets were missing something, as they were mainly focusing on using one kind of data and trying to make the most out of it, instead of trying to use all the types of data together.</p>
+<p>The most comprehensive list of tree annotations datasets was published in OpenForest <span class="citation" data-cites="OpenForest">(<a href="references.html#ref-OpenForest" role="doc-biblioref">Ouaknine et al. 2023</a>)</span>. FoMo-Bench <span class="citation" data-cites="FoMo-Bench">(<a href="references.html#ref-FoMo-Bench" role="doc-biblioref">Bountos, Ouaknine, and Rolnick 2023</a>)</span> also lists several interesting datasets, even though most of them can also be found in OpenForest. Without enumerating all of them, there were multiple kinds of datasets that all have their own flaws regarding the requirements I was looking for.</p>
+<p>Firstly, there are the forest inventories. TALLO <span class="citation" data-cites="TALLO">(<a href="references.html#ref-TALLO" role="doc-biblioref">Jucker et al. 2022</a>)</span> is probably the most interesting one in this category, because it contains a lot of spatial information about almost 500K trees, with their locations, their crown radii and their heights. Therefore, everything needed to localize trees is in the dataset. However, I didn’t manage to find RGB images or LiDAR point clouds of the areas where the trees are located, making it impossible to use these annotations to train tree detection.</p>
+<p>Secondly, there are the RGB datasets. ReforesTree <span class="citation" data-cites="ReforesTree">(<a href="references.html#ref-ReforesTree" role="doc-biblioref">Reiersen et al. 2022</a>)</span> and MillionTrees <span class="citation" data-cites="MillionTrees">(<a href="references.html#ref-MillionTrees" role="doc-biblioref">B. Weinstein 2023</a>)</span> are two of them and the quality of their images are high. The only drawback of these datasets is obviously that they don’t provide any kind of point cloud, which make them unsuitable for the task.</p>
+<p>Thirdly, there are the LiDAR datasets, such as <span class="citation" data-cites="WildForest3D">(<a href="references.html#ref-WildForest3D" role="doc-biblioref">Kalinicheva et al. 2022</a>)</span> and <span class="citation" data-cites="FOR-instance">(<a href="references.html#ref-FOR-instance" role="doc-biblioref">Puliti et al. 2023</a>)</span>. Similarly to RGB datasets, they lack one of the data source for the task I worked on. But unlike them, they have the advantage that the missing data could be much easier to acquire from another source, since RGB aerial or satellite images are much more common than LiDAR point clouds. However, this solution was abandoned for two main reasons. First it is quite challenging to find the exact locations where the point clouds were acquired. Then, even when the location is known, it is often in the middle of a forest where the quality of openly available satellite imagery is very low.</p>
+<p>Finally, I also found two datasets that had RGB and LiDAR components. The first one is MDAS <span class="citation" data-cites="MDAS">(<a href="references.html#ref-MDAS" role="doc-biblioref">Hu et al. 2023</a>)</span>. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There were however two major flaws. The obvious one was that this dataset was created with land semantic segmentation tasks in mind, so there was no tree annotations. The less obvious one was that a DSM is not a point cloud, even though it is some kind of 3D information and was often created using a LiDAR point cloud. As a consequence, I would have been very limited in my ability to experiment with the point cloud.</p>
+<p>The only real dataset with RGB and LiDAR came from NEON <span class="citation" data-cites="NEONdata">(<a href="references.html#ref-NEONdata" role="doc-biblioref">B. Weinstein, Marconi, and White 2022</a>)</span>. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about below. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.</p>
+</section>
+<section id="public-data" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="public-data"><span class="header-section-number">1.2.3</span> Public data</h3>
+<p>After rejecting all the available datasets I had found, the only solution I had left was to create my own dataset. I won’t dive too much in this process that I will explain in <a href="dataset.html" class="quarto-xref"><span>Chapter 3</span></a>. I just want to mention all the publicly available datasets that I used or could have used to create this custom dataset.</p>
+<p>For practical reasons, the two countries where I mostly searched for available data are France and the Netherlands. I was looking for three different data types independently:</p>
+<ul>
+<li>RGB (and if possible CIR) images</li>
+<li>LiDAR point clouds</li>
+<li>Tree annotations</li>
+</ul>
+<p>These three types of data are available in similar ways in both countries, although the Netherlands have a small edge over France. RGB images are really easy to find in France with the BD ORTHO <span class="citation" data-cites="IGN_BD_ORTHO">(<a href="references.html#ref-IGN_BD_ORTHO" role="doc-biblioref">Institut national de l’information géographique et forestière (IGN) 2021</a>)</span> and in the Netherlands with the Luchtfotos <span class="citation" data-cites="Luchtfotos">(<a href="references.html#ref-Luchtfotos" role="doc-biblioref">Beeldmateriaal Nederland 2024</a>)</span>, but the resolution is better in the Netherlands (8&nbsp;cm vs 20&nbsp;cm). Hyperspectral images are also available in both countries, although for those the resolution is only 25&nbsp;cm in the Netherlands.</p>
+<p>As for LiDAR point clouds, the Netherlands have a small edge over France, because they have already completed their forth version covering the whole country with AHN4 <span class="citation" data-cites="AHN4">(<a href="references.html#ref-AHN4" role="doc-biblioref">Actueel Hoogtebestand Nederland 2020</a>)</span>, and are working on the fifth version. In France, data acquisition for the first LiDAR point cloud covering the whole country started a few years ago <span class="citation" data-cites="IGN_LiDAR_HD">(<a href="references.html#ref-IGN_LiDAR_HD" role="doc-biblioref">Institut national de l’information géographique et forestière (IGN) 2020</a>)</span>. It is not yet finished, even though the data is already available for half of the country. The other advantage of the data from the Netherlands regarding LiDAR point clouds is that all flights are performed during winter, which allows light beams to penetrate more deeply in trees and reach trunks and branches. This is not the case in France.</p>
+<p>The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for Amsterdam <span class="citation" data-cites="amsterdam_trees">(<a href="references.html#ref-amsterdam_trees" role="doc-biblioref">Gemeente Amsterdam 2024</a>)</span> and Bordeaux <span class="citation" data-cites="bordeaux_trees">(<a href="references.html#ref-bordeaux_trees" role="doc-biblioref">Bordeaux Métropole 2024</a>)</span>. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.</p>
+<p>The other tree annotation source that we could have used is Boomregister <span class="citation" data-cites="boomregister">(<a href="references.html#ref-boomregister" role="doc-biblioref">Coöperatief Boomregister U.A. 2014</a>)</span>. This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9&nbsp;m heigh or have a crown diameter smaller than 4&nbsp;m. Therefore, even though it is a very impressive piece of work, I thought that it could not be used as training data for a deep learning models due to its biases and imperfections.</p>
+</section>
+<section id="sec-sota-dataset-augment" class="level3" data-number="1.2.4">
+<h3 data-number="1.2.4" class="anchored" data-anchor-id="sec-sota-dataset-augment"><span class="header-section-number">1.2.4</span> Dataset augmentation techniques</h3>
+<p>When a dataset is too small to train a model, there are several ways of artificially enlarging it.</p>
+<p>The most common way is to randomly apply deterministic or random transformations to the data, during the training process, to be able to generate several unique and different realistic data instances from one real data instance. There are a lot of different transformations that can be applied to images, divided into two categories: pixel-level and spatial-level <span class="citation" data-cites="albumentations">(<a href="references.html#ref-albumentations" role="doc-biblioref">Buslaev et al. 2020</a>)</span>. Pixel-level transformations modify the value of individual pixels, by applying different filters, such as random noise, color shifts and more complex effects like fog and sun flare. Spatial-level transformations modify the spatial arrangement of the image, without changing the pixel values. In other words, these transformations move the pixels in the image. These transformations range from simple rotations and croppings to complex spatial distortions. In the end, all these transformations are simply producing one artificial image out of one real image.</p>
+<p>Another way to enlarge a dataset is to instead generate completely new input data sharing the same properties as the initial dataset. This can be done using Generative Adversarial Networks (GAN). These models usually have two parts, a generator and a discriminator, which are trained in parallel. The generator learns to produce realistic artificial data, while the discriminator learns to discriminate between real data and artificial data produced by the generator. If the training is successful, we can then use the generator and random seeds to generate random but realistic artificial data similar to the dataset. This method has for example been successfully used to generate artificial tree height maps <span class="citation" data-cites="gan_data_augment">(<a href="references.html#ref-gan_data_augment" role="doc-biblioref">Sun et al. 2022</a>)</span>.</p>
+</section>
+</section>
+<section id="algorithms-and-models" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="algorithms-and-models"><span class="header-section-number">1.3</span> Algorithms and models</h2>
+<p>In this section, the different algorithms and methods are grouped according to the type of data they use as input.</p>
+<section id="images-only" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="images-only"><span class="header-section-number">1.3.1</span> Images only</h3>
+<p>First, there are methods that perform tree detection using only visible or hyperspectral images or both. Several different algorithms have been developed to analytically delineate tree crowns from RGB images, by using the particular shape of the trees and its effect on images <span class="citation" data-cites="rgb_analytical">(<a href="references.html#ref-rgb_analytical" role="doc-biblioref">Gomes and Maillard 2016</a>)</span>. Without diving into the details, here are a few of them. The watershed algorithm identifies trees to inverted watersheds in the grey-scale image and tree crowns frontiers are found by incrementally flooding the watersheds <span class="citation" data-cites="watershed">(<a href="references.html#ref-watershed" role="doc-biblioref">Vincent and Soille 1991</a>)</span>. The local maxima filtering uses the intensity of the pixels in the grey-scale image to identify the brightest points locally and use them as treetops <span class="citation" data-cites="local-maximum">(<a href="references.html#ref-local-maximum" role="doc-biblioref">Wulder, Niemann, and Goodenough 2000</a>)</span>. Reversely, the valley-following algorithm uses the darkest pixels which are considered as the junctions between the trees since shaded areas are the lower part of the tree crowns <span class="citation" data-cites="valley-following">(<a href="references.html#ref-valley-following" role="doc-biblioref">Gougeon et al. 1998</a>)</span>. Another interesting algorithm is template matching. This algorithm simulates the appearance of simple tree templates with the light effects, and tries to identify similar patterns in the grey-scale image <span class="citation" data-cites="template-matching">(<a href="references.html#ref-template-matching" role="doc-biblioref">Pollock 1996</a>)</span>. Combinations of these techniques and others have also been proposed.</p>
+<p>But with the recent developments of deep learning in image analysis, deep learning models are increasingly used to detect trees using RGB images. In some cases, deep learning is used to extract features that can then be the input of one of the algorithms described above. One example is the use of two neural networks to predict masks, outlines and distance transforms which can then be the input of a watershed algorithm <span class="citation" data-cites="rgb-dl-watershed">(<a href="references.html#ref-rgb-dl-watershed" role="doc-biblioref">Freudenberg, Magdon, and Nölke 2022</a>)</span>. In other cases, a deep learning model is responsible of directly detecting tree masks or bounding boxes, often using CNNs, given the images <span class="citation" data-cites="DeepForest">(<a href="references.html#ref-DeepForest" role="doc-biblioref">B. G. Weinstein et al. 2020</a>)</span>.</p>
+</section>
+<section id="lidar-only" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="lidar-only"><span class="header-section-number">1.3.2</span> LiDAR only</h3>
+<p>Reversely, some of the methods to identify individual trees use LiDAR data only. There are a lot of different ways to use and analyze point clouds, but the one that is mostly used for trees is based on height maps, or Canopy Height Models (CHM).</p>
+<p>A CHM is a raster computed as the subtraction of the Digital Terrain Model (DTM) to the Digital Surface Model (DSM). What it means is that a CHM contains the height above ground of the highest point in the area corresponding to each pixel. This CHM can for example be used as the input raster for the watershed algorithm, as it contains the height values that can be used to determine local maxima <span class="citation" data-cites="lidar_watershed">(<a href="references.html#ref-lidar_watershed" role="doc-biblioref">Kwak et al. 2007</a>)</span>. A lot of different analytical methods and variations of the simple CHM were proposed to perform individual tree detection, but in the end, most of them still use the concept of local maxima <span class="citation" data-cites="lidar_benchmark lidar_benchmark_2">(<a href="references.html#ref-lidar_benchmark" role="doc-biblioref">Eysn et al. 2015</a>; <a href="references.html#ref-lidar_benchmark_2" role="doc-biblioref">Wang et al. 2016</a>)</span>. A CHM can also be used as the input of any kind of convolutional neural network (CNN) because it is shaped exactly like any image. This allows to use a lot of different techniques usually applied to object detection in images.</p>
+<p>Then, even though I finally used an approach similar to the CHM, I want to mention other kinds of deep learning techniques that exist and could potentially leverage all the information contained in a point cloud. These techniques can be divided in two categories: projection-based and point-based methods <span class="citation" data-cites="lidar_classification">(<a href="references.html#ref-lidar_classification" role="doc-biblioref">Diab, Kashef, and Shaker 2022</a>)</span>. The main difference between the two is that projection-based techniques are based on grids while point-based methods take unstructured point clouds as input. Among projection-based methods, the most basic method is 2D CNN, which is how CHM can be processed. Then, multiview representation tries to tackle the 3D aspect by projecting the point cloud in multiple directions before merging them together. To really deal with 3D data, volumetric grid representation consists in using 3D occupancy grids, which are processed using 3D CNNs. Among point-based methods, there are methods based on PointNet, which are able to extract features and perform the classical computer vision tasks by taking point clouds as input. Finally, Convolutional Point Networks use a continuous generalization of convolutions to apply convolution kernels to arbitrarily distributed point clouds.</p>
+</section>
+<section id="lidar-and-images" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="lidar-and-images"><span class="header-section-number">1.3.3</span> LiDAR and images</h3>
+<!-- TODO: ADD OTHER MODELS -->
+<p>Let’s now talk about the models of interest for this work, which are machine learning pipelines using both LiDAR point cloud data and RGB images.</p>
+<p>One example is a pipeline which uses a watershed algorithm to extract crown boundaries, before extracting individual tree features from the LiDAR point cloud, hyperspectral and RGB images <span class="citation" data-cites="lidar_rgb_wst">(<a href="references.html#ref-lidar_rgb_wst" role="doc-biblioref">Qin et al. 2022</a>)</span>. These features are then used by a random forest classifier to identify which species the tree belongs to. This pipeline therefore makes the most out of all data to identify species, but sticks to an improved variant of the watershed algorithm for individual tree segmentation, which only uses a CHM raster.</p>
+<p>Other works focused on using only one model that is able to take both the CHM and the RGB data as input and combine them to make the most out of all the available data. Among other models, there are for example ACE R-CNN <span class="citation" data-cites="lidar_rgb_acnet">(<a href="references.html#ref-lidar_rgb_acnet" role="doc-biblioref">Li et al. 2022</a>)</span>, an evolution of Mask region-based convolution neural network (Mask R-CNN) and AMF GD YOLOv8 <span class="citation" data-cites="amf_gd_yolov8">(<a href="references.html#ref-amf_gd_yolov8" role="doc-biblioref">Zhong et al. 2024</a>)</span>, an evolution of YOLOv8. These two models have proven to give much better results when using both the images and the LiDAR data as a CHM than when using only one of them.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-urban-trees" class="csl-entry" role="listitem">
+Arevalo-Ramirez, Tito, Anali Alfaro, José Figueroa, Mauricio Ponce-Donoso, Jose M. Saavedra, Matías Recabarren, and José Delpiano. 2024. <span>“Challenges for Computer Vision as a Tool for Screening Urban Trees Through Street-View Images.”</span> <em>Urban Forestry &amp; Urban Greening</em> 95:128316. <a href="https://doi.org/10.1016/j.ufug.2024.128316">https://doi.org/10.1016/j.ufug.2024.128316</a>.
+</div>
+<div id="ref-olive-tree" class="csl-entry" role="listitem">
+Safonova, Anastasiia, Emilio Guirado, Yuriy Maglinets, Domingo Alcaraz-Segura, and Siham Tabik. 2021. <span>“Olive Tree Biovolume from UAV Multi-Resolution Image Segmentation with Mask r-CNN.”</span> <em>Sensors</em> 21 (5): 1617. <a href="https://doi.org/10.3390/s21051617">https://doi.org/10.3390/s21051617</a>.
+</div>
+<div id="ref-OpenForest" class="csl-entry" role="listitem">
+Ouaknine, Arthur, Teja Kattenborn, Etienne Laliberté, and David Rolnick. 2023. <span>“OpenForest: A Data Catalogue for Machine Learning in Forest Monitoring.”</span> <a href="https://arxiv.org/abs/2311.00277">https://arxiv.org/abs/2311.00277</a>.
+</div>
+<div id="ref-FoMo-Bench" class="csl-entry" role="listitem">
+Bountos, Nikolaos Ioannis, Arthur Ouaknine, and David Rolnick. 2023. <span>“FoMo-Bench: A Multi-Modal, Multi-Scale and Multi-Task Forest Monitoring Benchmark for Remote Sensing Foundation Models.”</span> <em>arXiv Preprint arXiv:2312.10114</em>. <a href="https://arxiv.org/abs/2312.10114">https://arxiv.org/abs/2312.10114</a>.
+</div>
+<div id="ref-TALLO" class="csl-entry" role="listitem">
+Jucker, Tommaso, Fabian Jörg Fischer, Jérôme Chave, David A. Coomes, John Caspersen, Arshad Ali, Grace Jopaul Loubota Panzou, et al. 2022. <span>“Tallo: A Global Tree Allometry and Crown Architecture Database.”</span> <em>Global Change Biology</em> 28 (17): 5254–68. <a href="https://doi.org/10.1111/gcb.16302">https://doi.org/10.1111/gcb.16302</a>.
+</div>
+<div id="ref-ReforesTree" class="csl-entry" role="listitem">
+Reiersen, Gyri, David Dao, Björn Lütjens, Konstantin Klemmer, Kenza Amara, Attila Steinegger, Ce Zhang, and Xiaoxiang Zhu. 2022. <span>“ReforesTree: A Dataset for Estimating Tropical Forest Carbon Stock with Deep Learning and Aerial Imagery.”</span> <a href="https://arxiv.org/abs/2201.11192">https://arxiv.org/abs/2201.11192</a>.
+</div>
+<div id="ref-MillionTrees" class="csl-entry" role="listitem">
+Weinstein, Ben. 2023. <span>“MillionTrees.”</span> 2023. <a href="https://milliontrees.idtrees.org/">https://milliontrees.idtrees.org/</a>.
+</div>
+<div id="ref-WildForest3D" class="csl-entry" role="listitem">
+Kalinicheva, Ekaterina, Loic Landrieu, Clément Mallet, and Nesrine Chehata. 2022. <span>“Multi-Layer Modeling of Dense Vegetation from Aerial LiDAR Scans.”</span> <a href="https://arxiv.org/abs/2204.11620">https://arxiv.org/abs/2204.11620</a>.
+</div>
+<div id="ref-FOR-instance" class="csl-entry" role="listitem">
+Puliti, Stefano, Grant Pearse, Peter Surový, Luke Wallace, Markus Hollaus, Maciej Wielgosz, and Rasmus Astrup. 2023. <span>“FOR-Instance: A UAV Laser Scanning Benchmark Dataset for Semantic and Instance Segmentation of Individual Trees.”</span> <a href="https://arxiv.org/abs/2309.01279">https://arxiv.org/abs/2309.01279</a>.
+</div>
+<div id="ref-MDAS" class="csl-entry" role="listitem">
+Hu, J., R. Liu, D. Hong, A. Camero, J. Yao, M. Schneider, F. Kurz, K. Segl, and X. X. Zhu. 2023. <span>“MDAS: A New Multimodal Benchmark Dataset for Remote Sensing.”</span> <em>Earth System Science Data</em> 15 (1): 113–31. <a href="https://doi.org/10.5194/essd-15-113-2023">https://doi.org/10.5194/essd-15-113-2023</a>.
+</div>
+<div id="ref-NEONdata" class="csl-entry" role="listitem">
+Weinstein, Ben, Sergio Marconi, and Ethan White. 2022. <span>“Data for the NeonTreeEvaluation Benchmark (0.2.2).”</span> Zenodo. <a href="https://doi.org/10.5281/zenodo.5914554">https://doi.org/10.5281/zenodo.5914554</a>.
+</div>
+<div id="ref-IGN_BD_ORTHO" class="csl-entry" role="listitem">
+Institut national de l’information géographique et forestière (IGN). 2021. <span>“<span>BD ORTHO</span>.”</span> <a href="https://geoservices.ign.fr/bdortho">https://geoservices.ign.fr/bdortho</a>.
+</div>
+<div id="ref-Luchtfotos" class="csl-entry" role="listitem">
+Beeldmateriaal Nederland. 2024. <span>“<span class="nocase">Luchtfoto’s (Aerial Photographs)</span>.”</span> <a href="https://www.beeldmateriaal.nl/luchtfotos">https://www.beeldmateriaal.nl/luchtfotos</a>.
+</div>
+<div id="ref-AHN4" class="csl-entry" role="listitem">
+Actueel Hoogtebestand Nederland. 2020. <span>“<span class="nocase">AHN4 - Actual Height Model of the Netherlands</span>.”</span> <a href="https://www.ahn.nl/">https://www.ahn.nl/</a>.
+</div>
+<div id="ref-IGN_LiDAR_HD" class="csl-entry" role="listitem">
+Institut national de l’information géographique et forestière (IGN). 2020. <span>“<span>LiDAR HD</span>.”</span> <a href="https://geoservices.ign.fr/lidarhd">https://geoservices.ign.fr/lidarhd</a>.
+</div>
+<div id="ref-amsterdam_trees" class="csl-entry" role="listitem">
+Gemeente Amsterdam. 2024. <span>“<span>Bomenbestand Amsterdam (Amsterdam Tree Dataset)</span>.”</span> <a href="https://maps.amsterdam.nl/open_geodata/?k=505">https://maps.amsterdam.nl/open_geodata/?k=505</a>.
+</div>
+<div id="ref-bordeaux_trees" class="csl-entry" role="listitem">
+Bordeaux Métropole. 2024. <span>“<span class="nocase">Patrimoine arboré de Bordeaux Métropole (Tree Heritage of Bordeaux Metropole)</span>.”</span> <a href="https://opendata.bordeaux-metropole.fr/explore/dataset/ec_arbre_p/information/?disjunctive.insee">https://opendata.bordeaux-metropole.fr/explore/dataset/ec_arbre_p/information/?disjunctive.insee</a>.
+</div>
+<div id="ref-boomregister" class="csl-entry" role="listitem">
+Coöperatief Boomregister U.A. 2014. <span>“<span>Boom Register (Tree Register)</span>.”</span> <a href="https://boomregister.nl/">https://boomregister.nl/</a>.
+</div>
+<div id="ref-albumentations" class="csl-entry" role="listitem">
+Buslaev, Alexander, Vladimir I. Iglovikov, Eugene Khvedchenya, Alex Parinov, Mikhail Druzhinin, and Alexandr A. Kalinin. 2020. <span>“Albumentations: Fast and Flexible Image Augmentations.”</span> <em>Information</em> 11 (2). <a href="https://doi.org/10.3390/info11020125">https://doi.org/10.3390/info11020125</a>.
+</div>
+<div id="ref-gan_data_augment" class="csl-entry" role="listitem">
+Sun, Chenxin, Chengwei Huang, Huaiqing Zhang, Bangqian Chen, Feng An, Liwen Wang, and Ting Yun. 2022. <span>“Individual Tree Crown Segmentation and Crown Width Extraction from a Heightmap Derived from Aerial Laser Scanning Data Using a Deep Learning Framework.”</span> <em>Frontiers in Plant Science</em> 13. <a href="https://doi.org/10.3389/fpls.2022.914974">https://doi.org/10.3389/fpls.2022.914974</a>.
+</div>
+<div id="ref-rgb_analytical" class="csl-entry" role="listitem">
+Gomes, Marilia Ferreira, and Philippe Maillard. 2016. <span>“Detection of Tree Crowns in Very High Spatial Resolution Images.”</span> In <em>Environmental Applications of Remote Sensing</em>, edited by Maged Marghany. Rijeka: IntechOpen. <a href="https://doi.org/10.5772/62122">https://doi.org/10.5772/62122</a>.
+</div>
+<div id="ref-watershed" class="csl-entry" role="listitem">
+Vincent, L., and P. Soille. 1991. <span>“Watersheds in Digital Spaces: An Efficient Algorithm Based on Immersion Simulations.”</span> <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em> 13 (6): 583–98. <a href="https://doi.org/10.1109/34.87344">https://doi.org/10.1109/34.87344</a>.
+</div>
+<div id="ref-local-maximum" class="csl-entry" role="listitem">
+Wulder, Mike, K.Olaf Niemann, and David G. Goodenough. 2000. <span>“Local Maximum Filtering for the Extraction of Tree Locations and Basal Area from High Spatial Resolution Imagery.”</span> <em>Remote Sensing of Environment</em> 73 (1): 103–14. <a href="https://doi.org/10.1016/S0034-4257(00)00101-2">https://doi.org/10.1016/S0034-4257(00)00101-2</a>.
+</div>
+<div id="ref-valley-following" class="csl-entry" role="listitem">
+Gougeon, François A et al. 1998. <span>“Automatic Individual Tree Crown Delineation Using a Valley-Following Algorithm and Rule-Based System.”</span> In <em>Proc. International Forum on Automated Interpretation of High Spatial Resolution Digital Imagery for Forestry, Victoria, British Columbia, Canada</em>, 11–23. Citeseer. <a href="https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf">https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf</a>.
+</div>
+<div id="ref-template-matching" class="csl-entry" role="listitem">
+Pollock, Richard James. 1996. <span>“The Automatic Recognition of Individual Trees in Aerial Images of Forests Based on a Synthetic Tree Crown Image Model.”</span> PhD thesis, The University of British Columbia (Canada). <a href="https://dx.doi.org/10.14288/1.0051597">https://dx.doi.org/10.14288/1.0051597</a>.
+</div>
+<div id="ref-rgb-dl-watershed" class="csl-entry" role="listitem">
+Freudenberg, Maximilian, Paul Magdon, and Nils Nölke. 2022. <span>“Individual Tree Crown Delineation in High-Resolution Remote Sensing Images Based on u-Net.”</span> <em>Neural Computing and Applications</em> 34 (24): 22197–207. <a href="https://doi.org/10.1007/s00521-022-07640-4">https://doi.org/10.1007/s00521-022-07640-4</a>.
+</div>
+<div id="ref-DeepForest" class="csl-entry" role="listitem">
+Weinstein, Ben G., Sergio Marconi, Mélaine Aubry-Kientz, Gregoire Vincent, Henry Senyondo, and Ethan P. White. 2020. <span>“DeepForest: A Python Package for RGB Deep Learning Tree Crown Delineation.”</span> <em>Methods in Ecology and Evolution</em> 11 (12): 1743–51. <a href="https://doi.org/10.1111/2041-210X.13472">https://doi.org/10.1111/2041-210X.13472</a>.
+</div>
+<div id="ref-lidar_watershed" class="csl-entry" role="listitem">
+Kwak, Doo-Ahn, Woo-Kyun Lee, Jun-Hak Lee, Greg S. Biging, and Peng Gong. 2007. <span>“Detection of Individual Trees and Estimation of Tree Height Using LiDAR Data.”</span> <em>Journal of Forest Research</em> 12 (6): 425–34. <a href="https://doi.org/10.1007/s10310-007-0041-9">https://doi.org/10.1007/s10310-007-0041-9</a>.
+</div>
+<div id="ref-lidar_benchmark" class="csl-entry" role="listitem">
+Eysn, Lothar, Markus Hollaus, Eva Lindberg, Frédéric Berger, Jean-Matthieu Monnet, Michele Dalponte, Milan Kobal, et al. 2015. <span>“A Benchmark of Lidar-Based Single Tree Detection Methods Using Heterogeneous Forest Data from the Alpine Space.”</span> <em>Forests</em> 6 (5): 1721–47. <a href="https://doi.org/10.3390/f6051721">https://doi.org/10.3390/f6051721</a>.
+</div>
+<div id="ref-lidar_benchmark_2" class="csl-entry" role="listitem">
+Wang, Yunsheng, Juha Hyyppä, Xinlian Liang, Harri Kaartinen, Xiaowei Yu, Eva Lindberg, Johan Holmgren, et al. 2016. <span>“International Benchmarking of the Individual Tree Detection Methods for Modeling 3-d Canopy Structure for Silviculture and Forest Ecology Using Airborne Laser Scanning.”</span> <em>IEEE Transactions on Geoscience and Remote Sensing</em> 54 (9): 5011–27. <a href="https://doi.org/10.1109/TGRS.2016.2543225">https://doi.org/10.1109/TGRS.2016.2543225</a>.
+</div>
+<div id="ref-lidar_classification" class="csl-entry" role="listitem">
+Diab, Ahmed, Rasha Kashef, and Ahmed Shaker. 2022. <span>“Deep Learning for LiDAR Point Cloud Classification in Remote Sensing.”</span> <em>Sensors (Basel)</em> 22 (20): 7868. <a href="https://doi.org/10.3390/s22207868">https://doi.org/10.3390/s22207868</a>.
+</div>
+<div id="ref-lidar_rgb_wst" class="csl-entry" role="listitem">
+Qin, Haiming, Weiqi Zhou, Yang Yao, and Weimin Wang. 2022. <span>“Individual Tree Segmentation and Tree Species Classification in Subtropical Broadleaf Forests Using UAV-Based LiDAR, Hyperspectral, and Ultrahigh-Resolution RGB Data.”</span> <em>Remote Sensing of Environment</em> 280:113143. <a href="https://doi.org/10.1016/j.rse.2022.113143">https://doi.org/10.1016/j.rse.2022.113143</a>.
+</div>
+<div id="ref-lidar_rgb_acnet" class="csl-entry" role="listitem">
+Li, Yingbo, Guoqi Chai, Yueting Wang, Lingting Lei, and Xiaoli Zhang. 2022. <span>“ACE r-CNN: An Attention Complementary and Edge Detection-Based Instance Segmentation Algorithm for Individual Tree Species Identification Using UAV RGB Images and LiDAR Data.”</span> <em>Remote Sensing</em> 14 (13). <a href="https://doi.org/10.3390/rs14133035">https://doi.org/10.3390/rs14133035</a>.
+</div>
+<div id="ref-amf_gd_yolov8" class="csl-entry" role="listitem">
+Zhong, Hao, Zheyu Zhang, Haoran Liu, Jinzhuo Wu, and Wenshu Lin. 2024. <span>“Individual Tree Species Identification for Complex Coniferous and Broad-Leaved Mixed Forests Based on Deep Learning Combined with UAV LiDAR Data and RGB Images.”</span> <em>Forests</em> 15 (2). <a href="https://doi.org/10.3390/f15020293">https://doi.org/10.3390/f15020293</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../qmd-files/intro.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../qmd-files/objectives.html" class="pagination-link" aria-label="Objectives and motivations">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Objectives and motivations</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
