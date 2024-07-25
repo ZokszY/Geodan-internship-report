@@ -212,8 +212,8 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset"><span class="header-section-number">6.1</span> Dataset</a></li>
-  <li><a href="#combination-of-data-types" id="toc-combination-of-data-types" class="nav-link" data-scroll-target="#combination-of-data-types"><span class="header-section-number">6.2</span> Combination of data types</a></li>
+  <li><a href="#sec-discussion-dataset" id="toc-sec-discussion-dataset" class="nav-link active" data-scroll-target="#sec-discussion-dataset"><span class="header-section-number">6.1</span> Dataset</a></li>
+  <li><a href="#instability" id="toc-instability" class="nav-link" data-scroll-target="#instability"><span class="header-section-number">6.2</span> Instability</a></li>
   <li><a href="#covered-trees" id="toc-covered-trees" class="nav-link" data-scroll-target="#covered-trees"><span class="header-section-number">6.3</span> Covered trees</a></li>
   </ul>
 </nav>
@@ -240,15 +240,17 @@ div.csl-indent {
 </header>
 
 
-<section id="dataset" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">6.1</span> Dataset</h2>
+<section id="sec-discussion-dataset" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-discussion-dataset"><span class="header-section-number">6.1</span> Dataset</h2>
 <p>From the results of this work, the only certitude is that more training data would be necessary to confirm any conclusion. Even with augmentation techniques, the dataset is too small to completely train a model and really experiment with the small changes applied to it. Since the training loop quickly reaches overfitting, we don’t really get to see how the model could perform in the most interesting cases, which are the small, covered or hardly visible trees.</p>
 <p>Therefore, the biggest and conceptually simplest improvement that could be done to this work would be to improve and extend the dataset. Improving with more diversity, covering a larger part of the Netherlands (or even beyond, but we can only ensure consistency over images and point clouds in this country), and extending with more images and more trees.</p>
 <p>At the time of writing this report, the newest version of the point cloud has also been released for one third of the Netherlands, including the area of the current dataset. This new data could be better for this project, because it was acquired in 2023, the same year as the images that are used in the dataset.</p>
 <p>Another approach to generate a larger dataset could be to create a large artificially annotated dataset, like it was done in another paper <span class="citation" data-cites="DeepForest">(<a href="references.html#ref-DeepForest" role="doc-biblioref">Weinstein et al. 2020</a>)</span>. Their approach was to create a very large dataset with medium-quality data which can be used to pre-train the model. Then, they use hand-annotated data to finish the training. They created this large dataset using classical non-machine learning techniques, using only the point cloud.</p>
 </section>
-<section id="combination-of-data-types" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="combination-of-data-types"><span class="header-section-number">6.2</span> Combination of data types</h2>
+<section id="instability" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="instability"><span class="header-section-number">6.2</span> Instability</h2>
+<p>As explained in the previous section <a href="#sec-discussion-dataset" class="quarto-xref"><span>Section 6.1</span></a>, the size of the dataset is probably the main reason for the instability of the training pipeline. But other reasons might also be responsible for this instability. As explained in <a href="results.html#sec-results-chm" class="quarto-xref"><span>Section 5.2</span></a>, the random channel dropouts might also destabilize the training by creating inputs with very different repartition of the information, since some channels are randomly removed. The value to use as a replacement of these channels is also not easy to choose, as on the normalized CHM rasters, a value of 0 might be equivalent to a height above ground of 10&nbsp;m for example, and a flat surface at 10&nbsp;m is not exactly no data and might also be misleading if the CHM usually goes from 0 to 4&nbsp;m.</p>
+<p>More generally, it is possible that other factors are responsible for the instability of the training pipeline, and it would be useful to find and correct them.</p>
 </section>
 <section id="covered-trees" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="covered-trees"><span class="header-section-number">6.3</span> Covered trees</h2>

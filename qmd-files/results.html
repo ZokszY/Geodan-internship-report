@@ -78,6 +78,35 @@ ul.task-list li input[type="checkbox"] {
   });
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -196,9 +225,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#training-parameters" id="toc-training-parameters" class="nav-link active" data-scroll-target="#training-parameters"><span class="header-section-number">5.1</span> Training parameters</a></li>
-  <li><a href="#data-used" id="toc-data-used" class="nav-link" data-scroll-target="#data-used"><span class="header-section-number">5.2</span> Data used</a></li>
-  <li><a href="#chm-layers" id="toc-chm-layers" class="nav-link" data-scroll-target="#chm-layers"><span class="header-section-number">5.3</span> CHM layers</a></li>
-  <li><a href="#hard-trees" id="toc-hard-trees" class="nav-link" data-scroll-target="#hard-trees"><span class="header-section-number">5.4</span> Hard trees</a></li>
+  <li><a href="#sec-results-chm" id="toc-sec-results-chm" class="nav-link" data-scroll-target="#sec-results-chm"><span class="header-section-number">5.2</span> CHM layers</a></li>
+  <li><a href="#hard-trees" id="toc-hard-trees" class="nav-link" data-scroll-target="#hard-trees"><span class="header-section-number">5.3</span> Hard trees</a></li>
   </ul>
 </nav>
     </div>
@@ -272,14 +300,34 @@ Figure&nbsp;5.2: Results with different training parameters for all evaluation d
 <li>Accumulation count: 10</li>
 </ul>
 </section>
-<section id="data-used" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="data-used"><span class="header-section-number">5.2</span> Data used</h2>
+<section id="sec-results-chm" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-results-chm"><span class="header-section-number">5.2</span> CHM layers</h2>
+<p>The goal of the second experiment was to test the model with different layers of CHM, to see whether more layers can improve the results. I tried two different ways to cut the point cloud into intervals. In both cases, we first define the height thresholds <span class="math inline">\([t_1, t_2, \cdots, t_n]\)</span> that will be used. Then, there are two possibilities for the height intervals to use to compute the CHM layers: <span class="math display">\[
+\begin{array}{rl}
+\text{Disjoint = True:} &amp; [[-\infty, t_1], [t_1, t_2],[t_2, t_3], \cdots, [t_{n-1}, t_n], [t_n, \infty]] \\
+\text{Disjoint = False:} &amp; [[-\infty, t_1], [-\infty, t_2], \cdots, [-\infty, t_n], [-\infty, \infty]]
+\end{array}
+\]</span></p>
+<p>The results of this experiment can be found in <a href="#fig-chm-layers" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>. To experiment on other parameters, half of the models were trained to be agnostic while the other half was not, to see if the way trees are separated in the four classes has an impact on performance, either facilitating the learning or hindering the generalization. On this plot, the borders correspond to the list of height thresholds <span class="math inline">\([t_1, t_2, \cdots, t_n]\)</span>.</p>
+<div id="cell-fig-chm-layers" class="cell" data-fig-width="5" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div id="fig-chm-layers" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chm-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="results_files/figure-html/fig-chm-layers-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;5.3: Results with different CHM layers"><img src="results_files/figure-html/fig-chm-layers-output-1.png" width="939" height="317" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chm-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.3: Results with different CHM layers
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>These results are difficult to interpret. The first clear effect that we can notice is that in the disjoint method, when separating the LiDAR point cloud in too many layers, the model doesn’t manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in <a href="dataset.html#fig-dataset-augmentation" class="quarto-xref">Figure&nbsp;<span>3.4</span></a>. But when there is only one channel, this channel is never dropped, which doesn’t force the model to learn how to use only part of the data.</p>
+<p>Otherwise, it is hard to draw any conclusion from the rest of the experiments. There is too much variation in the results, which shows once again how unstable the training process is. From these results and the previous paragraph, one interpretation could be that the augmentation pipeline is related to this instability, as the results with the basic CHM layer have a much smaller variance.</p>
 </section>
-<section id="chm-layers" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="chm-layers"><span class="header-section-number">5.3</span> CHM layers</h2>
-</section>
-<section id="hard-trees" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="hard-trees"><span class="header-section-number">5.4</span> Hard trees</h2>
+<section id="hard-trees" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="hard-trees"><span class="header-section-number">5.3</span> Hard trees</h2>
 
 
 </section>
@@ -718,7 +766,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"closeEffect":"zoom","openEffect":"zoom","descPosition":"bottom"});
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":false,"openEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
