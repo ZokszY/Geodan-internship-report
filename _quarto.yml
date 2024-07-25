@@ -53,6 +53,17 @@ format:
   pdf:
     documentclass: scrreprt
     papersize: a4
+    geometry:
+      - inner=3cm
+      - outer=4cm
+      - top=3cm
+      - bottom=4cm
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=33pt
+      - ignorehead
+      - ignorefoot
+      - heightrounded
     toc: true
     lof: true
     number-sections: true

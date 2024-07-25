@@ -106,5 +106,5 @@ On [@fig-dataset-augmentation], you can see an RGB image and 15 random augmentat
 
 ![Transformed image n°15](../images/Augmentations/RGB_image_transformed_15.png){#fig-dataset-augmentation-15 fig-align="center"}
 
-Examples of data augmentations on an RGB image with the probabilities used when training the model. Multiple effects can be seen, such as channel dropouts, luminosity changes, perspective changes, blurring and distortion.
+Examples of data augmentations on an RGB image with the probabilities used when training the model.
 :::
