@@ -97,8 +97,92 @@ From the results of this experiment, I decided to pick the following parameters 
 - Drop probability: 0
 - Accumulation count: 10
 
-## Data used
+## CHM layers {#sec-results-chm}
 
-## CHM layers
+The goal of the second experiment was to test the model with different layers of CHM, to see whether more layers can improve the results. I tried two different ways to cut the point cloud into intervals. In both cases, we first define the height thresholds $[t_1, t_2, \cdots, t_n]$ that will be used. Then, there are two possibilities for the height intervals to use to compute the CHM layers:
+$$
+\begin{array}{rl}
+\text{Disjoint = True:} & [[-\infty, t_1], [t_1, t_2],[t_2, t_3], \cdots, [t_{n-1}, t_n], [t_n, \infty]] \\
+\text{Disjoint = False:} & [[-\infty, t_1], [-\infty, t_2], \cdots, [-\infty, t_n], [-\infty, \infty]]
+\end{array}
+$$
+
+The results of this experiment can be found in [@fig-chm-layers]. To experiment on other parameters, half of the models were trained to be agnostic while the other half was not, to see if the way trees are separated in the four classes has an impact on performance, either facilitating the learning or hindering the generalization. On this plot, the borders correspond to the list of height thresholds $[t_1, t_2, \cdots, t_n]$.
+
+```{python}
+#| label: fig-chm-layers
+#| fig-cap: "Results with different CHM layers"
+#| fig-width: 5
+
+from typing import List, Tuple
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import json
+
+df = pd.read_csv("../data/chm_z_layers_2.csv")
+df.sort_values(
+    by=["chm_z_layers", "Data used for evaluation"],
+    inplace=True,
+)
+
+def convert_to_list_with_inf(x):
+    x = x.replace('inf', 'Infinity')
+    try:
+        return json.loads(x)
+    except (ValueError, SyntaxError) as e:
+        print(f"Error converting {x}: {e}")
+        return x
+
+df["chm_z_layers"] = df["chm_z_layers"].apply(convert_to_list_with_inf)
+
+def chm_z_layers_to_str(chm_z_layers: List[Tuple[int, int]]) -> pd.Series:
+  if all([chm_z_layer[0] == -np.inf for chm_z_layer in chm_z_layers]):
+    disjoint = False
+    borders = [chm_z_layers[i][1] for i in range(len(chm_z_layers) - 1)]
+    return pd.Series([disjoint, str(borders).replace(" ", "")])
+  else:
+    disjoint = True
+    borders = [chm_z_layers[i][1] for i in range(len(chm_z_layers) - 1)]
+    return pd.Series([disjoint, str(borders).replace(" ", "")])
+
+df[["Disjoint", "Borders"]] = df.apply(lambda x: chm_z_layers_to_str(x["chm_z_layers"]), axis=1)
+condition = (df["Disjoint"] == False) & (df["Borders"] == "[]")
+rows_to_duplicate = df[condition]
+duplicated_rows = rows_to_duplicate.copy()
+duplicated_rows["Disjoint"] = True
+df = pd.concat([df, duplicated_rows], ignore_index=True)
+
+df["Exp. name"] = df.apply(lambda x: x["repartition_name"].replace("exp", ""), axis=1)
+df.rename(columns = {
+    "Data used for evaluation": "Evaluation data",
+    "best_epoch": "Best epoch",
+  },
+  inplace=True)
+
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Exp. name",
+    order=["0", "1", "2", "3", "4"],
+    y="Best sortedAP",
+    hue="Evaluation data",
+    col="Borders",
+    row="Disjoint",
+    margin_titles=True,
+    height=1.7,
+    aspect=1.2,
+    palette="colorblind",
+    s=9
+)
+plt.show()
+```
+
+These results are difficult to interpret. The first clear effect that we can notice is that in the disjoint method, when separating the LiDAR point cloud in too many layers, the model doesn't manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in [@fig-dataset-augmentation]. But when there is only one channel, this channel is never dropped, which doesn't force the model to learn how to use only part of the data.
+
+Otherwise, it is hard to draw any conclusion from the rest of the experiments. There is too much variation in the results, which shows once again how unstable the training process is. From these results and the previous paragraph, one interpretation could be that the augmentation pipeline is related to this instability, as the results with the basic CHM layer have a much smaller variance.
 
 ## Hard trees

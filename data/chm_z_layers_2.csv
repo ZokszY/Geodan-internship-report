@@ -1,0 +1,241 @@
+chm_z_layers,repartition_name,best_epoch,model_name,Data used for evaluation,Best sortedAP
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp4,94,exp4_d06e3f844b134e108b4966a6dfa3dffb,"RGB, CIR and CHM",0.15341472128375627
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp4,94,exp4_d06e3f844b134e108b4966a6dfa3dffb,RGB and CIR,0.14581398275446947
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp4,94,exp4_d06e3f844b134e108b4966a6dfa3dffb,CHM only,0.034627128645251685
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp0,71,exp0_bf07f79194c9407faf1bc075a05e555c,"RGB, CIR and CHM",0.25460415394531594
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp0,71,exp0_bf07f79194c9407faf1bc075a05e555c,RGB and CIR,0.059981989999251674
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp0,71,exp0_bf07f79194c9407faf1bc075a05e555c,CHM only,0.030022212858152895
+"[[-inf, inf]]",exp2,61,exp2_67ad692b665048b293bbede70509dfe2,"RGB, CIR and CHM",0.2217261673199454
+"[[-inf, inf]]",exp2,61,exp2_67ad692b665048b293bbede70509dfe2,RGB and CIR,0.02527153107124822
+"[[-inf, inf]]",exp2,61,exp2_67ad692b665048b293bbede70509dfe2,CHM only,0.03575289246410114
+"[[-inf, inf]]",exp3,71,exp3_68042fa07a7c41a59bd89228306fb5da,"RGB, CIR and CHM",0.24043957428198356
+"[[-inf, inf]]",exp3,71,exp3_68042fa07a7c41a59bd89228306fb5da,RGB and CIR,0.01118056584890479
+"[[-inf, inf]]",exp3,71,exp3_68042fa07a7c41a59bd89228306fb5da,CHM only,0.023961510066545365
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp4,64,exp4_2cdeed433fe9471f823efcc378ce38f7,"RGB, CIR and CHM",0.24652740545600849
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp4,64,exp4_2cdeed433fe9471f823efcc378ce38f7,RGB and CIR,0.130435755562611
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp4,64,exp4_2cdeed433fe9471f823efcc378ce38f7,CHM only,0.10264588170082858
+"[[-inf, inf]]",exp4,54,exp4_2383886d3f0c41389871503c87194f6e,"RGB, CIR and CHM",0.17895890768723338
+"[[-inf, inf]]",exp4,54,exp4_2383886d3f0c41389871503c87194f6e,RGB and CIR,0.0068307793755678385
+"[[-inf, inf]]",exp4,54,exp4_2383886d3f0c41389871503c87194f6e,CHM only,0.0210396663501431
+"[[-inf, inf]]",exp0,66,exp0_17b0ad3efdd1448485cd62f6ce8d5bcf,"RGB, CIR and CHM",0.22242707607320406
+"[[-inf, inf]]",exp0,66,exp0_17b0ad3efdd1448485cd62f6ce8d5bcf,RGB and CIR,0.020810461518235433
+"[[-inf, inf]]",exp0,66,exp0_17b0ad3efdd1448485cd62f6ce8d5bcf,CHM only,0.02704980260809447
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp0,91,exp0_e15e17d4286149f4a29744be2ec5d5ad,"RGB, CIR and CHM",0.17008301249454685
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp0,91,exp0_e15e17d4286149f4a29744be2ec5d5ad,RGB and CIR,0.18538377272026627
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp0,91,exp0_e15e17d4286149f4a29744be2ec5d5ad,CHM only,0.11810922466322632
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp0,92,exp0_b493f75adb4c495996df290db2b095d0,"RGB, CIR and CHM",0.2482896856972921
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp0,92,exp0_b493f75adb4c495996df290db2b095d0,RGB and CIR,0.0650223046878908
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp0,92,exp0_b493f75adb4c495996df290db2b095d0,CHM only,0.1422615672980369
+"[[-inf, 3], [3, 9], [9, inf]]",exp3,47,exp3_5fcf6aa5b61c4fecb9d52965ac177452,"RGB, CIR and CHM",0.25674102463110166
+"[[-inf, 3], [3, 9], [9, inf]]",exp3,47,exp3_5fcf6aa5b61c4fecb9d52965ac177452,RGB and CIR,0.1711108335834788
+"[[-inf, 3], [3, 9], [9, inf]]",exp3,47,exp3_5fcf6aa5b61c4fecb9d52965ac177452,CHM only,0.18486658211248946
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp4,86,exp4_ede0639a1b7843ceb70494bfef226854,"RGB, CIR and CHM",0.20287835978624222
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp4,86,exp4_ede0639a1b7843ceb70494bfef226854,RGB and CIR,0.20654367901304102
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp4,86,exp4_ede0639a1b7843ceb70494bfef226854,CHM only,0.02868580520993477
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp4,69,exp4_bb6ae685a00e461a9433dbe88b109d0f,"RGB, CIR and CHM",0.2927030203450074
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp4,69,exp4_bb6ae685a00e461a9433dbe88b109d0f,RGB and CIR,0.03564083149168435
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp4,69,exp4_bb6ae685a00e461a9433dbe88b109d0f,CHM only,0.19254352811444944
+"[[-inf, 3], [3, 9], [9, inf]]",exp4,61,exp4_bdc22f74dc3846e78b5fe9bb90f58ef8,"RGB, CIR and CHM",0.23973889244374613
+"[[-inf, 3], [3, 9], [9, inf]]",exp4,61,exp4_bdc22f74dc3846e78b5fe9bb90f58ef8,RGB and CIR,0.13787852482850554
+"[[-inf, 3], [3, 9], [9, inf]]",exp4,61,exp4_bdc22f74dc3846e78b5fe9bb90f58ef8,CHM only,0.22293299822840307
+"[[-inf, inf]]",exp4,58,exp4_77401ab1f61e48ca90a88c4fc14a7419,"RGB, CIR and CHM",0.2511658565509078
+"[[-inf, inf]]",exp4,58,exp4_77401ab1f61e48ca90a88c4fc14a7419,RGB and CIR,0.014712118443786384
+"[[-inf, inf]]",exp4,58,exp4_77401ab1f61e48ca90a88c4fc14a7419,CHM only,0.031519044546545
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp3,84,exp3_6d3d1fff629a4db39215bcf88467f4d6,"RGB, CIR and CHM",0.2825473304002802
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp3,84,exp3_6d3d1fff629a4db39215bcf88467f4d6,RGB and CIR,0.081008154635542
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp3,84,exp3_6d3d1fff629a4db39215bcf88467f4d6,CHM only,0.0596172241579188
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp1,50,exp1_653a790ee2824f30a7586007b5babc02,"RGB, CIR and CHM",0.2250626125806133
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp1,50,exp1_653a790ee2824f30a7586007b5babc02,RGB and CIR,0.24044922851649844
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp1,50,exp1_653a790ee2824f30a7586007b5babc02,CHM only,0.0414897287034077
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp2,122,exp2_d9044285c268422f863903b0b7e60d0b,"RGB, CIR and CHM",0.23719524340463288
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp2,122,exp2_d9044285c268422f863903b0b7e60d0b,RGB and CIR,0.2514069749993977
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp2,122,exp2_d9044285c268422f863903b0b7e60d0b,CHM only,0.044280792077039645
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp0,67,exp0_452a0e29fa4c4e12a450a036fb413615,"RGB, CIR and CHM",0.21104048772069653
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp0,67,exp0_452a0e29fa4c4e12a450a036fb413615,RGB and CIR,0.21836933520778015
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp0,67,exp0_452a0e29fa4c4e12a450a036fb413615,CHM only,0.026387337173696557
+"[[-inf, inf]]",exp0,78,exp0_21f7a26453104c65ae47c6d89c082198,"RGB, CIR and CHM",0.20587646146888725
+"[[-inf, inf]]",exp0,78,exp0_21f7a26453104c65ae47c6d89c082198,RGB and CIR,0.01216813262625156
+"[[-inf, inf]]",exp0,78,exp0_21f7a26453104c65ae47c6d89c082198,CHM only,0.03208349262595905
+"[[-inf, inf]]",exp2,109,exp2_9a90c71a06904bac86b23f3b51a7db5e,"RGB, CIR and CHM",0.24187050439275562
+"[[-inf, inf]]",exp2,109,exp2_9a90c71a06904bac86b23f3b51a7db5e,RGB and CIR,0.02503325295082326
+"[[-inf, inf]]",exp2,109,exp2_9a90c71a06904bac86b23f3b51a7db5e,CHM only,0.04842231286691543
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp3,129,exp3_715e4e4fc4b44a23b0701f00ce61bfe2,"RGB, CIR and CHM",0.237543739808983
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp3,129,exp3_715e4e4fc4b44a23b0701f00ce61bfe2,RGB and CIR,0.08717430327585851
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp3,129,exp3_715e4e4fc4b44a23b0701f00ce61bfe2,CHM only,0.12166064817262677
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp0,70,exp0_7d933faf80f44a939adb1645df5cd2b9,"RGB, CIR and CHM",0.27201049052362536
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp0,70,exp0_7d933faf80f44a939adb1645df5cd2b9,RGB and CIR,0.026570293293450613
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp0,70,exp0_7d933faf80f44a939adb1645df5cd2b9,CHM only,0.1272853557158508
+"[[-inf, inf]]",exp1,63,exp1_f2c5e1403dd04de1802389ab694d7aa9,"RGB, CIR and CHM",0.22164836644634858
+"[[-inf, inf]]",exp1,63,exp1_f2c5e1403dd04de1802389ab694d7aa9,RGB and CIR,0.01110209566379636
+"[[-inf, inf]]",exp1,63,exp1_f2c5e1403dd04de1802389ab694d7aa9,CHM only,0.016569678723414753
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp2,119,exp2_181755e8b6d64503999b532e31b7933f,"RGB, CIR and CHM",0.15219979487028362
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp2,119,exp2_181755e8b6d64503999b532e31b7933f,RGB and CIR,0.12840955287652053
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp2,119,exp2_181755e8b6d64503999b532e31b7933f,CHM only,0.0921684901155136
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp1,32,exp1_d10dd3f5acf84785ad2d9b2e9bfe5e89,"RGB, CIR and CHM",0.22679914827504707
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp1,32,exp1_d10dd3f5acf84785ad2d9b2e9bfe5e89,RGB and CIR,0.22649310378661827
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp1,32,exp1_d10dd3f5acf84785ad2d9b2e9bfe5e89,CHM only,0.04082977358158347
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp4,90,exp4_98f58d98e8f94fdda967c50e454f54b5,"RGB, CIR and CHM",0.2760989795592572
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp4,90,exp4_98f58d98e8f94fdda967c50e454f54b5,RGB and CIR,0.26731493525572797
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp4,90,exp4_98f58d98e8f94fdda967c50e454f54b5,CHM only,0.03338254777938251
+"[[-inf, inf]]",exp2,99,exp2_59d2f35432984cb4bba3e613e00dc0c4,"RGB, CIR and CHM",0.2294620303322526
+"[[-inf, inf]]",exp2,99,exp2_59d2f35432984cb4bba3e613e00dc0c4,RGB and CIR,0.05336859094557277
+"[[-inf, inf]]",exp2,99,exp2_59d2f35432984cb4bba3e613e00dc0c4,CHM only,0.021822145557107257
+"[[-inf, 3], [3, 9], [9, inf]]",exp1,41,exp1_2f5901760cbc4b4da574907913e9855e,"RGB, CIR and CHM",0.2669445519210653
+"[[-inf, 3], [3, 9], [9, inf]]",exp1,41,exp1_2f5901760cbc4b4da574907913e9855e,RGB and CIR,0.15136904547438965
+"[[-inf, 3], [3, 9], [9, inf]]",exp1,41,exp1_2f5901760cbc4b4da574907913e9855e,CHM only,0.21648885633770001
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp1,79,exp1_14c04e9f1c9f4a28a405234314a53929,"RGB, CIR and CHM",0.2239348304096795
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp1,79,exp1_14c04e9f1c9f4a28a405234314a53929,RGB and CIR,0.2348261052053042
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp1,79,exp1_14c04e9f1c9f4a28a405234314a53929,CHM only,0.02970215167015271
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp3,114,exp3_3403912d60a34ba89d8f50bab232d39c,"RGB, CIR and CHM",0.2776710690675184
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp3,114,exp3_3403912d60a34ba89d8f50bab232d39c,RGB and CIR,0.2827516079043416
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp3,114,exp3_3403912d60a34ba89d8f50bab232d39c,CHM only,0.029555635437115736
+"[[-inf, inf]]",exp3,65,exp3_25c2110c6e314d4ea33420fbe582b2ec,"RGB, CIR and CHM",0.23049922023503358
+"[[-inf, inf]]",exp3,65,exp3_25c2110c6e314d4ea33420fbe582b2ec,RGB and CIR,0.04651117523932257
+"[[-inf, inf]]",exp3,65,exp3_25c2110c6e314d4ea33420fbe582b2ec,CHM only,0.025120750022980184
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp0,41,exp0_e0d64ec0b67f44a59229f0508d8a7452,"RGB, CIR and CHM",0.20736024486541887
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp0,41,exp0_e0d64ec0b67f44a59229f0508d8a7452,RGB and CIR,0.07747820401865024
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp0,41,exp0_e0d64ec0b67f44a59229f0508d8a7452,CHM only,0.13561108274030664
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp4,77,exp4_2cb3c425c7a24d91b0ac0b881aea01c6,"RGB, CIR and CHM",0.17979144801144067
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp4,77,exp4_2cb3c425c7a24d91b0ac0b881aea01c6,RGB and CIR,0.01921244084371797
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp4,77,exp4_2cb3c425c7a24d91b0ac0b881aea01c6,CHM only,0.10830511651201424
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp0,76,exp0_d435c595aaa44a76b88a54580cae0108,"RGB, CIR and CHM",0.25250530870427246
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp0,76,exp0_d435c595aaa44a76b88a54580cae0108,RGB and CIR,0.12391831662060987
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp0,76,exp0_d435c595aaa44a76b88a54580cae0108,CHM only,0.126127740823519
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp2,61,exp2_cb0a702a41b5492485a4a5e4ce93a786,"RGB, CIR and CHM",0.24230722505322952
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp2,61,exp2_cb0a702a41b5492485a4a5e4ce93a786,RGB and CIR,0.04439064443937977
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp2,61,exp2_cb0a702a41b5492485a4a5e4ce93a786,CHM only,0.1395280949437905
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp3,83,exp3_6235d4994c25497db84c9b8b9a18c978,"RGB, CIR and CHM",0.22338219269881118
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp3,83,exp3_6235d4994c25497db84c9b8b9a18c978,RGB and CIR,0.05448478028178893
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp3,83,exp3_6235d4994c25497db84c9b8b9a18c978,CHM only,0.15142075138115696
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp1,91,exp1_fc556a52ca2a41149bd2d0e5944e9d85,"RGB, CIR and CHM",0.14398262277594626
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp1,91,exp1_fc556a52ca2a41149bd2d0e5944e9d85,RGB and CIR,0.13054789059148628
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp1,91,exp1_fc556a52ca2a41149bd2d0e5944e9d85,CHM only,0.08816070083251638
+"[[-inf, 3], [3, 9], [9, inf]]",exp2,43,exp2_dc8b896b0bfa424ca8cc1ad9623342dc,"RGB, CIR and CHM",0.2527504520545143
+"[[-inf, 3], [3, 9], [9, inf]]",exp2,43,exp2_dc8b896b0bfa424ca8cc1ad9623342dc,RGB and CIR,0.11772091848174221
+"[[-inf, 3], [3, 9], [9, inf]]",exp2,43,exp2_dc8b896b0bfa424ca8cc1ad9623342dc,CHM only,0.2066934549315537
+"[[-inf, 3], [3, 9], [9, inf]]",exp3,77,exp3_c29fc9e9a83d458cbc6034bff2d57ced,"RGB, CIR and CHM",0.26802313337533523
+"[[-inf, 3], [3, 9], [9, inf]]",exp3,77,exp3_c29fc9e9a83d458cbc6034bff2d57ced,RGB and CIR,0.08758036445033537
+"[[-inf, 3], [3, 9], [9, inf]]",exp3,77,exp3_c29fc9e9a83d458cbc6034bff2d57ced,CHM only,0.0029481994073602266
+"[[-inf, inf]]",exp3,92,exp3_271aa3dffcd34e4395cfb8995c477a11,"RGB, CIR and CHM",0.2634906540426251
+"[[-inf, inf]]",exp3,92,exp3_271aa3dffcd34e4395cfb8995c477a11,RGB and CIR,0.00605173326047147
+"[[-inf, inf]]",exp3,92,exp3_271aa3dffcd34e4395cfb8995c477a11,CHM only,0.022661138426753238
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp4,74,exp4_3c4f213673d44923b00637b7963173c3,"RGB, CIR and CHM",0.18304829358870683
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp4,74,exp4_3c4f213673d44923b00637b7963173c3,RGB and CIR,0.0808914558576436
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp4,74,exp4_3c4f213673d44923b00637b7963173c3,CHM only,0.09382619657480726
+"[[-inf, inf]]",exp2,126,exp2_e460ea445ea14a40a37ef34791e24912,"RGB, CIR and CHM",0.2548448574808433
+"[[-inf, inf]]",exp2,126,exp2_e460ea445ea14a40a37ef34791e24912,RGB and CIR,0.04021555153618955
+"[[-inf, inf]]",exp2,126,exp2_e460ea445ea14a40a37ef34791e24912,CHM only,0.02137527528167347
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp1,55,exp1_0c5e42f72c004650908502beb81830a8,"RGB, CIR and CHM",0.28410177138798637
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp1,55,exp1_0c5e42f72c004650908502beb81830a8,RGB and CIR,0.19431971050249466
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp1,55,exp1_0c5e42f72c004650908502beb81830a8,CHM only,0.19608740169288777
+"[[-inf, inf]]",exp4,120,exp4_ac097075e61e4bcda0ec21bd9b1c12f3,"RGB, CIR and CHM",0.26570645277614324
+"[[-inf, inf]]",exp4,120,exp4_ac097075e61e4bcda0ec21bd9b1c12f3,RGB and CIR,0.008588958188586661
+"[[-inf, inf]]",exp4,120,exp4_ac097075e61e4bcda0ec21bd9b1c12f3,CHM only,0.04101400141310546
+"[[-inf, 3], [3, 9], [9, inf]]",exp4,57,exp4_dcb038e1ddd5467c8bf4dca575396e6e,"RGB, CIR and CHM",0.2576377915657353
+"[[-inf, 3], [3, 9], [9, inf]]",exp4,57,exp4_dcb038e1ddd5467c8bf4dca575396e6e,RGB and CIR,0.13896453277044252
+"[[-inf, 3], [3, 9], [9, inf]]",exp4,57,exp4_dcb038e1ddd5467c8bf4dca575396e6e,CHM only,0.22767445862719501
+"[[-inf, inf]]",exp3,39,exp3_341400ec622f487497cfd4bcc6a064a9,"RGB, CIR and CHM",0.2207071206914909
+"[[-inf, inf]]",exp3,39,exp3_341400ec622f487497cfd4bcc6a064a9,RGB and CIR,0.009189656223271642
+"[[-inf, inf]]",exp3,39,exp3_341400ec622f487497cfd4bcc6a064a9,CHM only,0.029671756177120118
+"[[-inf, inf]]",exp1,59,exp1_60846ab842fc47c6895237b73e0a5708,"RGB, CIR and CHM",0.2604224347322824
+"[[-inf, inf]]",exp1,59,exp1_60846ab842fc47c6895237b73e0a5708,RGB and CIR,0.009250233575536112
+"[[-inf, inf]]",exp1,59,exp1_60846ab842fc47c6895237b73e0a5708,CHM only,0.039182946159958064
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp3,74,exp3_21501bd687af4a83b0f965cac564ab4c,"RGB, CIR and CHM",0.16624741878026972
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp3,74,exp3_21501bd687af4a83b0f965cac564ab4c,RGB and CIR,0.05980757043689304
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp3,74,exp3_21501bd687af4a83b0f965cac564ab4c,CHM only,0.08578429616732407
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp2,98,exp2_8fbc4ea1e7f0426198f5d56e7284b78e,"RGB, CIR and CHM",0.19957992355541654
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp2,98,exp2_8fbc4ea1e7f0426198f5d56e7284b78e,RGB and CIR,0.2105133259951038
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp2,98,exp2_8fbc4ea1e7f0426198f5d56e7284b78e,CHM only,0.024439363189805736
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp2,79,exp2_9777e06c70ff44329c5a37efa687f086,"RGB, CIR and CHM",0.153813696406184
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp2,79,exp2_9777e06c70ff44329c5a37efa687f086,RGB and CIR,0.19867492782900575
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp2,79,exp2_9777e06c70ff44329c5a37efa687f086,CHM only,0.09433774430753838
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp1,56,exp1_6dc8aaf183af4772bc6d0b3fbd3d44c2,"RGB, CIR and CHM",0.30860582937887143
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp1,56,exp1_6dc8aaf183af4772bc6d0b3fbd3d44c2,RGB and CIR,0.20431782609331034
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp1,56,exp1_6dc8aaf183af4772bc6d0b3fbd3d44c2,CHM only,0.14241054927707678
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp3,100,exp3_1a3494ba65dd4dce8b8a87f569dcf9af,"RGB, CIR and CHM",0.25166660758275605
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp3,100,exp3_1a3494ba65dd4dce8b8a87f569dcf9af,RGB and CIR,0.2621849584402375
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp3,100,exp3_1a3494ba65dd4dce8b8a87f569dcf9af,CHM only,0.027073533646097606
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp1,79,exp1_3730111b6b174f39becd430f69a55155,"RGB, CIR and CHM",0.2623228577685585
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp1,79,exp1_3730111b6b174f39becd430f69a55155,RGB and CIR,0.04516772946038447
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp1,79,exp1_3730111b6b174f39becd430f69a55155,CHM only,0.1792176334951855
+"[[-inf, 3], [3, 9], [9, inf]]",exp2,102,exp2_eb6af78673cd47e380c99463b10e3502,"RGB, CIR and CHM",0.21792209283771227
+"[[-inf, 3], [3, 9], [9, inf]]",exp2,102,exp2_eb6af78673cd47e380c99463b10e3502,RGB and CIR,0.11228438831308306
+"[[-inf, 3], [3, 9], [9, inf]]",exp2,102,exp2_eb6af78673cd47e380c99463b10e3502,CHM only,0.17239997111355504
+"[[-inf, inf]]",exp1,39,exp1_b6b9ed834dad4b0d9c2ba9e2235b4b51,"RGB, CIR and CHM",0.22419258228717145
+"[[-inf, inf]]",exp1,39,exp1_b6b9ed834dad4b0d9c2ba9e2235b4b51,RGB and CIR,0.0017683343773000158
+"[[-inf, inf]]",exp1,39,exp1_b6b9ed834dad4b0d9c2ba9e2235b4b51,CHM only,0.028955484728885813
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp1,82,exp1_9c77b756267b420fa58bcf2783037e32,"RGB, CIR and CHM",0.17111030003302052
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp1,82,exp1_9c77b756267b420fa58bcf2783037e32,RGB and CIR,0.10612872743548363
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp1,82,exp1_9c77b756267b420fa58bcf2783037e32,CHM only,0.09334318596575733
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp4,68,exp4_033136b9b8204669a3d03380c0208f2c,"RGB, CIR and CHM",0.2792517218558316
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp4,68,exp4_033136b9b8204669a3d03380c0208f2c,RGB and CIR,0.28007278526288837
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp4,68,exp4_033136b9b8204669a3d03380c0208f2c,CHM only,0.02983542242476456
+"[[-inf, inf]]",exp0,40,exp0_dc5488aa531f41a2992a1d36eca8bf7e,"RGB, CIR and CHM",0.22617218950301396
+"[[-inf, inf]]",exp0,40,exp0_dc5488aa531f41a2992a1d36eca8bf7e,RGB and CIR,0.0
+"[[-inf, inf]]",exp0,40,exp0_dc5488aa531f41a2992a1d36eca8bf7e,CHM only,0.04441163292270924
+"[[-inf, inf]]",exp4,85,exp4_814dc9e76d7c48f288da879e123e7dc4,"RGB, CIR and CHM",0.23574821492902662
+"[[-inf, inf]]",exp4,85,exp4_814dc9e76d7c48f288da879e123e7dc4,RGB and CIR,0.0
+"[[-inf, inf]]",exp4,85,exp4_814dc9e76d7c48f288da879e123e7dc4,CHM only,0.03400267684169959
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp3,146,exp3_94424cf1c9a844b599ca611d5daf238e,"RGB, CIR and CHM",0.23763221457702022
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp3,146,exp3_94424cf1c9a844b599ca611d5daf238e,RGB and CIR,0.2326297188915581
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp3,146,exp3_94424cf1c9a844b599ca611d5daf238e,CHM only,0.022319895548232865
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp2,77,exp2_064163978d2149d790a0e7bcfbb95a63,"RGB, CIR and CHM",0.24513600675721323
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp2,77,exp2_064163978d2149d790a0e7bcfbb95a63,RGB and CIR,0.1226956712860302
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp2,77,exp2_064163978d2149d790a0e7bcfbb95a63,CHM only,0.18592015465264924
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp3,96,exp3_f0a1bba6edf5443ea70f3c2accd3141b,"RGB, CIR and CHM",0.26249944032450034
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp3,96,exp3_f0a1bba6edf5443ea70f3c2accd3141b,RGB and CIR,0.26159939899290335
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp3,96,exp3_f0a1bba6edf5443ea70f3c2accd3141b,CHM only,0.021033890531826024
+"[[-inf, 3], [3, 9], [9, inf]]",exp0,41,exp0_46b0f7419c75400b9cb448a38c6f2106,"RGB, CIR and CHM",0.24509926896865378
+"[[-inf, 3], [3, 9], [9, inf]]",exp0,41,exp0_46b0f7419c75400b9cb448a38c6f2106,RGB and CIR,0.12338254639617557
+"[[-inf, 3], [3, 9], [9, inf]]",exp0,41,exp0_46b0f7419c75400b9cb448a38c6f2106,CHM only,0.17768046065857818
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp1,51,exp1_b7bfd316522f4ba094da670ccdf56fb8,"RGB, CIR and CHM",0.24581805177909988
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp1,51,exp1_b7bfd316522f4ba094da670ccdf56fb8,RGB and CIR,0.25060493676716916
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp1,51,exp1_b7bfd316522f4ba094da670ccdf56fb8,CHM only,0.038162602662394025
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp2,97,exp2_1cdf87048dec464b8fc9c3df50d279ef,"RGB, CIR and CHM",0.21987252236901256
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp2,97,exp2_1cdf87048dec464b8fc9c3df50d279ef,RGB and CIR,0.2318043600269047
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp2,97,exp2_1cdf87048dec464b8fc9c3df50d279ef,CHM only,0.04275899391556607
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp0,61,exp0_d329ac3a217f4dfdaf28a43a9f35dfe0,"RGB, CIR and CHM",0.021078556116111306
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp0,61,exp0_d329ac3a217f4dfdaf28a43a9f35dfe0,RGB and CIR,0.01966032220775764
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp0,61,exp0_d329ac3a217f4dfdaf28a43a9f35dfe0,CHM only,0.02865610225960544
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp4,55,exp4_86ca4533f927467399d0ac943f74a2bf,"RGB, CIR and CHM",0.32653728514690666
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp4,55,exp4_86ca4533f927467399d0ac943f74a2bf,RGB and CIR,0.025399500995757
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp4,55,exp4_86ca4533f927467399d0ac943f74a2bf,CHM only,0.1874836921211041
+"[[-inf, inf]]",exp0,66,exp0_e448c196a0184494a13b8754f552803d,"RGB, CIR and CHM",0.21554356991976334
+"[[-inf, inf]]",exp0,66,exp0_e448c196a0184494a13b8754f552803d,RGB and CIR,0.0
+"[[-inf, inf]]",exp0,66,exp0_e448c196a0184494a13b8754f552803d,CHM only,0.0323549660964209
+"[[-inf, 3], [3, 9], [9, inf]]",exp0,39,exp0_c04a9917f6a947e488ad7ce1a6afff08,"RGB, CIR and CHM",0.24735535782739465
+"[[-inf, 3], [3, 9], [9, inf]]",exp0,39,exp0_c04a9917f6a947e488ad7ce1a6afff08,RGB and CIR,0.1829891108795797
+"[[-inf, 3], [3, 9], [9, inf]]",exp0,39,exp0_c04a9917f6a947e488ad7ce1a6afff08,CHM only,0.18335031668903312
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp0,70,exp0_9d99527831394eb09fbe8c50f1396d5f,"RGB, CIR and CHM",0.2021047378372285
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp0,70,exp0_9d99527831394eb09fbe8c50f1396d5f,RGB and CIR,0.2021651291223717
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp0,70,exp0_9d99527831394eb09fbe8c50f1396d5f,CHM only,0.03655039462815138
+"[[-inf, inf]]",exp1,82,exp1_5adf90b0b3bb413f947c63c38443f565,"RGB, CIR and CHM",0.22305750736198615
+"[[-inf, inf]]",exp1,82,exp1_5adf90b0b3bb413f947c63c38443f565,RGB and CIR,0.0
+"[[-inf, inf]]",exp1,82,exp1_5adf90b0b3bb413f947c63c38443f565,CHM only,0.014223276502934801
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp0,88,exp0_6b50d234150d4856981f4d948b0a36df,"RGB, CIR and CHM",0.22286758356890304
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp0,88,exp0_6b50d234150d4856981f4d948b0a36df,RGB and CIR,0.220359163793733
+"[[-inf, 2], [2, 5], [5, 7], [7, 12], [12, inf]]",exp0,88,exp0_6b50d234150d4856981f4d948b0a36df,CHM only,0.04968842042173764
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp4,94,exp4_6799d61321f5404c820e6bd36116ff56,"RGB, CIR and CHM",0.2658905960603943
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp4,94,exp4_6799d61321f5404c820e6bd36116ff56,RGB and CIR,0.2607379642627686
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp4,94,exp4_6799d61321f5404c820e6bd36116ff56,CHM only,0.025262760098742565
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp1,83,exp1_cd96545c33f24568819cc9a909c2aa01,"RGB, CIR and CHM",0.25360074926804627
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp1,83,exp1_cd96545c33f24568819cc9a909c2aa01,RGB and CIR,0.22550304664547183
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp1,83,exp1_cd96545c33f24568819cc9a909c2aa01,CHM only,0.06763167465265833
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp3,101,exp3_bc35977d42354aecab3a436ee3c88b5e,"RGB, CIR and CHM",0.29834718388449283
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp3,101,exp3_bc35977d42354aecab3a436ee3c88b5e,RGB and CIR,0.1731199679492722
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp3,101,exp3_bc35977d42354aecab3a436ee3c88b5e,CHM only,0.11372833650298458
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp2,87,exp2_56f463bd11354cf2ba625b90c9bf4008,"RGB, CIR and CHM",0.21340601071315196
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp2,87,exp2_56f463bd11354cf2ba625b90c9bf4008,RGB and CIR,0.2205854724391126
+"[[-inf, 1], [1, 2], [2, 3], [3, 5], [5, 7], [7, 10], [10, 15], [15, 20], [20, inf]]",exp2,87,exp2_56f463bd11354cf2ba625b90c9bf4008,CHM only,0.03361923396478102
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp2,69,exp2_2d11a61970744d8da2facc455a517c74,"RGB, CIR and CHM",0.25855553343826676
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp2,69,exp2_2d11a61970744d8da2facc455a517c74,RGB and CIR,0.0658160119816785
+"[[-inf, 2], [-inf, 5], [-inf, 7], [-inf, 12], [-inf, inf]]",exp2,69,exp2_2d11a61970744d8da2facc455a517c74,CHM only,0.09474554167118764
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp3,52,exp3_611f0307209d48169a1193d915d96c66,"RGB, CIR and CHM",0.18867917205544182
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp3,52,exp3_611f0307209d48169a1193d915d96c66,RGB and CIR,0.01855950569462087
+"[[-inf, 3], [-inf, 9], [-inf, inf]]",exp3,52,exp3_611f0307209d48169a1193d915d96c66,CHM only,0.050129783415955996
+"[[-inf, 3], [3, 9], [9, inf]]",exp1,43,exp1_3061681dff4347628e4687b6d7137557,"RGB, CIR and CHM",0.2832590147851415
+"[[-inf, 3], [3, 9], [9, inf]]",exp1,43,exp1_3061681dff4347628e4687b6d7137557,RGB and CIR,0.15660302623278546
+"[[-inf, 3], [3, 9], [9, inf]]",exp1,43,exp1_3061681dff4347628e4687b6d7137557,CHM only,0.20818323665549437
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp2,85,exp2_1c6a43b6ecab43bd96f02156925272ff,"RGB, CIR and CHM",0.22216202429371737
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp2,85,exp2_1c6a43b6ecab43bd96f02156925272ff,RGB and CIR,0.08697189967088013
+"[[-inf, 1], [-inf, 2], [-inf, 3], [-inf, 5], [-inf, 7], [-inf, 10], [-inf, 15], [-inf, 20], [-inf, inf]]",exp2,85,exp2_1c6a43b6ecab43bd96f02156925272ff,CHM only,0.062096206000933074

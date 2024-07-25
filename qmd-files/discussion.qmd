@@ -1,6 +1,6 @@
 # Discussion and improvements
 
-## Dataset
+## Dataset {#sec-discussion-dataset}
 
 From the results of this work, the only certitude is that more training data would be necessary to confirm any conclusion. Even with augmentation techniques, the dataset is too small to completely train a model and really experiment with the small changes applied to it. Since the training loop quickly reaches overfitting, we don't really get to see how the model could perform in the most interesting cases, which are the small, covered or hardly visible trees.
 
@@ -10,6 +10,10 @@ At the time of writing this report, the newest version of the point cloud has al
 
 Another approach to generate a larger dataset could be to create a large artificially annotated dataset, like it was done in another paper [@DeepForest]. Their approach was to create a very large dataset with medium-quality data which can be used to pre-train the model. Then, they use hand-annotated data to finish the training. They created this large dataset using classical non-machine learning techniques, using only the point cloud.
 
-## Combination of data types
+## Instability
+
+As explained in the previous section [@sec-discussion-dataset], the size of the dataset is probably the main reason for the instability of the training pipeline. But other reasons might also be responsible for this instability. As explained in [@sec-results-chm], the random channel dropouts might also destabilize the training by creating inputs with very different repartition of the information, since some channels are randomly removed. The value to use as a replacement of these channels is also not easy to choose, as on the normalized CHM rasters, a value of 0 might be equivalent to a height above ground of 10 m for example, and a flat surface at 10 m is not exactly no data and might also be misleading if the CHM usually goes from 0 to 4 m.
+
+More generally, it is possible that other factors are responsible for the instability of the training pipeline, and it would be useful to find and correct them.
 
 ## Covered trees
