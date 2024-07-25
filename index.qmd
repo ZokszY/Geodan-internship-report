@@ -1,3 +1,5 @@
 # Abstract {.unnumbered .unlisted}
 
+The goal of the internship was to study the combination of LiDAR point clouds and aerial images in a deep learning model to identify individual trees, and in particular those covered by other trees. To do this, I modified a model capable of merging LiDAR and RGB data to feed it with more information about the geometry below the canopy surface. This required to create my own tree dataset, using publicly available data from the Netherlands. A few interesting results emerged, but due to the dataset being too small, I couldn't really draw conclusions about potential improvements of this new pipeline. Therefore, this new pipeline should be evaluated on a larger dataset to precisely determine its influence on the results.
+
 The source code for this report can be found [here](https://github.com/ZokszY/Geodan-internship-report) and the online report can be found [here](https://zokszy.github.io/Geodan-internship-report/).
