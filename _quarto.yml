@@ -48,6 +48,8 @@ format:
   html:
     theme: cosmo
     number-sections: true
+    comments:
+      hypothesis: true
   pdf:
     documentclass: scrreprt
     papersize: a4

@@ -2,7 +2,7 @@
 
 ## Dataset
 
-From the results of this work, the only certain outcome is that more training data would be necessary to confirm any conclusion. Even with augmentation techniques, the dataset is too small to completely train a model and really experiment with the small changes applied to it. Since the training loop quickly reaches overfitting, we don't really get to see how the model could perform in the most interesting cases, which are the small, covered or hardly visible trees.
+From the results of this work, the only certitude is that more training data would be necessary to confirm any conclusion. Even with augmentation techniques, the dataset is too small to completely train a model and really experiment with the small changes applied to it. Since the training loop quickly reaches overfitting, we don't really get to see how the model could perform in the most interesting cases, which are the small, covered or hardly visible trees.
 
 Therefore, the biggest and conceptually simplest improvement that could be done to this work would be to improve and extend the dataset. Improving with more diversity, covering a larger part of the Netherlands (or even beyond, but we can only ensure consistency over images and point clouds in this country), and extending with more images and more trees.
 
