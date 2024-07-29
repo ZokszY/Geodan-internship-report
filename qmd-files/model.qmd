@@ -6,7 +6,7 @@ The deep learning model that is used is based on AMF GD YOLOv8, the model propos
 
 The architecture of the model is conceptually simple. The model takes two inputs in the form of two rasters with the same height and width. The two inputs are processed using the backbone of the YOLOv8 model [@yolo] to extract features at different scales. Then Attention Multi-level Fusion (AMF) layers are used to fuse the features of the two inputs at each scale level. Then, a Gather-and-Distribute (GD) mechanism is used to propagate information between the different scales. This mechanism fuses the features from all scales before redistributing them to the features, two times in a row. Finally, the features of the three smallest scales are fed into detection layers responsible for extracting bounding boxes and assigning confidence scores and class probabilities to them.
 
-![Model architecture](../diagrams/Modifed_AMF_GD_YOLOv8.drawio.png)
+![Model architecture](../diagrams/Modifed_AMF_GD_YOLOv8.png)
 
 In practical terms, the input rasters have a shape of $640 \times 640 \times c_{\text{RGB}}$ and $640 \times 640 \times c_{\text{CHM}}$, where $c_{\text{RGB}}$ is equal to 6 when using RGB and CIR images, and 3 when using only one of them, and $c_{\text{CHM}}$ is the number of CHM layers that we decide to use for the model. Since the resolution that is used is 0.08 m, this means that each image spans over 51.2 m.
 
