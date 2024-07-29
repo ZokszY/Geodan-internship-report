@@ -61,6 +61,9 @@ div.csl-indent {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -242,10 +245,12 @@ window.Quarto = {
    
   <ul>
   <li><a href="#model-architecture" id="toc-model-architecture" class="nav-link active" data-scroll-target="#model-architecture"><span class="header-section-number">4.1</span> Model architecture</a></li>
-  <li><a href="#training-pipeline" id="toc-training-pipeline" class="nav-link" data-scroll-target="#training-pipeline"><span class="header-section-number">4.2</span> Training pipeline</a></li>
-  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing"><span class="header-section-number">4.3</span> Data preprocessing</a></li>
-  <li><a href="#training-loop" id="toc-training-loop" class="nav-link" data-scroll-target="#training-loop"><span class="header-section-number">4.4</span> Training loop</a></li>
-  <li><a href="#output-postprocessing" id="toc-output-postprocessing" class="nav-link" data-scroll-target="#output-postprocessing"><span class="header-section-number">4.5</span> Output postprocessing</a></li>
+  <li><a href="#training-pipeline" id="toc-training-pipeline" class="nav-link" data-scroll-target="#training-pipeline"><span class="header-section-number">4.2</span> Training pipeline</a>
+  <ul class="collapse">
+  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing"><span class="header-section-number">4.2.1</span> Data preprocessing</a></li>
+  <li><a href="#training-loop" id="toc-training-loop" class="nav-link" data-scroll-target="#training-loop"><span class="header-section-number">4.2.2</span> Training loop</a></li>
+  <li><a href="#output-postprocessing" id="toc-output-postprocessing" class="nav-link" data-scroll-target="#output-postprocessing"><span class="header-section-number">4.2.3</span> Output postprocessing</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -275,30 +280,34 @@ window.Quarto = {
 <section id="model-architecture" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="model-architecture"><span class="header-section-number">4.1</span> Model architecture</h2>
 <p>The architecture of the model is conceptually simple. The model takes two inputs in the form of two rasters with the same height and width. The two inputs are processed using the backbone of the YOLOv8 model <span class="citation" data-cites="yolo">(<a href="references.html#ref-yolo" role="doc-biblioref">Redmon et al. 2016</a>)</span> to extract features at different scales. Then Attention Multi-level Fusion (AMF) layers are used to fuse the features of the two inputs at each scale level. Then, a Gather-and-Distribute (GD) mechanism is used to propagate information between the different scales. This mechanism fuses the features from all scales before redistributing them to the features, two times in a row. Finally, the features of the three smallest scales are fed into detection layers responsible for extracting bounding boxes and assigning confidence scores and class probabilities to them.</p>
-<!-- TODO: Add a diagram with the model structure -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../diagrams/Modifed_AMF_GD_YOLOv8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Model architecture"><img src="../diagrams/Modifed_AMF_GD_YOLOv8.png" class="img-fluid figure-img" alt="Model architecture"></a></p>
+<figcaption>Model architecture</figcaption>
+</figure>
+</div>
 <p>In practical terms, the input rasters have a shape of <span class="math inline">\(640&nbsp;\times&nbsp;640&nbsp;\times&nbsp;c_{\text{RGB}}\)</span> and <span class="math inline">\(640&nbsp;\times&nbsp;640&nbsp;\times&nbsp;c_{\text{CHM}}\)</span>, where <span class="math inline">\(c_{\text{RGB}}\)</span> is equal to 6 when using RGB and CIR images, and 3 when using only one of them, and <span class="math inline">\(c_{\text{CHM}}\)</span> is the number of CHM layers that we decide to use for the model. Since the resolution that is used is 0.08&nbsp;m, this means that each image spans over 51.2&nbsp;m.</p>
 <p>The only real modification that I made to the architecture compared to the initial paper is adding any number of channels in the CHM input, while we had <span class="math inline">\(c_{\text{CHM}} = 1\)</span> originally. Using CIR images in addition to RGB images is also new, but this is a less important modification.</p>
 </section>
 <section id="training-pipeline" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="training-pipeline"><span class="header-section-number">4.2</span> Training pipeline</h2>
 <p>The training pipeline consists of three steps. First, the data is pre-processed to create the inputs to feed into the model. Then, the training loop runs until the end condition is reached. Finally, the final model is evaluated on all the datasets.</p>
-</section>
-<section id="data-preprocessing" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="data-preprocessing"><span class="header-section-number">4.3</span> Data preprocessing</h2>
+<section id="data-preprocessing" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="data-preprocessing"><span class="header-section-number">4.2.1</span> Data preprocessing</h3>
 <p>Data pre-processing is quite straightforward. The first step is to divide the dataset into a grid of <span class="math inline">\(640&nbsp;\times&nbsp;640\)</span> tiles. Then, all these tiles are placed into one of the training, validation and test sets.</p>
 <p>As for RGB and CIR images, preprocessing only contains two simple steps: tiling the large images into small <span class="math inline">\(640&nbsp;\times&nbsp;640\)</span> images, and normalizing all images along each channel. When both data sources are used, RGB and CIR images are also merged into images with 6 channels, which will be the input of the model.</p>
 <p>As for CHM layers, there are more steps. The first step is to compute a sort of flattened point cloud, by computing the DTM, which represents the height of the ground, and removing this height to the point cloud. Then, for each CHM layer, if the height interval is <span class="math inline">\([z_\text{bot}, z_\text{top}]\)</span>, we first extract all the points which have a height <span class="math inline">\(h\)</span> such that <span class="math inline">\(z_\text{bot} \leq h \leq z_\text{top}\)</span>, and we then compute the DSM for this smaller point cloud. Since the ground height was already removed from the point cloud, this DSM is the CHM. Then, all the layers are merged into one raster with multiple channels and we normalize the whole raster with the average and the standard deviation over all channels. Finally, we can simply tile these rasters exactly like RGB and CIR images, which gives us the inputs of the model.</p>
 <p>All these operations are conceptually simple, but they can be computationally expensive. Therefore, I had to put a certain effort into accelerating with different methods. First, I made sure to save the most important and generic elements to avoid useless computations every time the model is trained again, without saturating the memory. Then, I also implemented multi-threading for every possible step to improve the raw speed of preprocessing. Finally, performance is also the reason why normalization if performed during preprocessing instead of during the initialization of the data in the training loop.</p>
 </section>
-<section id="training-loop" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="training-loop"><span class="header-section-number">4.4</span> Training loop</h2>
+<section id="training-loop" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="training-loop"><span class="header-section-number">4.2.2</span> Training loop</h3>
 <p>The training loop is very generic, so I will only mention the most interesting parts. First, we use an Adam optimizer and a simple learning rate scheduler with a multiplier at each epoch i which is <span class="math inline">\(1/\sqrt{i+2}\)</span>.</p>
 <p>Then, since the batch size cannot be very large because of the space required by all the images, there is the possibility to perform gradient accumulation, which means that backward propagation won’t be performed with each batch, but instead every two or more batches. The idea behind this is to add more stability to the training, since back-propagating on only a few images is prone to overfitting on a set of examples which are not representative of the whole dataset.</p>
 <p>As for the criterion to stop the training session, we use the loss on the validation set. Once this loss didn’t improve during 50 iterations over the whole dataset, we stop and keep the model that had the best validation loss.</p>
 <p>Besides these details, the training loop is very generic. We loop over the entire training set with batches to compute the loss and perform gradient back-propagation,. Then we compute the loss on the validation set and store this loss as the metric that decides when to stop.</p>
 </section>
-<section id="output-postprocessing" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="output-postprocessing"><span class="header-section-number">4.5</span> Output postprocessing</h2>
+<section id="output-postprocessing" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="output-postprocessing"><span class="header-section-number">4.2.3</span> Output postprocessing</h3>
 <p>Regarding postprocessing of the output of the model, there a few things to mention. First, the model outputs a lot of bounding boxes, which have to be cleaned using two criteria. The first criterion is the confidence score. We can just set a threshold below which bounding boxes are discarded. The second criterion is the intersection over union (IoU) with other bounding boxes. IoU is a metrics used to quantify how similar two bounding boxes are. It is a value between 0 and 1, which formula is:</p>
 <p><span class="math display">\[
 \text{IoU}(A, B) = \frac{\text{area}(A \cap B)}{\text{area}(A \cup B)}
@@ -326,6 +335,7 @@ Redmon, Joseph, Santosh Divvala, Ross Girshick, and Ali Farhadi. 2016. <span>“
 Chen, Long, Yuli Wu, Johannes Stegmaier, and Dorit Merhof. 2023. <span>“SortedAP: Rethinking Evaluation Metrics for Instance Segmentation.”</span> In <em>Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) Workshops</em>, 3923–29. <a href="https://openaccess.thecvf.com/content/ICCV2023W/BIC/html/Chen_SortedAP_Rethinking_Evaluation_Metrics_for_Instance_Segmentation_ICCVW_2023_paper.html">https://openaccess.thecvf.com/content/ICCV2023W/BIC/html/Chen_SortedAP_Rethinking_Evaluation_Metrics_for_Instance_Segmentation_ICCVW_2023_paper.html</a>.
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -762,6 +772,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","closeEffect":"zoom","loop":false,"descPosition":"bottom"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
