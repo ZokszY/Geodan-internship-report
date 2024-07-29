@@ -15,5 +15,3 @@ Another approach to generate a larger dataset could be to create a large artific
 As explained in the previous section [@sec-discussion-dataset], the size of the dataset is probably the main reason for the instability of the training pipeline. But other reasons might also be responsible for this instability. As explained in [@sec-results-chm], the random channel dropouts might also destabilize the training by creating inputs with very different repartition of the information, since some channels are randomly removed. The value to use as a replacement of these channels is also not easy to choose, as on the normalized CHM rasters, a value of 0 might be equivalent to a height above ground of 10 m for example, and a flat surface at 10 m is not exactly no data and might also be misleading if the CHM usually goes from 0 to 4 m.
 
 More generally, it is possible that other factors are responsible for the instability of the training pipeline, and it would be useful to find and correct them.
-
-## Covered trees

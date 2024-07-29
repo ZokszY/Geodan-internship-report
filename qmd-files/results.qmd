@@ -74,7 +74,7 @@ df.rename(columns = {
   },
   inplace=True)
 sns.set_style("ticks", {"axes.grid": True})
-sns.catplot(
+g = sns.catplot(
     data=df,
     kind="swarm",
     x="Accum. count",
@@ -86,8 +86,12 @@ sns.catplot(
     height=1.7,
     aspect=1.2,
     palette="colorblind",
-    s=9
+    s=10
 )
+
+g.tight_layout()
+plt.subplots_adjust(right=0.79)
+
 plt.show()
 ```
 
@@ -113,6 +117,7 @@ The results of this experiment can be found in [@fig-chm-layers]. To experiment 
 #| label: fig-chm-layers
 #| fig-cap: "Results with different CHM layers"
 #| fig-width: 5
+#| warning: false
 
 from typing import List, Tuple
 
@@ -122,7 +127,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import json
 
-df = pd.read_csv("../data/chm_z_layers_2.csv")
+df = pd.read_csv("../data/chm_z_layers_all.csv")
 df.sort_values(
     by=["chm_z_layers", "Data used for evaluation"],
     inplace=True,
@@ -159,11 +164,20 @@ df["Exp. name"] = df.apply(lambda x: x["repartition_name"].replace("exp", ""), a
 df.rename(columns = {
     "Data used for evaluation": "Evaluation data",
     "best_epoch": "Best epoch",
+    "agnostic": "Agnostic"
   },
   inplace=True)
 
+df.sort_values(
+    by=["Agnostic", "Disjoint"],
+    ascending=[False, False],
+    inplace=True,
+)
+
+df["Agnostic_Disjoint"] = "Agnostic = " + df["Agnostic"].astype(str) + "\nDisjoint = " + df["Disjoint"].astype(str)
+
 sns.set_style("ticks", {"axes.grid": True})
-sns.catplot(
+g = sns.catplot(
     data=df,
     kind="swarm",
     x="Exp. name",
@@ -171,18 +185,73 @@ sns.catplot(
     y="Best sortedAP",
     hue="Evaluation data",
     col="Borders",
-    row="Disjoint",
+    row="Agnostic_Disjoint",
     margin_titles=True,
     height=1.7,
     aspect=1.2,
     palette="colorblind",
-    s=9
+    s=10
 )
+
+g.set_titles(row_template='{row_name}')
+g.tight_layout(h_pad=-6)
+plt.subplots_adjust(right=0.78)
+
 plt.show()
 ```
 
-These results are difficult to interpret. The first clear effect that we can notice is that in the disjoint method, when separating the LiDAR point cloud in too many layers, the model doesn't manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in [@fig-dataset-augmentation]. But when there is only one channel, this channel is never dropped, which doesn't force the model to learn how to use only part of the data.
+These results are difficult to interpret. The first clear effect that we can notice for the agnostic models is that in the disjoint method (first row starting from the top), when separating the LiDAR point cloud in too many layers, the model doesn't manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in [@fig-dataset-augmentation]. But when there is only one channel, this channel is never dropped, which doesn't force the model to learn how to use only part of the data.
 
 Otherwise, it is hard to draw any conclusion from the rest of the experiments. There is too much variation in the results, which shows once again how unstable the training process is. From these results and the previous paragraph, one interpretation could be that the augmentation pipeline is related to this instability, as the results with the basic CHM layer have a much smaller variance.
 
-## Hard trees
+## Covered trees
+
+Then, if we try to look at the performance of the models on the covered trees, which are called "Tree_low_hard" in [@fig-results-hard-trees], it is also hard to draw any conclusion. The models have mainly learnt to find trees with the generic "Tree" label, and they are seemingly equally bad at finding the other classes of trees. In [@fig-results-hard-trees], we can see the performance of two models trained with the same repartition of the data into training, validation and test set. Both models were not agnostic, which means that they learnt to detect each class of trees and label them properly. The one of the left uses the largest number of CHM layers (with Borders = [1, 2, 3, 5, 7, 10, 15, 20] and Disjoint = False), whereas the one on the right only uses the default CHM layer (Borders = []).
+
+::: {#fig-results-hard-trees layout="[[48, -4, 48], [-4], [48, -4, 48], [-4], [48, -4, 48]]" fig-pos="H"}
+
+![Results with all layers on training set](../data/covered_trees/all_layers/ap_iou_per_label_train-set_RGB_CIR_CHM.png){#fig-results-hard-trees-all-train fig-align="center"}
+
+![Results with one layer on training set](../data/covered_trees/one_layer/ap_iou_per_label_train-set_RGB_CIR_CHM.png){#fig-results-hard-trees-one-train fig-align="center"}
+
+![Results with all layers on validation set](../data/covered_trees/all_layers/ap_iou_per_label_val-set_RGB_CIR_CHM.png){#fig-results-hard-trees-all-val fig-align="center"}
+
+![Results with one layer on validation set](../data/covered_trees/one_layer/ap_iou_per_label_val-set_RGB_CIR_CHM.png){#fig-results-hard-trees-one-val fig-align="center"}
+
+![Results with all layers on test set](../data/covered_trees/all_layers/ap_iou_per_label_test-set_RGB_CIR_CHM.png){#fig-results-hard-trees-all-test fig-align="center"}
+
+![Results with one layer on test set](../data/covered_trees/one_layer/ap_iou_per_label_test-set_RGB_CIR_CHM.png){#fig-results-hard-trees-one-test fig-align="center"}
+
+sortedAP curve with different CHM layers on training/validation/test set
+:::
+
+Unfortunately, these two examples are really representative of the results of the other models that were trained. There are only 207 covered trees in the dataset, which is too small to get the models to learn to identify them and get interesting results when comparing different configurations of CHM layers. Most of the differences that we see come from the normal random variation during the training.
+
+## Visual results
+
+In [@fig-results-visual] are the outputs of trained models on one instance from each of the training, validation and test sets. The models used are those which results are shown in [@fig-results-hard-trees].
+
+::: {#fig-results-visual layout="[[48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48]]" fig-pos="H"}
+
+![Ground-truth boxes on one training set instance](../images/Exp2_results/Ground_truth/Pred_boxes_train.png){#fig-results-visual-gt-train fig-align="center"}
+
+![Predicted boxes with all layers on one training set instance](../images/Exp2_results/All_layers/Pred_boxes_train.png){#fig-results-visual-all-train fig-align="center"}
+
+![Predicted boxes with one layer on one training set instance](../images/Exp2_results/One_layer/Pred_boxes_train.png){#fig-results-visual-one-train fig-align="center"}
+
+![Ground-truth boxes on one validation set instance](../images/Exp2_results/Ground_truth/Pred_boxes_val.png){#fig-results-visual-gt-val fig-align="center"}
+
+![Predicted boxes all layers on one validation set instance](../images/Exp2_results/All_layers/Pred_boxes_val.png){#fig-results-visual-all-val fig-align="center"}
+
+![Predicted boxes one layer on one validation set instance](../images/Exp2_results/One_layer/Pred_boxes_val.png){#fig-results-visual-one-val fig-align="center"}
+
+![Ground-truth boxes on one test set instance](../images/Exp2_results/Ground_truth/Pred_boxes_test.png){#fig-results-visual-gt-test fig-align="center"}
+
+![Predicted boxes all layers on one test set instance](../images/Exp2_results/All_layers/Pred_boxes_test.png){#fig-results-visual-all-test fig-align="center"}
+
+![Predicted boxes one layer on one test set instance](../images/Exp2_results/One_layer/Pred_boxes_test.png){#fig-results-visual-one-test fig-align="center"}
+
+Ground-truth boxes and predictions from two models
+:::
+
+The confidence thresholds used to remove low confidence predictions are the ones that gave the best sortedAP values in [@fig-results-hard-trees]. One aspect that is partly visible here is that all the categories except the basic "Tree" have confidence scores which are so low that they are rejected after the selection with the confidence threshold. This is the case on the whole dataset, including the training set, and shows how the models learns more slowly to find the other categories.
