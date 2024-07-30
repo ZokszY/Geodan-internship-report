@@ -214,7 +214,7 @@ div.csl-indent {
   <ul>
   <li><a href="#sec-discussion-dataset" id="toc-sec-discussion-dataset" class="nav-link active" data-scroll-target="#sec-discussion-dataset"><span class="header-section-number">6.1</span> Dataset</a></li>
   <li><a href="#instability" id="toc-instability" class="nav-link" data-scroll-target="#instability"><span class="header-section-number">6.2</span> Instability</a></li>
-  <li><a href="#covered-trees" id="toc-covered-trees" class="nav-link" data-scroll-target="#covered-trees"><span class="header-section-number">6.3</span> Covered trees</a></li>
+  <li><a href="#model-performance" id="toc-model-performance" class="nav-link" data-scroll-target="#model-performance"><span class="header-section-number">6.3</span> Model performance</a></li>
   </ul>
 </nav>
     </div>
@@ -252,8 +252,12 @@ div.csl-indent {
 <p>As explained in the previous section <a href="#sec-discussion-dataset" class="quarto-xref"><span>Section 6.1</span></a>, the size of the dataset is probably the main reason for the instability of the training pipeline. But other reasons might also be responsible for this instability. As explained in <a href="results.html#sec-results-chm" class="quarto-xref"><span>Section 5.2</span></a>, the random channel dropouts might also destabilize the training by creating inputs with very different repartition of the information, since some channels are randomly removed. The value to use as a replacement of these channels is also not easy to choose, as on the normalized CHM rasters, a value of 0 might be equivalent to a height above ground of 10&nbsp;m for example, and a flat surface at 10&nbsp;m is not exactly no data and might also be misleading if the CHM usually goes from 0 to 4&nbsp;m.</p>
 <p>More generally, it is possible that other factors are responsible for the instability of the training pipeline, and it would be useful to find and correct them.</p>
 </section>
-<section id="covered-trees" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="covered-trees"><span class="header-section-number">6.3</span> Covered trees</h2>
+<section id="model-performance" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="model-performance"><span class="header-section-number">6.3</span> Model performance</h2>
+<p>Even though the results displayed in <a href="results.html" class="quarto-xref"><span>Chapter 5</span></a> are far from perfect, they are still promising for several reasons.</p>
+<p>First, the overall results of the model on the general trees are quite impressive, given that only about 1600 trees are used to train each model, with only about 150 images covering about 0.4&nbsp;km². Even though the whole dataset is quite homogenous, this still shows that the model is capable of generalizing relatively well.</p>
+<p>Then, a few correlations have been noticed regarding some parameters or combinations of parameters, even though more robust experiments would be necessary to confirm them. This is for example the case between agnostic and non-agnostic models, where the former seem to perform better in general.</p>
+<p>However, the models don’t perform good enough in the difficult areas to be able to draw conclusion on the modifications of the architecture. The overall performance of the model, which rarely gets a sortedAP score above 0.3, is also relatively low. But this low score mostly comes from the amount of small trees which have a relatively high importance in the computation of sortedAP because each tree has the same weight, no matter their size. In contrast, the models perform quite well on the large trees, finding most of them in situations that are not too much complex.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
