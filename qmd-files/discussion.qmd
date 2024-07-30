@@ -10,6 +10,8 @@ At the time of writing this report, the newest version of the point cloud has al
 
 Another approach to generate a larger dataset could be to create a large artificially annotated dataset, like it was done in another paper [@DeepForest]. Their approach was to create a very large dataset with medium-quality data which can be used to pre-train the model. Then, they use hand-annotated data to finish the training. They created this large dataset using classical non-machine learning techniques, using only the point cloud.
 
+Finally, it would also be interesting to see if the NEON tree dataset [@NEONdata] can be used to train a model and make some experiments. This would not allow to experiment on covered trees, but it could still show whether multiple layers of CHM can help delineating individual trees.
+
 ## Instability
 
 As explained in the previous section [@sec-discussion-dataset], the size of the dataset is probably the main reason for the instability of the training pipeline. But other reasons might also be responsible for this instability. As explained in [@sec-results-chm], the random channel dropouts might also destabilize the training by creating inputs with very different repartition of the information, since some channels are randomly removed. The value to use as a replacement of these channels is also not easy to choose, as on the normalized CHM rasters, a value of 0 might be equivalent to a height above ground of 10 m for example, and a flat surface at 10 m is not exactly no data and might also be misleading if the CHM usually goes from 0 to 4 m.
@@ -25,3 +27,5 @@ First, the overall results of the model on the general trees are quite impressiv
 Then, a few correlations have been noticed regarding some parameters or combinations of parameters, even though more robust experiments would be necessary to confirm them. This is for example the case between agnostic and non-agnostic models, where the former seem to perform better in general.
 
 However, the models don't perform good enough in the difficult areas to be able to draw conclusion on the modifications of the architecture. The overall performance of the model, which rarely gets a sortedAP score above 0.3, is also relatively low. But this low score mostly comes from the amount of small trees which have a relatively high importance in the computation of sortedAP because each tree has the same weight, no matter their size. In contrast, the models perform quite well on the large trees, finding most of them in situations that are not too much complex.
+
+Finally, it could be interesting to try another method to extract multiple CHM layers, which consists in removing only the points of the point cloud which corresponds to the previous CHM and all those which are close below them, and repeating the process to scan downwards. This has the advantage of being more adaptive than using fixed height thresholds for the whole dataset.

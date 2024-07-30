@@ -2,7 +2,7 @@
 
 In this section, I will explain the objectives that I set for this internship and the motivations that led to them.
 
-## Data and model
+## General idea
 
 The basis for this internship was to look at deep learning models to detect trees using LiDAR and aerial images. In fourth months, it would have been difficult to dive into the literature, think about a completely new approach and develop it. Therefore, I wanted to find an interesting and not too complicated deep learning model, and try a few changes that would hopefully improve the results.
 

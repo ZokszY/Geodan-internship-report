@@ -42,7 +42,6 @@ book:
 
 lightbox: true
 bibliography: references.bib
-csl: chicago-author-date.csl
 
 format:
   html:
@@ -69,12 +68,18 @@ format:
     number-sections: true
     colorlinks: true
     cite-method: biblatex
+    biblatexoptions:
+      - backend=biber,
+      - style=numeric,
+      - sorting=none,
     template-partials:
       - tex-files/template.tex
       - tex-files/before-body.tex
       - tex-files/before-toc.tex
       - tex-files/toc.tex
     keep-tex: true
+
+# csl: chicago-author-date.csl
 
 execute:
   echo: false
