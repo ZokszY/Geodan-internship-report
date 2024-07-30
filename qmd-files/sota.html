@@ -217,7 +217,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#sec-sota-datasets-requirements" id="toc-sec-sota-datasets-requirements" class="nav-link" data-scroll-target="#sec-sota-datasets-requirements"><span class="header-section-number">1.2.1</span> Requirements</a></li>
   <li><a href="#existing-tree-datasets" id="toc-existing-tree-datasets" class="nav-link" data-scroll-target="#existing-tree-datasets"><span class="header-section-number">1.2.2</span> Existing tree datasets</a></li>
-  <li><a href="#public-data" id="toc-public-data" class="nav-link" data-scroll-target="#public-data"><span class="header-section-number">1.2.3</span> Public data</a></li>
+  <li><a href="#sec-sota-datasets-public" id="toc-sec-sota-datasets-public" class="nav-link" data-scroll-target="#sec-sota-datasets-public"><span class="header-section-number">1.2.3</span> Public data</a></li>
   <li><a href="#sec-sota-dataset-augment" id="toc-sec-sota-dataset-augment" class="nav-link" data-scroll-target="#sec-sota-dataset-augment"><span class="header-section-number">1.2.4</span> Dataset augmentation techniques</a></li>
   </ul></li>
   <li><a href="#algorithms-and-models" id="toc-algorithms-and-models" class="nav-link" data-scroll-target="#algorithms-and-models"><span class="header-section-number">1.3</span> Algorithms and models</a>
@@ -264,7 +264,7 @@ div.csl-indent {
 <li>Instance segmentation, which consists in adding a layer of complexity to semantic segmentation by also differentiating between the different instances of each class</li>
 </ul>
 <p>These generic tasks can be extended by trying to get more information about the trees. The most common information are the species and the height, but some models also try to predict the health of the trees, or their carbon stock.</p>
-<p>In this work, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used. The difficulties and the experiments are developed below.</p>
+<p>In this work, the task that is tackled is the detection of trees, with a special classification between several labels related to the discrepancies between the different kinds of data. <!-- The kind of model that is used would also have allowed to focus on some more advanced tasks, by replacing detection with instance segmentation and asking the model to also predict the species. But due to the difficulties regarding the dataset, a simpler task with a simpler dataset was used. The difficulties and the experiments are developed below. --></p>
 </section>
 <section id="datasets" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="datasets"><span class="header-section-number">1.2</span> Datasets</h2>
@@ -285,22 +285,22 @@ div.csl-indent {
 <li>For point clouds, about 10&nbsp;cm</li>
 </ul></li>
 </ul>
-<p>Here are the explanations for these requirements. As for the types of data, RGB images and point clouds were required to experiment on the ability of the model to combine the two very different kinds of information they hold. <em>Having infrared data as well was beneficial, but it was not necessary.</em> Regarding tree annotations, it was necessary to have a way to spatially identify them individually, using crown contours or simply bounding boxes. Since the model outputs bounding boxes, any kind of other format could easily be transformed to bounding boxes. Finally, the resolution had to be high enough to identify individual trees. For the point clouds especially, the whole idea was to see if and how the topology of the trees could be learnt, using at least the trunks and even the biggest branches if possible. Therefore, even if they were not really comparable, this is the reason why the required resolution is more precise for the point clouds.</p>
-<p>Unfortunately, none of the datasets that I found matched all these criteria. Furthermore, I didn’t find any overlapping datasets that I could merge to create a dataset with all the required types of data. In the next parts, I will go through the different kinds of datasets that exist, the reasons why they did not really fit for the project and the ideas I got when searching for a way to use them.</p>
+<p>Here are the explanations for these requirements. As for the types of data, RGB images and point clouds are required to experiment on the ability of the model to combine the two very different kinds of information they hold. Infrared data can also improve tree detection, but it was optional for this work because RGB images are enough to study the combination. Regarding tree annotations, it is necessary to have a way to spatially identify them individually, using crown contours or simply bounding boxes. Since the model outputs bounding boxes, any kind of other format can easily be transformed to bounding boxes. Finally, the resolution has to be high enough to identify individual trees. For the point clouds especially, the whole idea is to see if and how the topology of the trees can be learnt, using at least the trunks and even the biggest branches if possible. Therefore, even if they are not really comparable, this is the reason why the required resolution is more precise for the point clouds.</p>
+<!-- Unfortunately, none of the datasets that I found matched all these criteria. Furthermore, I didn't find any overlapping datasets that I could merge to create a dataset with all the required types of data. In the next parts, I will go through the different kinds of datasets that exist, the reasons why they did not really fit for the project and the ideas I got when searching for a way to use them. -->
 </section>
 <section id="existing-tree-datasets" class="level3" data-number="1.2.2">
 <h3 data-number="1.2.2" class="anchored" data-anchor-id="existing-tree-datasets"><span class="header-section-number">1.2.2</span> Existing tree datasets</h3>
-<p>As explained above, there were quite a lot of requirements to fulfill to have a complete dataset usable for the task. This means that almost all the available datasets were missing something, as they were mainly focusing on using one kind of data and trying to make the most out of it, instead of trying to use all the types of data together.</p>
-<p>The most comprehensive list of tree annotations datasets was published in OpenForest <span class="citation" data-cites="OpenForest">(<a href="references.html#ref-OpenForest" role="doc-biblioref">Ouaknine et al. 2023</a>)</span>. FoMo-Bench <span class="citation" data-cites="FoMo-Bench">(<a href="references.html#ref-FoMo-Bench" role="doc-biblioref">Bountos, Ouaknine, and Rolnick 2023</a>)</span> also lists several interesting datasets, even though most of them can also be found in OpenForest. Without enumerating all of them, there were multiple kinds of datasets that all have their own flaws regarding the requirements I was looking for.</p>
+<p>As explained above, there are quite a lot of requirements to fulfill to have a complete dataset usable for the task. This means that almost all the available datasets are missing something, as they are mainly focusing on using one kind of data and try to make the most out of it, instead of trying to use all the types of data together.</p>
+<p>The most comprehensive list of tree annotations datasets was published in OpenForest <span class="citation" data-cites="OpenForest">(<a href="references.html#ref-OpenForest" role="doc-biblioref">Ouaknine et al. 2023</a>)</span>. FoMo-Bench <span class="citation" data-cites="FoMo-Bench">(<a href="references.html#ref-FoMo-Bench" role="doc-biblioref">Bountos, Ouaknine, and Rolnick 2023</a>)</span> also lists several interesting datasets, even though most of them can also be found in OpenForest. Without enumerating all of them, there are multiple kinds of datasets that all have their own flaws regarding the requirements of this work.</p>
 <p>Firstly, there are the forest inventories. TALLO <span class="citation" data-cites="TALLO">(<a href="references.html#ref-TALLO" role="doc-biblioref">Jucker et al. 2022</a>)</span> is probably the most interesting one in this category, because it contains a lot of spatial information about almost 500K trees, with their locations, their crown radii and their heights. Therefore, everything needed to localize trees is in the dataset. However, I didn’t manage to find RGB images or LiDAR point clouds of the areas where the trees are located, making it impossible to use these annotations to train tree detection.</p>
-<p>Secondly, there are the RGB datasets. ReforesTree <span class="citation" data-cites="ReforesTree">(<a href="references.html#ref-ReforesTree" role="doc-biblioref">Reiersen et al. 2022</a>)</span> and MillionTrees <span class="citation" data-cites="MillionTrees">(<a href="references.html#ref-MillionTrees" role="doc-biblioref">B. Weinstein 2023</a>)</span> are two of them and the quality of their images are high. The only drawback of these datasets is obviously that they don’t provide any kind of point cloud, which make them unsuitable for the task.</p>
-<p>Thirdly, there are the LiDAR datasets, such as <span class="citation" data-cites="WildForest3D">(<a href="references.html#ref-WildForest3D" role="doc-biblioref">Kalinicheva et al. 2022</a>)</span> and <span class="citation" data-cites="FOR-instance">(<a href="references.html#ref-FOR-instance" role="doc-biblioref">Puliti et al. 2023</a>)</span>. Similarly to RGB datasets, they lack one of the data source for the task I worked on. But unlike them, they have the advantage that the missing data could be much easier to acquire from another source, since RGB aerial or satellite images are much more common than LiDAR point clouds. However, this solution was abandoned for two main reasons. First it is quite challenging to find the exact locations where the point clouds were acquired. Then, even when the location is known, it is often in the middle of a forest where the quality of openly available satellite imagery is very low.</p>
-<p>Finally, I also found two datasets that had RGB and LiDAR components. The first one is MDAS <span class="citation" data-cites="MDAS">(<a href="references.html#ref-MDAS" role="doc-biblioref">Hu et al. 2023</a>)</span>. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There were however two major flaws. The obvious one was that this dataset was created with land semantic segmentation tasks in mind, so there was no tree annotations. The less obvious one was that a DSM is not a point cloud, even though it is some kind of 3D information and was often created using a LiDAR point cloud. As a consequence, I would have been very limited in my ability to experiment with the point cloud.</p>
-<p>The only real dataset with RGB and LiDAR came from NEON <span class="citation" data-cites="NEONdata">(<a href="references.html#ref-NEONdata" role="doc-biblioref">B. Weinstein, Marconi, and White 2022</a>)</span>. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The reason why I decided not to use it despite all this is that at the beginning of the project, I thought that the quality of the images and the point clouds was too low. Looking back on this decision, I think that I probably could have worked with this dataset and gotten great results. This would have saved me the time spent annotating the trees for my own dataset, which I will talk more about below. My decision was also influenced by the quality of the images and the point clouds available in the Netherlands, which I will talk about in the next section.</p>
+<p>Secondly, there are the RGB datasets. ReforesTree <span class="citation" data-cites="ReforesTree">(<a href="references.html#ref-ReforesTree" role="doc-biblioref">Reiersen et al. 2022</a>)</span> and MillionTrees <span class="citation" data-cites="MillionTrees">(<a href="references.html#ref-MillionTrees" role="doc-biblioref">B. Weinstein 2023</a>)</span> are two of them and the quality of their images are high. The only drawback of these datasets is obviously that they don’t provide any kind of point cloud, which makes them unsuitable for the task.</p>
+<p>Thirdly, there are the LiDAR datasets, such as <span class="citation" data-cites="WildForest3D">(<a href="references.html#ref-WildForest3D" role="doc-biblioref">Kalinicheva et al. 2022</a>)</span> and <span class="citation" data-cites="FOR-instance">(<a href="references.html#ref-FOR-instance" role="doc-biblioref">Puliti et al. 2023</a>)</span>. Similarly to RGB datasets, they lack one of the data source for the task I worked on. But unlike them, they have the advantage that the missing data could be much easier to acquire from another source, since RGB aerial or satellite images are much more common than LiDAR point clouds. However, this solution was abandoned for two main reasons. First it is often quite challenging to find the exact locations where the point clouds were acquired. Then, even when the location is known, it is often in the middle of a forest where the quality of openly available satellite imagery is still very low.</p>
+<p>Finally, I also found two datasets that had RGB and LiDAR components. The first one is MDAS <span class="citation" data-cites="MDAS">(<a href="references.html#ref-MDAS" role="doc-biblioref">Hu et al. 2023</a>)</span>. This benchmark dataset encompasses RGB images, hyperspectral images and Digital Surface Models (DSM). There are however two major flaws. The obvious one is that this dataset was created with land semantic segmentation tasks in mind, so there is no tree annotations. The less obvious one is that a DSM is not a point cloud, even though it is some kind of 3D information and is often created using a LiDAR point cloud. As a consequence, this substantially limits the ability to experiment with the point cloud.</p>
+<p>The only real dataset with RGB and LiDAR comes from NEON <span class="citation" data-cites="NEONdata">(<a href="references.html#ref-NEONdata" role="doc-biblioref">B. Weinstein, Marconi, and White 2022</a>)</span>. This dataset contains exactly all the data I was looking for, with RGB images, hyperspectral images and LiDAR point clouds. With 30975 tree annotations, it is also a quite large dataset, spanning across multiple various forests. The main reason why I decided not to use it in the end is the quality of the data, which is not bad but not as great as the one from the data available for the Netherlands, which I will talk about in the next section <a href="#sec-sota-datasets-public" class="quarto-xref"><span>Section 1.2.3</span></a>.</p>
 </section>
-<section id="public-data" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="public-data"><span class="header-section-number">1.2.3</span> Public data</h3>
-<p>After rejecting all the available datasets I had found, the only solution I had left was to create my own dataset. I won’t dive too much in this process that I will explain in <a href="dataset.html" class="quarto-xref"><span>Chapter 3</span></a>. I just want to mention all the publicly available datasets that I used or could have used to create this custom dataset.</p>
+<section id="sec-sota-datasets-public" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="sec-sota-datasets-public"><span class="header-section-number">1.2.3</span> Public data</h3>
+<p>After rejecting all the available datasets I had found, the only remaining solution was to create my own dataset. I won’t dive too much in this process that I will explain in <a href="dataset.html" class="quarto-xref"><span>Chapter 3</span></a>. I just want to mention all the publicly available raw data that I used or could have used to create this custom dataset.</p>
 <p>For practical reasons, the two countries where I mostly searched for available data are France and the Netherlands. I was looking for three different data types independently:</p>
 <ul>
 <li>RGB (and if possible CIR) images</li>
@@ -311,14 +311,13 @@ div.csl-indent {
 <p>As for LiDAR point clouds, the Netherlands have a small edge over France, because they have already completed their forth version covering the whole country with AHN4 <span class="citation" data-cites="AHN4">(<a href="references.html#ref-AHN4" role="doc-biblioref">Actueel Hoogtebestand Nederland 2020</a>)</span>, and are working on the fifth version. In France, data acquisition for the first LiDAR point cloud covering the whole country started a few years ago <span class="citation" data-cites="IGN_LiDAR_HD">(<a href="references.html#ref-IGN_LiDAR_HD" role="doc-biblioref">Institut national de l’information géographique et forestière (IGN) 2020</a>)</span>. It is not yet finished, even though the data is already available for half of the country. The other advantage of the data from the Netherlands regarding LiDAR point clouds is that all flights are performed during winter, which allows light beams to penetrate more deeply in trees and reach trunks and branches. This is not the case in France.</p>
 <p>The part that is missing in both countries is related to tree annotations. Many municipalities have datasets containing information about all the public trees they handle. This is for example the case for Amsterdam <span class="citation" data-cites="amsterdam_trees">(<a href="references.html#ref-amsterdam_trees" role="doc-biblioref">Gemeente Amsterdam 2024</a>)</span> and Bordeaux <span class="citation" data-cites="bordeaux_trees">(<a href="references.html#ref-bordeaux_trees" role="doc-biblioref">Bordeaux Métropole 2024</a>)</span>. However, these datasets cannot really be used as ground truth for a custom dataset for several reasons. First, many of them do not contain coordinates indicating the position of each tree in the city. Then, even those that contain coordinates are most of the time missing any kind of information allowing to deduce a bounding box for the tree crowns. Finally, even if they did contain everything, they only focus on public trees, and are missing every single tree located in a private area. Since public and private areas are obviously imbricated in all cities, it means that any area we try to train the model on would be missing all the private trees, making the training process impossible because we cannot have only a partial annotation of images.</p>
 <p>The other tree annotation source that we could have used is Boomregister <span class="citation" data-cites="boomregister">(<a href="references.html#ref-boomregister" role="doc-biblioref">Coöperatief Boomregister U.A. 2014</a>)</span>. This work covers the whole of the Netherlands, including public and private trees. However, the precision of the masks is far from perfect, and many trees are missing or incorrectly segmented, especially when they are less than 9&nbsp;m heigh or have a crown diameter smaller than 4&nbsp;m. Therefore, even though it is a very impressive piece of work, I thought that it could not be used as training data for a deep learning models due to its biases and imperfections.</p>
-<!-- TODO: Transition -->
 </section>
 <section id="sec-sota-dataset-augment" class="level3" data-number="1.2.4">
 <h3 data-number="1.2.4" class="anchored" data-anchor-id="sec-sota-dataset-augment"><span class="header-section-number">1.2.4</span> Dataset augmentation techniques</h3>
 <p>When a dataset is too small to train a model, there are several ways of artificially enlarging it.</p>
 <p>The most common way is to randomly apply deterministic or random transformations to the data, during the training process, to be able to generate several unique and different realistic data instances from one real data instance. There are a lot of different transformations that can be applied to images, divided into two categories: pixel-level and spatial-level <span class="citation" data-cites="albumentations">(<a href="references.html#ref-albumentations" role="doc-biblioref">Buslaev et al. 2020</a>)</span>. Pixel-level transformations modify the value of individual pixels, by applying different filters, such as random noise, color shifts and more complex effects like fog and sun flare. Spatial-level transformations modify the spatial arrangement of the image, without changing the pixel values. In other words, these transformations move the pixels in the image. These transformations range from simple rotations and croppings to complex spatial distortions. In the end, all these transformations are simply producing one artificial image out of one real image.</p>
 <p>Another way to enlarge a dataset is to instead generate completely new input data sharing the same properties as the initial dataset. This can be done using Generative Adversarial Networks (GAN). These models usually have two parts, a generator and a discriminator, which are trained in parallel. The generator learns to produce realistic artificial data, while the discriminator learns to discriminate between real data and artificial data produced by the generator. If the training is successful, we can then use the generator and random seeds to generate random but realistic artificial data similar to the dataset. This method has for example been successfully used to generate artificial tree height maps <span class="citation" data-cites="gan_data_augment">(<a href="references.html#ref-gan_data_augment" role="doc-biblioref">Sun et al. 2022</a>)</span>.</p>
-<!-- TODO: Say what was used -->
+<p>However, training GANs can be very unstable, and I haven’t found any paper applying this technique to generate LiDAR and RGB data at the same time. The artificial instances would need to be consistent between the two types of data, which might be very difficult. Therefore, I only used the random image transformations during the training process, because the chances of training of successful GAN seemed too low to be worth it.</p>
 </section>
 </section>
 <section id="algorithms-and-models" class="level2" data-number="1.3">
@@ -337,111 +336,111 @@ div.csl-indent {
 </section>
 <section id="lidar-and-images" class="level3" data-number="1.3.3">
 <h3 data-number="1.3.3" class="anchored" data-anchor-id="lidar-and-images"><span class="header-section-number">1.3.3</span> LiDAR and images</h3>
-<!-- TODO: ADD OTHER MODELS -->
 <p>Let’s now talk about the models of interest for this work, which are machine learning pipelines using both LiDAR point cloud data and RGB images.</p>
 <p>One example is a pipeline which uses a watershed algorithm to extract crown boundaries, before extracting individual tree features from the LiDAR point cloud, hyperspectral and RGB images <span class="citation" data-cites="lidar_rgb_wst">(<a href="references.html#ref-lidar_rgb_wst" role="doc-biblioref">Qin et al. 2022</a>)</span>. These features are then used by a random forest classifier to identify which species the tree belongs to. This pipeline therefore makes the most out of all data to identify species, but sticks to an improved variant of the watershed algorithm for individual tree segmentation, which only uses a CHM raster.</p>
 <p>Other works focused on using only one model that is able to take both the CHM and the RGB data as input and combine them to make the most out of all the available data. Among other models, there are for example ACE R-CNN <span class="citation" data-cites="lidar_rgb_acnet">(<a href="references.html#ref-lidar_rgb_acnet" role="doc-biblioref">Li et al. 2022</a>)</span>, an evolution of Mask region-based convolution neural network (Mask R-CNN) and AMF GD YOLOv8 <span class="citation" data-cites="amf_gd_yolov8">(<a href="references.html#ref-amf_gd_yolov8" role="doc-biblioref">Zhong et al. 2024</a>)</span>, an evolution of YOLOv8. These two models have proven to give much better results when using both the images and the LiDAR data as a CHM than when using only one of them.</p>
+<p>In this work, we focus on AMF GD YOLOv8, which looks promising and flexible thanks to the flexibility of YOLOv8, which has different variants dealing with different computer vision tasks.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-AHN4" class="csl-entry" role="listitem">
+Actueel Hoogtebestand Nederland. 2020. <span>“<span class="nocase">AHN4 - Actual Height Model of the Netherlands</span>.”</span> <a href="https://www.ahn.nl/">https://www.ahn.nl/</a>.
+</div>
 <div id="ref-urban-trees" class="csl-entry" role="listitem">
-Arevalo-Ramirez, Tito, Anali Alfaro, José Figueroa, Mauricio Ponce-Donoso, Jose M. Saavedra, Matías Recabarren, and José Delpiano. 2024. <span>“Challenges for Computer Vision as a Tool for Screening Urban Trees Through Street-View Images.”</span> <em>Urban Forestry &amp; Urban Greening</em> 95:128316. <a href="https://doi.org/10.1016/j.ufug.2024.128316">https://doi.org/10.1016/j.ufug.2024.128316</a>.
-</div>
-<div id="ref-olive-tree" class="csl-entry" role="listitem">
-Safonova, Anastasiia, Emilio Guirado, Yuriy Maglinets, Domingo Alcaraz-Segura, and Siham Tabik. 2021. <span>“Olive Tree Biovolume from UAV Multi-Resolution Image Segmentation with Mask r-CNN.”</span> <em>Sensors</em> 21 (5): 1617. <a href="https://doi.org/10.3390/s21051617">https://doi.org/10.3390/s21051617</a>.
-</div>
-<div id="ref-OpenForest" class="csl-entry" role="listitem">
-Ouaknine, Arthur, Teja Kattenborn, Etienne Laliberté, and David Rolnick. 2023. <span>“OpenForest: A Data Catalogue for Machine Learning in Forest Monitoring.”</span> <a href="https://arxiv.org/abs/2311.00277">https://arxiv.org/abs/2311.00277</a>.
-</div>
-<div id="ref-FoMo-Bench" class="csl-entry" role="listitem">
-Bountos, Nikolaos Ioannis, Arthur Ouaknine, and David Rolnick. 2023. <span>“FoMo-Bench: A Multi-Modal, Multi-Scale and Multi-Task Forest Monitoring Benchmark for Remote Sensing Foundation Models.”</span> <em>arXiv Preprint arXiv:2312.10114</em>. <a href="https://arxiv.org/abs/2312.10114">https://arxiv.org/abs/2312.10114</a>.
-</div>
-<div id="ref-TALLO" class="csl-entry" role="listitem">
-Jucker, Tommaso, Fabian Jörg Fischer, Jérôme Chave, David A. Coomes, John Caspersen, Arshad Ali, Grace Jopaul Loubota Panzou, et al. 2022. <span>“Tallo: A Global Tree Allometry and Crown Architecture Database.”</span> <em>Global Change Biology</em> 28 (17): 5254–68. <a href="https://doi.org/10.1111/gcb.16302">https://doi.org/10.1111/gcb.16302</a>.
-</div>
-<div id="ref-ReforesTree" class="csl-entry" role="listitem">
-Reiersen, Gyri, David Dao, Björn Lütjens, Konstantin Klemmer, Kenza Amara, Attila Steinegger, Ce Zhang, and Xiaoxiang Zhu. 2022. <span>“ReforesTree: A Dataset for Estimating Tropical Forest Carbon Stock with Deep Learning and Aerial Imagery.”</span> <a href="https://arxiv.org/abs/2201.11192">https://arxiv.org/abs/2201.11192</a>.
-</div>
-<div id="ref-MillionTrees" class="csl-entry" role="listitem">
-Weinstein, Ben. 2023. <span>“MillionTrees.”</span> 2023. <a href="https://milliontrees.idtrees.org/">https://milliontrees.idtrees.org/</a>.
-</div>
-<div id="ref-WildForest3D" class="csl-entry" role="listitem">
-Kalinicheva, Ekaterina, Loic Landrieu, Clément Mallet, and Nesrine Chehata. 2022. <span>“Multi-Layer Modeling of Dense Vegetation from Aerial LiDAR Scans.”</span> <a href="https://arxiv.org/abs/2204.11620">https://arxiv.org/abs/2204.11620</a>.
-</div>
-<div id="ref-FOR-instance" class="csl-entry" role="listitem">
-Puliti, Stefano, Grant Pearse, Peter Surový, Luke Wallace, Markus Hollaus, Maciej Wielgosz, and Rasmus Astrup. 2023. <span>“FOR-Instance: A UAV Laser Scanning Benchmark Dataset for Semantic and Instance Segmentation of Individual Trees.”</span> <a href="https://arxiv.org/abs/2309.01279">https://arxiv.org/abs/2309.01279</a>.
-</div>
-<div id="ref-MDAS" class="csl-entry" role="listitem">
-Hu, J., R. Liu, D. Hong, A. Camero, J. Yao, M. Schneider, F. Kurz, K. Segl, and X. X. Zhu. 2023. <span>“MDAS: A New Multimodal Benchmark Dataset for Remote Sensing.”</span> <em>Earth System Science Data</em> 15 (1): 113–31. <a href="https://doi.org/10.5194/essd-15-113-2023">https://doi.org/10.5194/essd-15-113-2023</a>.
-</div>
-<div id="ref-NEONdata" class="csl-entry" role="listitem">
-Weinstein, Ben, Sergio Marconi, and Ethan White. 2022. <span>“Data for the NeonTreeEvaluation Benchmark (0.2.2).”</span> Zenodo. <a href="https://doi.org/10.5281/zenodo.5914554">https://doi.org/10.5281/zenodo.5914554</a>.
-</div>
-<div id="ref-IGN_BD_ORTHO" class="csl-entry" role="listitem">
-Institut national de l’information géographique et forestière (IGN). 2021. <span>“<span>BD ORTHO</span>.”</span> <a href="https://geoservices.ign.fr/bdortho">https://geoservices.ign.fr/bdortho</a>.
+Arevalo-Ramirez, Tito, Anali Alfaro, José Figueroa, Mauricio Ponce-Donoso, Jose M. Saavedra, Matías Recabarren, and José Delpiano. 2024. <span>“Challenges for Computer Vision as a Tool for Screening Urban Trees Through Street-View Images.”</span> <em>Urban Forestry &amp; Urban Greening</em> 95: 128316. <a href="https://doi.org/10.1016/j.ufug.2024.128316">https://doi.org/10.1016/j.ufug.2024.128316</a>.
 </div>
 <div id="ref-Luchtfotos" class="csl-entry" role="listitem">
 Beeldmateriaal Nederland. 2024. <span>“<span class="nocase">Luchtfoto’s (Aerial Photographs)</span>.”</span> <a href="https://www.beeldmateriaal.nl/luchtfotos">https://www.beeldmateriaal.nl/luchtfotos</a>.
 </div>
-<div id="ref-AHN4" class="csl-entry" role="listitem">
-Actueel Hoogtebestand Nederland. 2020. <span>“<span class="nocase">AHN4 - Actual Height Model of the Netherlands</span>.”</span> <a href="https://www.ahn.nl/">https://www.ahn.nl/</a>.
-</div>
-<div id="ref-IGN_LiDAR_HD" class="csl-entry" role="listitem">
-Institut national de l’information géographique et forestière (IGN). 2020. <span>“<span>LiDAR HD</span>.”</span> <a href="https://geoservices.ign.fr/lidarhd">https://geoservices.ign.fr/lidarhd</a>.
-</div>
-<div id="ref-amsterdam_trees" class="csl-entry" role="listitem">
-Gemeente Amsterdam. 2024. <span>“<span>Bomenbestand Amsterdam (Amsterdam Tree Dataset)</span>.”</span> <a href="https://maps.amsterdam.nl/open_geodata/?k=505">https://maps.amsterdam.nl/open_geodata/?k=505</a>.
-</div>
 <div id="ref-bordeaux_trees" class="csl-entry" role="listitem">
 Bordeaux Métropole. 2024. <span>“<span class="nocase">Patrimoine arboré de Bordeaux Métropole (Tree Heritage of Bordeaux Metropole)</span>.”</span> <a href="https://opendata.bordeaux-metropole.fr/explore/dataset/ec_arbre_p/information/?disjunctive.insee">https://opendata.bordeaux-metropole.fr/explore/dataset/ec_arbre_p/information/?disjunctive.insee</a>.
 </div>
-<div id="ref-boomregister" class="csl-entry" role="listitem">
-Coöperatief Boomregister U.A. 2014. <span>“<span>Boom Register (Tree Register)</span>.”</span> <a href="https://boomregister.nl/">https://boomregister.nl/</a>.
+<div id="ref-FoMo-Bench" class="csl-entry" role="listitem">
+Bountos, Nikolaos Ioannis, Arthur Ouaknine, and David Rolnick. 2023. <span>“FoMo-Bench: A Multi-Modal, Multi-Scale and Multi-Task Forest Monitoring Benchmark for Remote Sensing Foundation Models.”</span> <em>arXiv Preprint arXiv:2312.10114</em>. <a href="https://arxiv.org/abs/2312.10114">https://arxiv.org/abs/2312.10114</a>.
 </div>
 <div id="ref-albumentations" class="csl-entry" role="listitem">
 Buslaev, Alexander, Vladimir I. Iglovikov, Eugene Khvedchenya, Alex Parinov, Mikhail Druzhinin, and Alexandr A. Kalinin. 2020. <span>“Albumentations: Fast and Flexible Image Augmentations.”</span> <em>Information</em> 11 (2). <a href="https://doi.org/10.3390/info11020125">https://doi.org/10.3390/info11020125</a>.
 </div>
-<div id="ref-gan_data_augment" class="csl-entry" role="listitem">
-Sun, Chenxin, Chengwei Huang, Huaiqing Zhang, Bangqian Chen, Feng An, Liwen Wang, and Ting Yun. 2022. <span>“Individual Tree Crown Segmentation and Crown Width Extraction from a Heightmap Derived from Aerial Laser Scanning Data Using a Deep Learning Framework.”</span> <em>Frontiers in Plant Science</em> 13. <a href="https://doi.org/10.3389/fpls.2022.914974">https://doi.org/10.3389/fpls.2022.914974</a>.
-</div>
-<div id="ref-rgb_analytical" class="csl-entry" role="listitem">
-Gomes, Marilia Ferreira, and Philippe Maillard. 2016. <span>“Detection of Tree Crowns in Very High Spatial Resolution Images.”</span> In <em>Environmental Applications of Remote Sensing</em>, edited by Maged Marghany. Rijeka: IntechOpen. <a href="https://doi.org/10.5772/62122">https://doi.org/10.5772/62122</a>.
-</div>
-<div id="ref-watershed" class="csl-entry" role="listitem">
-Vincent, L., and P. Soille. 1991. <span>“Watersheds in Digital Spaces: An Efficient Algorithm Based on Immersion Simulations.”</span> <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em> 13 (6): 583–98. <a href="https://doi.org/10.1109/34.87344">https://doi.org/10.1109/34.87344</a>.
-</div>
-<div id="ref-local-maximum" class="csl-entry" role="listitem">
-Wulder, Mike, K.Olaf Niemann, and David G. Goodenough. 2000. <span>“Local Maximum Filtering for the Extraction of Tree Locations and Basal Area from High Spatial Resolution Imagery.”</span> <em>Remote Sensing of Environment</em> 73 (1): 103–14. <a href="https://doi.org/10.1016/S0034-4257(00)00101-2">https://doi.org/10.1016/S0034-4257(00)00101-2</a>.
-</div>
-<div id="ref-valley-following" class="csl-entry" role="listitem">
-Gougeon, François A et al. 1998. <span>“Automatic Individual Tree Crown Delineation Using a Valley-Following Algorithm and Rule-Based System.”</span> In <em>Proc. International Forum on Automated Interpretation of High Spatial Resolution Digital Imagery for Forestry, Victoria, British Columbia, Canada</em>, 11–23. Citeseer. <a href="https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf">https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf</a>.
-</div>
-<div id="ref-template-matching" class="csl-entry" role="listitem">
-Pollock, Richard James. 1996. <span>“The Automatic Recognition of Individual Trees in Aerial Images of Forests Based on a Synthetic Tree Crown Image Model.”</span> PhD thesis, The University of British Columbia (Canada). <a href="https://dx.doi.org/10.14288/1.0051597">https://dx.doi.org/10.14288/1.0051597</a>.
-</div>
-<div id="ref-rgb-dl-watershed" class="csl-entry" role="listitem">
-Freudenberg, Maximilian, Paul Magdon, and Nils Nölke. 2022. <span>“Individual Tree Crown Delineation in High-Resolution Remote Sensing Images Based on u-Net.”</span> <em>Neural Computing and Applications</em> 34 (24): 22197–207. <a href="https://doi.org/10.1007/s00521-022-07640-4">https://doi.org/10.1007/s00521-022-07640-4</a>.
-</div>
-<div id="ref-DeepForest" class="csl-entry" role="listitem">
-Weinstein, Ben G., Sergio Marconi, Mélaine Aubry-Kientz, Gregoire Vincent, Henry Senyondo, and Ethan P. White. 2020. <span>“DeepForest: A Python Package for RGB Deep Learning Tree Crown Delineation.”</span> <em>Methods in Ecology and Evolution</em> 11 (12): 1743–51. <a href="https://doi.org/10.1111/2041-210X.13472">https://doi.org/10.1111/2041-210X.13472</a>.
-</div>
-<div id="ref-lidar_watershed" class="csl-entry" role="listitem">
-Kwak, Doo-Ahn, Woo-Kyun Lee, Jun-Hak Lee, Greg S. Biging, and Peng Gong. 2007. <span>“Detection of Individual Trees and Estimation of Tree Height Using LiDAR Data.”</span> <em>Journal of Forest Research</em> 12 (6): 425–34. <a href="https://doi.org/10.1007/s10310-007-0041-9">https://doi.org/10.1007/s10310-007-0041-9</a>.
-</div>
-<div id="ref-lidar_benchmark" class="csl-entry" role="listitem">
-Eysn, Lothar, Markus Hollaus, Eva Lindberg, Frédéric Berger, Jean-Matthieu Monnet, Michele Dalponte, Milan Kobal, et al. 2015. <span>“A Benchmark of Lidar-Based Single Tree Detection Methods Using Heterogeneous Forest Data from the Alpine Space.”</span> <em>Forests</em> 6 (5): 1721–47. <a href="https://doi.org/10.3390/f6051721">https://doi.org/10.3390/f6051721</a>.
-</div>
-<div id="ref-lidar_benchmark_2" class="csl-entry" role="listitem">
-Wang, Yunsheng, Juha Hyyppä, Xinlian Liang, Harri Kaartinen, Xiaowei Yu, Eva Lindberg, Johan Holmgren, et al. 2016. <span>“International Benchmarking of the Individual Tree Detection Methods for Modeling 3-d Canopy Structure for Silviculture and Forest Ecology Using Airborne Laser Scanning.”</span> <em>IEEE Transactions on Geoscience and Remote Sensing</em> 54 (9): 5011–27. <a href="https://doi.org/10.1109/TGRS.2016.2543225">https://doi.org/10.1109/TGRS.2016.2543225</a>.
+<div id="ref-boomregister" class="csl-entry" role="listitem">
+Coöperatief Boomregister U.A. 2014. <span>“<span>Boom Register (Tree Register)</span>.”</span> <a href="https://boomregister.nl/">https://boomregister.nl/</a>.
 </div>
 <div id="ref-lidar_classification" class="csl-entry" role="listitem">
 Diab, Ahmed, Rasha Kashef, and Ahmed Shaker. 2022. <span>“Deep Learning for LiDAR Point Cloud Classification in Remote Sensing.”</span> <em>Sensors (Basel)</em> 22 (20): 7868. <a href="https://doi.org/10.3390/s22207868">https://doi.org/10.3390/s22207868</a>.
 </div>
-<div id="ref-lidar_rgb_wst" class="csl-entry" role="listitem">
-Qin, Haiming, Weiqi Zhou, Yang Yao, and Weimin Wang. 2022. <span>“Individual Tree Segmentation and Tree Species Classification in Subtropical Broadleaf Forests Using UAV-Based LiDAR, Hyperspectral, and Ultrahigh-Resolution RGB Data.”</span> <em>Remote Sensing of Environment</em> 280:113143. <a href="https://doi.org/10.1016/j.rse.2022.113143">https://doi.org/10.1016/j.rse.2022.113143</a>.
+<div id="ref-lidar_benchmark" class="csl-entry" role="listitem">
+Eysn, Lothar, Markus Hollaus, Eva Lindberg, Frédéric Berger, Jean-Matthieu Monnet, Michele Dalponte, Milan Kobal, et al. 2015. <span>“A Benchmark of Lidar-Based Single Tree Detection Methods Using Heterogeneous Forest Data from the Alpine Space.”</span> <em>Forests</em> 6 (5): 1721–47. <a href="https://doi.org/10.3390/f6051721">https://doi.org/10.3390/f6051721</a>.
+</div>
+<div id="ref-rgb-dl-watershed" class="csl-entry" role="listitem">
+Freudenberg, Maximilian, Paul Magdon, and Nils Nölke. 2022. <span>“Individual Tree Crown Delineation in High-Resolution Remote Sensing Images Based on u-Net.”</span> <em>Neural Computing and Applications</em> 34 (24): 22197–207. <a href="https://doi.org/10.1007/s00521-022-07640-4">https://doi.org/10.1007/s00521-022-07640-4</a>.
+</div>
+<div id="ref-amsterdam_trees" class="csl-entry" role="listitem">
+Gemeente Amsterdam. 2024. <span>“<span>Bomenbestand Amsterdam (Amsterdam Tree Dataset)</span>.”</span> <a href="https://maps.amsterdam.nl/open_geodata/?k=505">https://maps.amsterdam.nl/open_geodata/?k=505</a>.
+</div>
+<div id="ref-rgb_analytical" class="csl-entry" role="listitem">
+Gomes, Marilia Ferreira, and Philippe Maillard. 2016. <span>“Detection of Tree Crowns in Very High Spatial Resolution Images.”</span> In <em>Environmental Applications of Remote Sensing</em>, edited by Maged Marghany. Rijeka: IntechOpen. <a href="https://doi.org/10.5772/62122">https://doi.org/10.5772/62122</a>.
+</div>
+<div id="ref-valley-following" class="csl-entry" role="listitem">
+Gougeon, François A et al. 1998. <span>“Automatic Individual Tree Crown Delineation Using a Valley-Following Algorithm and Rule-Based System.”</span> In <em>Proc. International Forum on Automated Interpretation of High Spatial Resolution Digital Imagery for Forestry, Victoria, British Columbia, Canada</em>, 11–23. Citeseer. <a href="https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf">https://d1ied5g1xfgpx8.cloudfront.net/pdfs/4583.pdf</a>.
+</div>
+<div id="ref-MDAS" class="csl-entry" role="listitem">
+Hu, J., R. Liu, D. Hong, A. Camero, J. Yao, M. Schneider, F. Kurz, K. Segl, and X. X. Zhu. 2023. <span>“MDAS: A New Multimodal Benchmark Dataset for Remote Sensing.”</span> <em>Earth System Science Data</em> 15 (1): 113–31. <a href="https://doi.org/10.5194/essd-15-113-2023">https://doi.org/10.5194/essd-15-113-2023</a>.
+</div>
+<div id="ref-IGN_LiDAR_HD" class="csl-entry" role="listitem">
+Institut national de l’information géographique et forestière (IGN). 2020. <span>“<span>LiDAR HD</span>.”</span> <a href="https://geoservices.ign.fr/lidarhd">https://geoservices.ign.fr/lidarhd</a>.
+</div>
+<div id="ref-IGN_BD_ORTHO" class="csl-entry" role="listitem">
+———. 2021. <span>“<span>BD ORTHO</span>.”</span> <a href="https://geoservices.ign.fr/bdortho">https://geoservices.ign.fr/bdortho</a>.
+</div>
+<div id="ref-TALLO" class="csl-entry" role="listitem">
+Jucker, Tommaso, Fabian Jörg Fischer, Jérôme Chave, David A. Coomes, John Caspersen, Arshad Ali, Grace Jopaul Loubota Panzou, et al. 2022. <span>“Tallo: A Global Tree Allometry and Crown Architecture Database.”</span> <em>Global Change Biology</em> 28 (17): 5254–68. <a href="https://doi.org/10.1111/gcb.16302">https://doi.org/10.1111/gcb.16302</a>.
+</div>
+<div id="ref-WildForest3D" class="csl-entry" role="listitem">
+Kalinicheva, Ekaterina, Loic Landrieu, Clément Mallet, and Nesrine Chehata. 2022. <span>“Multi-Layer Modeling of Dense Vegetation from Aerial LiDAR Scans.”</span> <a href="https://arxiv.org/abs/2204.11620">https://arxiv.org/abs/2204.11620</a>.
+</div>
+<div id="ref-lidar_watershed" class="csl-entry" role="listitem">
+Kwak, Doo-Ahn, Woo-Kyun Lee, Jun-Hak Lee, Greg S. Biging, and Peng Gong. 2007. <span>“Detection of Individual Trees and Estimation of Tree Height Using LiDAR Data.”</span> <em>Journal of Forest Research</em> 12 (6): 425–34. <a href="https://doi.org/10.1007/s10310-007-0041-9">https://doi.org/10.1007/s10310-007-0041-9</a>.
 </div>
 <div id="ref-lidar_rgb_acnet" class="csl-entry" role="listitem">
 Li, Yingbo, Guoqi Chai, Yueting Wang, Lingting Lei, and Xiaoli Zhang. 2022. <span>“ACE r-CNN: An Attention Complementary and Edge Detection-Based Instance Segmentation Algorithm for Individual Tree Species Identification Using UAV RGB Images and LiDAR Data.”</span> <em>Remote Sensing</em> 14 (13). <a href="https://doi.org/10.3390/rs14133035">https://doi.org/10.3390/rs14133035</a>.
+</div>
+<div id="ref-OpenForest" class="csl-entry" role="listitem">
+Ouaknine, Arthur, Teja Kattenborn, Etienne Laliberté, and David Rolnick. 2023. <span>“OpenForest: A Data Catalogue for Machine Learning in Forest Monitoring.”</span> <a href="https://arxiv.org/abs/2311.00277">https://arxiv.org/abs/2311.00277</a>.
+</div>
+<div id="ref-template-matching" class="csl-entry" role="listitem">
+Pollock, Richard James. 1996. <span>“The Automatic Recognition of Individual Trees in Aerial Images of Forests Based on a Synthetic Tree Crown Image Model.”</span> PhD thesis, The University of British Columbia (Canada). <a href="https://dx.doi.org/10.14288/1.0051597">https://dx.doi.org/10.14288/1.0051597</a>.
+</div>
+<div id="ref-FOR-instance" class="csl-entry" role="listitem">
+Puliti, Stefano, Grant Pearse, Peter Surový, Luke Wallace, Markus Hollaus, Maciej Wielgosz, and Rasmus Astrup. 2023. <span>“FOR-Instance: A UAV Laser Scanning Benchmark Dataset for Semantic and Instance Segmentation of Individual Trees.”</span> <a href="https://arxiv.org/abs/2309.01279">https://arxiv.org/abs/2309.01279</a>.
+</div>
+<div id="ref-lidar_rgb_wst" class="csl-entry" role="listitem">
+Qin, Haiming, Weiqi Zhou, Yang Yao, and Weimin Wang. 2022. <span>“Individual Tree Segmentation and Tree Species Classification in Subtropical Broadleaf Forests Using UAV-Based LiDAR, Hyperspectral, and Ultrahigh-Resolution RGB Data.”</span> <em>Remote Sensing of Environment</em> 280: 113143. <a href="https://doi.org/10.1016/j.rse.2022.113143">https://doi.org/10.1016/j.rse.2022.113143</a>.
+</div>
+<div id="ref-ReforesTree" class="csl-entry" role="listitem">
+Reiersen, Gyri, David Dao, Björn Lütjens, Konstantin Klemmer, Kenza Amara, Attila Steinegger, Ce Zhang, and Xiaoxiang Zhu. 2022. <span>“ReforesTree: A Dataset for Estimating Tropical Forest Carbon Stock with Deep Learning and Aerial Imagery.”</span> <a href="https://arxiv.org/abs/2201.11192">https://arxiv.org/abs/2201.11192</a>.
+</div>
+<div id="ref-olive-tree" class="csl-entry" role="listitem">
+Safonova, Anastasiia, Emilio Guirado, Yuriy Maglinets, Domingo Alcaraz-Segura, and Siham Tabik. 2021. <span>“Olive Tree Biovolume from UAV Multi-Resolution Image Segmentation with Mask r-CNN.”</span> <em>Sensors</em> 21 (5): 1617. <a href="https://doi.org/10.3390/s21051617">https://doi.org/10.3390/s21051617</a>.
+</div>
+<div id="ref-gan_data_augment" class="csl-entry" role="listitem">
+Sun, Chenxin, Chengwei Huang, Huaiqing Zhang, Bangqian Chen, Feng An, Liwen Wang, and Ting Yun. 2022. <span>“Individual Tree Crown Segmentation and Crown Width Extraction from a Heightmap Derived from Aerial Laser Scanning Data Using a Deep Learning Framework.”</span> <em>Frontiers in Plant Science</em> 13. <a href="https://doi.org/10.3389/fpls.2022.914974">https://doi.org/10.3389/fpls.2022.914974</a>.
+</div>
+<div id="ref-watershed" class="csl-entry" role="listitem">
+Vincent, L., and P. Soille. 1991. <span>“Watersheds in Digital Spaces: An Efficient Algorithm Based on Immersion Simulations.”</span> <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em> 13 (6): 583–98. <a href="https://doi.org/10.1109/34.87344">https://doi.org/10.1109/34.87344</a>.
+</div>
+<div id="ref-lidar_benchmark_2" class="csl-entry" role="listitem">
+Wang, Yunsheng, Juha Hyyppä, Xinlian Liang, Harri Kaartinen, Xiaowei Yu, Eva Lindberg, Johan Holmgren, et al. 2016. <span>“International Benchmarking of the Individual Tree Detection Methods for Modeling 3-d Canopy Structure for Silviculture and Forest Ecology Using Airborne Laser Scanning.”</span> <em>IEEE Transactions on Geoscience and Remote Sensing</em> 54 (9): 5011–27. <a href="https://doi.org/10.1109/TGRS.2016.2543225">https://doi.org/10.1109/TGRS.2016.2543225</a>.
+</div>
+<div id="ref-MillionTrees" class="csl-entry" role="listitem">
+Weinstein, Ben. 2023. <span>“MillionTrees.”</span> 2023. <a href="https://milliontrees.idtrees.org/">https://milliontrees.idtrees.org/</a>.
+</div>
+<div id="ref-DeepForest" class="csl-entry" role="listitem">
+Weinstein, Ben G., Sergio Marconi, Mélaine Aubry-Kientz, Gregoire Vincent, Henry Senyondo, and Ethan P. White. 2020. <span>“DeepForest: A Python Package for RGB Deep Learning Tree Crown Delineation.”</span> <em>Methods in Ecology and Evolution</em> 11 (12): 1743–51. <a href="https://doi.org/10.1111/2041-210X.13472">https://doi.org/10.1111/2041-210X.13472</a>.
+</div>
+<div id="ref-NEONdata" class="csl-entry" role="listitem">
+Weinstein, Ben, Sergio Marconi, and Ethan White. 2022. <span>“Data for the NeonTreeEvaluation Benchmark (0.2.2).”</span> Zenodo. <a href="https://doi.org/10.5281/zenodo.5914554">https://doi.org/10.5281/zenodo.5914554</a>.
+</div>
+<div id="ref-local-maximum" class="csl-entry" role="listitem">
+Wulder, Mike, K.Olaf Niemann, and David G. Goodenough. 2000. <span>“Local Maximum Filtering for the Extraction of Tree Locations and Basal Area from High Spatial Resolution Imagery.”</span> <em>Remote Sensing of Environment</em> 73 (1): 103–14. <a href="https://doi.org/10.1016/S0034-4257(00)00101-2">https://doi.org/10.1016/S0034-4257(00)00101-2</a>.
 </div>
 <div id="ref-amf_gd_yolov8" class="csl-entry" role="listitem">
 Zhong, Hao, Zheyu Zhang, Haoran Liu, Jinzhuo Wu, and Wenshu Lin. 2024. <span>“Individual Tree Species Identification for Complex Coniferous and Broad-Leaved Mixed Forests Based on Deep Learning Combined with UAV LiDAR Data and RGB Images.”</span> <em>Forests</em> 15 (2). <a href="https://doi.org/10.3390/f15020293">https://doi.org/10.3390/f15020293</a>.
