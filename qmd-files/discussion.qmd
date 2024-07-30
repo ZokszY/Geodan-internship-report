@@ -15,3 +15,13 @@ Another approach to generate a larger dataset could be to create a large artific
 As explained in the previous section [@sec-discussion-dataset], the size of the dataset is probably the main reason for the instability of the training pipeline. But other reasons might also be responsible for this instability. As explained in [@sec-results-chm], the random channel dropouts might also destabilize the training by creating inputs with very different repartition of the information, since some channels are randomly removed. The value to use as a replacement of these channels is also not easy to choose, as on the normalized CHM rasters, a value of 0 might be equivalent to a height above ground of 10 m for example, and a flat surface at 10 m is not exactly no data and might also be misleading if the CHM usually goes from 0 to 4 m.
 
 More generally, it is possible that other factors are responsible for the instability of the training pipeline, and it would be useful to find and correct them.
+
+## Model performance
+
+Even though the results displayed in [@sec-results] are far from perfect, they are still promising for several reasons.
+
+First, the overall results of the model on the general trees are quite impressive, given that only about 1600 trees are used to train each model, with only about 150 images covering about 0.4 km². Even though the whole dataset is quite homogenous, this still shows that the model is capable of generalizing relatively well.
+
+Then, a few correlations have been noticed regarding some parameters or combinations of parameters, even though more robust experiments would be necessary to confirm them. This is for example the case between agnostic and non-agnostic models, where the former seem to perform better in general.
+
+However, the models don't perform good enough in the difficult areas to be able to draw conclusion on the modifications of the architecture. The overall performance of the model, which rarely gets a sortedAP score above 0.3, is also relatively low. But this low score mostly comes from the amount of small trees which have a relatively high importance in the computation of sortedAP because each tree has the same weight, no matter their size. In contrast, the models perform quite well on the large trees, finding most of them in situations that are not too much complex.

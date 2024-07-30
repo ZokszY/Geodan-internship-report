@@ -1,4 +1,4 @@
-# Results
+# Results {#sec-results}
 
 In this section are the results of the experiments performed with the model and the dataset presented before.
 
@@ -202,7 +202,9 @@ plt.show()
 
 These results are difficult to interpret. The first clear effect that we can notice for the agnostic models is that in the disjoint method (first row starting from the top), when separating the LiDAR point cloud in too many layers, the model doesn't manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in [@fig-dataset-augmentation]. But when there is only one channel, this channel is never dropped, which doesn't force the model to learn how to use only part of the data.
 
-Otherwise, it is hard to draw any conclusion from the rest of the experiments. There is too much variation in the results, which shows once again how unstable the training process is. From these results and the previous paragraph, one interpretation could be that the augmentation pipeline is related to this instability, as the results with the basic CHM layer have a much smaller variance.
+The other correlation that is visible relates to how models perform using only RGB/CIR or CHM when being agnostic or not. It is logical for this parameter to have an impact on the results, since teaching the model to either make a difference between some of the trees or not will have an impact on what it learns and what it has to focus on to identify the right class when not being agnostic. From what we see here in [@fig-chm-layers], it looks like having to make a difference between the different classes is significantly hinders its performance whatever combination of input data is used, even though it is more prevalent when using only one input.
+
+Besides these observations, it is hard to draw anymore conclusion from the rest of the experiments. There is too much variation in the results, which shows once again how unstable the training process is. From these results and the previous paragraph, one interpretation could be that the augmentation pipeline is related to this instability, as the results with the basic CHM layer have a much smaller variance.
 
 ## Covered trees
 
