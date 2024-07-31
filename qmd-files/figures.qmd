@@ -1,0 +1,174 @@
+```{python}
+#| label: fig-training-parameters-experiments
+#| fig-cap: "Results with different training parameters for all experiments"
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("../data/training_params_experiment_all.csv")
+df = df[df["Data used for evaluation"] == "RGB, CIR and CHM"]
+df["Prob. drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate",
+    "repartition_name": "Exp. name"
+  },
+  inplace=True)
+sns.set_style("ticks", {"axes.grid": True})
+sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Accum. count",
+    y="Best sortedAP",
+    hue="Exp. name",
+    hue_order=["exp0", "exp1", "exp2", "exp3", "exp4"],
+    col="Learn. rate",
+    row="Prob. drop",
+    margin_titles=True,
+    height=2,
+    aspect=1,
+    palette="colorblind",
+    s=25
+)
+
+plt.savefig("../images/Quarto_generated/fig-training-parameters-experiments.svg")
+plt.savefig("../images/Quarto_generated/fig-training-parameters-experiments.pdf")
+
+plt.show()
+```
+
+```{python}
+#| label: fig-training-parameters-data
+#| fig-cap: "Results with different training parameters for all evaluation data setups"
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("../data/training_params_experiment_all.csv")
+df.sort_values(
+    by=["proba_drop_chm", "Data used for evaluation"],
+    inplace=True,
+)
+df["Prob. drop"] = df["proba_drop_chm"]
+df.rename(columns = {
+    "accumulate": "Accum. count",
+    "Data used for evaluation": "Evaluation data",
+    "lr": "Learn. rate"
+  },
+  inplace=True)
+sns.set_style("ticks", {"axes.grid": True})
+g = sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Accum. count",
+    y="Best sortedAP",
+    hue="Evaluation data",
+    col="Learn. rate",
+    row="Prob. drop",
+    margin_titles=True,
+    height=1.7,
+    aspect=1.2,
+    palette="colorblind",
+    s=10
+)
+
+g.tight_layout()
+plt.subplots_adjust(right=0.79)
+
+plt.savefig("../images/Quarto_generated/fig-training-parameters-data.svg")
+plt.savefig("../images/Quarto_generated/fig-training-parameters-data.pdf")
+
+plt.show()
+```
+
+```{python}
+#| label: fig-chm-layers
+#| fig-cap: "Results with different CHM layers"
+#| warning: false
+
+from typing import List, Tuple
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import json
+
+df = pd.read_csv("../data/chm_z_layers_all.csv")
+df.sort_values(
+    by=["chm_z_layers", "Data used for evaluation"],
+    inplace=True,
+)
+
+def convert_to_list_with_inf(x):
+    x = x.replace('inf', 'Infinity')
+    try:
+        return json.loads(x)
+    except (ValueError, SyntaxError) as e:
+        print(f"Error converting {x}: {e}")
+        return x
+
+df["chm_z_layers"] = df["chm_z_layers"].apply(convert_to_list_with_inf)
+
+def chm_z_layers_to_str(chm_z_layers: List[Tuple[int, int]]) -> pd.Series:
+  if all([chm_z_layer[0] == -np.inf for chm_z_layer in chm_z_layers]):
+    disjoint = False
+    borders = [chm_z_layers[i][1] for i in range(len(chm_z_layers) - 1)]
+    return pd.Series([disjoint, str(borders).replace(" ", "")])
+  else:
+    disjoint = True
+    borders = [chm_z_layers[i][1] for i in range(len(chm_z_layers) - 1)]
+    return pd.Series([disjoint, str(borders).replace(" ", "")])
+
+df[["Disjoint", "Borders"]] = df.apply(lambda x: chm_z_layers_to_str(x["chm_z_layers"]), axis=1)
+condition = (df["Disjoint"] == False) & (df["Borders"] == "[]")
+rows_to_duplicate = df[condition]
+duplicated_rows = rows_to_duplicate.copy()
+duplicated_rows["Disjoint"] = True
+df = pd.concat([df, duplicated_rows], ignore_index=True)
+
+df["Exp. name"] = df.apply(lambda x: x["repartition_name"].replace("exp", ""), axis=1)
+df.rename(columns = {
+    "Data used for evaluation": "Evaluation data",
+    "best_epoch": "Best epoch",
+    "agnostic": "Agnostic"
+  },
+  inplace=True)
+
+df.sort_values(
+    by=["Agnostic", "Disjoint"],
+    ascending=[False, False],
+    inplace=True,
+)
+
+df["Agnostic_Disjoint"] = "Agnostic = " + df["Agnostic"].astype(str) + "\nDisjoint = " + df["Disjoint"].astype(str)
+
+sns.set_style("ticks", {"axes.grid": True})
+g = sns.catplot(
+    data=df,
+    kind="swarm",
+    x="Exp. name",
+    order=["0", "1", "2", "3", "4"],
+    y="Best sortedAP",
+    hue="Evaluation data",
+    col="Borders",
+    row="Agnostic_Disjoint",
+    margin_titles=True,
+    height=1.7,
+    aspect=1.2,
+    palette="colorblind",
+    s=10
+)
+
+g.set_titles(row_template='{row_name}')
+g.tight_layout(h_pad=-6)
+plt.subplots_adjust(right=0.78)
+
+plt.savefig("../images/Quarto_generated/fig-chm-layers.svg")
+plt.savefig("../images/Quarto_generated/fig-chm-layers.pdf")
+
+plt.show()
+```

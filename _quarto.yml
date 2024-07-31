@@ -49,6 +49,8 @@ format:
     number-sections: true
     comments:
       hypothesis: true
+    default-image-extension: svg
+    css: styles.css
   pdf:
     documentclass: scrreprt
     papersize: a4

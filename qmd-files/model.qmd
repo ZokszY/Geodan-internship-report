@@ -59,18 +59,8 @@ where $T=\{t_1, t_2, \dots, t_N\}$ is a list of IoU threshold values, ${TP}_t$ a
 
 sortedAP is an improvement over this method because there is no need to select a list of IoU threshold values. Predicted bounding boxes are sorted according to their confidence score which allows to compute AP incrementally for any value of $t$. Then, the area of the curve of the AP with respect to the IoU threshold is used as a metric, between 0 and 1, 1 being the best possible value. You can see in [@fig-model-output-sortedAP] an example of the output of the sortedAP method. The curves represent the AP at any IoU threshold value. Then, the integral of this curve gives the value of sortedAP, which is displayed in the legend here.
 
-::: {#fig-model-output-sortedAP fig-pos="H" fig-align="center"}
-
-![](../data/ap_iou_test-set.png)
-
-Example of three sortedAP curves with the results of a model with three different data combinations
-:::
+![Example of three sortedAP curves with the results of a model with three different data combinations](../data/ap_iou_test-set.png){#fig-model-output-sortedAP fig-align="center"}
 
 Finally, it is necessary to choose a fixed confidence threshold to compute the curve, because this value decides which boxes will be kept and how the predicted and ground-truth boxes will be matched. Therefore, the value of the best confidence threshold has a very high impact over the value of sortedAP, and cannot easily be determined during the training, as the confidence of the model evolves quickly. Therefore, computing sortedAP for different confidence threshold allows to always estimate the best performance it can have. [@fig-model-output-sortedAP-confs] shows how the value of sortedAP evolves and how the confidence threshold values in the previous figure ([@fig-model-output-sortedAP]) were chosen.
 
-::: {#fig-model-output-sortedAP-confs fig-pos="H" fig-align="center"}
-
-![](../data/sap_conf_test-set.png)
-
-Example of the values of sortedAP depending on the confidence threshold
-:::
+![Example of the values of sortedAP depending on the confidence threshold](../data/sap_conf_test-set.png){#fig-model-output-sortedAP-confs fig-align="center"}

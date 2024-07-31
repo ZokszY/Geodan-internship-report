@@ -8,9 +8,9 @@ Then, to make the most out of the point cloud resolution and the RGB images reso
 
 To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that should still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km × 1 km square around the Geodan office in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640 px × 640 px i.e. 51.2 m × 51.2 m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section [@sec-dataset-challenges], and each tree belongs to one class.
 
-Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. On [@fig-dataset-gt-boxes], you can see what the dataset finally looks like, with all data sources and bounding boxes.
+On [@fig-dataset-gt-boxes], you can see what the dataset finally looks like, with all data sources and bounding boxes.
 
-::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]" fig-pos="H"}
+::: {#fig-dataset-gt-boxes layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
 
 ![RGB image](../images/Training_image/RGB_image.png){#fig-dataset-gt-boxes-rgb fig-align="center"}
 
@@ -25,7 +25,28 @@ One data instance with ground-truth bounding boxes
 
 ## Data annotation setup
 
+Annotating all these trees took me about 100 hours, with a very high variation of the time spent per tree depending on the complexity of the area. To make the most out of the different data types and fully use them, I mainly used four data sources and tools.
 
+The most important tool I used is QGIS [@QGIS_software]. QGIS allowed me to visualize all types of data on the same map: images, point clouds, CHM rasters, boxes and polygons. I therefore used it to annotate the trees, switching between RGB images and LiDAR point clouds to detect individual trees. One very useful feature of QGIS is the possibility to filter the point cloud based on some properties of the points. I mainly used it to filter out all the points that were classified as buildings and to adapt the height interval to make the most out of the color gradient and get rid of the ground or the large trees. This way of removing part of the point cloud using height thresholds is also related to the idea of having multiple CHM layers fed into the model using height intervals of the point cloud.
+
+However, QGIS is mostly limited to 2D views from the top, which doesn't benefit from the 3D aspect of the point cloud. To visualize the point cloud, I used the official viewer provided with the AHN4, called AHN-puntenwolkenviewer, which means AHN point cloud viewer [@AHN_point_cloud_viewer]. This viewer allows to navigate through the point cloud, see it from different angles and color the points according to different attributes. I found the intensity (intensiteit) to be a convenient way to display the point cloud, as it sometimes allow to differentiate between leaves and branches, and it breaks the homogeneity of using the height as color attribute. This viewer enabled me to make sense out of the 2D view of the point cloud I had in QGIS.
+
+Finally, I also used Google Street View [@google_street_view] to have visual information about the trees. This was mainly useful for the most difficult parts of the dataset, but it was only available for trees that were not too far from a street. Google Street View images helped me in dense areas with thin trees, where the point cloud doesn't capture very well the structure of the trees and trees are mostly indistinguishable from above. Having the possibility to switch between different dates also enabled me to see the evolutions and have more chances to find a clear picture.
+
+In [@fig-dataset-setup], you can see what each data source looks like.
+
+::: {#fig-dataset-setup layout="[[48, -4, 48], [-4], [48, -4, 48]]"}
+
+![RGB image \phantom{t cloud from above, colored with height, filtered with $2 <= Z <= 20$}](../images/Annotation_setup/RGB_image.png){#fig-dataset-setup-rgb fig-align="center"}
+
+![LiDAR point cloud from above, colored with height, filtered with $2 <= Z <= 20$](../images/Annotation_setup/LiDAR_2_20.png){#fig-dataset-setup-lidar-2-20 fig-align="center"}
+
+![[Google StreetView screenshot](https://www.google.com/maps/@52.3408338,4.9129711,3a,75y,106.88h,93.86t/data=!3m7!1e1!3m5!1sax3EJVrJNh8n-whQ1o3ZKg!2e0!5s20210301T000000!7i16384!8i8192?coh=205409&entry=ttu)](../images/Annotation_setup/StreetView.png){#fig-dataset-gt-boxes-chm fig-align="center"}
+
+![[LiDAR point cloud with 3D navigation](https://ns_hwh.fundaments.nl/hwh-ahn/AHN_POTREE/index.html?position=[122678.01;483764.93;6.70;]&target=[123615.49;483474.88;-185.67;])](../images/Annotation_setup/LiDAR_3D.png){#fig-dataset-gt-boxes-lidar fig-align="center"}
+
+Data sources used to annotate the trees
+:::
 
 ## Challenges and solutions {#sec-dataset-challenges}
 
@@ -36,7 +57,7 @@ The creation of this dataset raised a number of challenges. The first one was th
 - "Tree_RGB": trees which are visible in the images only but would be visible in the point cloud if they had been there during the acquisition
 - "Tree_covered": trees that are visible in the point cloud only because they are covered by other trees.
 
-::: {#fig-dataset-tree-replaced layout="[[48, -4, 48], [-4],  [48, -4, 48]]" fig-pos="H"}
+::: {#fig-dataset-tree-replaced layout="[[48, -4, 48], [-4],  [48, -4, 48]]"}
 
 ![RGB image](../images/Data_discrepancies//RGB_image.png){#fig-dataset-tree-replaced-rgb fig-align="center"}
 
@@ -47,9 +68,9 @@ A tree that was cut off and replaced
 
 The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthogonal. Point clouds don't have this problem, because the data is acquired and represented in 3D, but objects in images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position of the object relative to the sensor. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.
 
-On the example below ([@fig-dataset-shift]), you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.
+On [@fig-dataset-shift], you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.
 
-::: {#fig-dataset-shift layout="[[48, -4, 48], [-4],  [48, -4, 48]]" fig-pos="H"}
+::: {#fig-dataset-shift layout="[[48, -4, 48], [-4],  [48, -4, 48]]"}
 
 ![RGB image](../images/Data_shift/RGB_image.png){#fig-dataset-shift-rgb fig-align="center"}
 
@@ -76,39 +97,40 @@ On the contrary, pixel-level augmentations must be applied differently to RGB im
 
 On [@fig-dataset-augmentation], you can see an RGB image and 15 random augmentations of this image, generated with the transformations and the probabilities used during training. The most visible change happens when one or two color channels are dropped, which completely changes the color of the image.But other effects are also visible such as luminosity changes in images n°4 and 14, perspective changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in n°10 and 12. All these effects and some other less identifiable augmentations (like noise), are randomly combined to produce many different images, with bounding boxes being modified accordingly.
 
-::: {#fig-dataset-augmentation layout="[[48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48], [-4], [48, -4, 48, -4, 48, -4, 48]]" layout-valign="top" fig-pos="H"}
 
-![Initial image](../images/Augmentations/RGB_image.png){#fig-dataset-augmentation-initial fig-align="center"}
+::: {#fig-dataset-augmentation layout="[[48, -4, 48, -4, 48, -4, 48], [48, -4, 48, -4, 48, -4, 48], [48, -4, 48, -4, 48, -4, 48], [48, -4, 48, -4, 48, -4, 48]]"}
 
-![Transformed image n°1](../images/Augmentations/RGB_image_transformed_1.png){#fig-dataset-augmentation-1 fig-align="center"}
+![Initial image \phantom{age n°1}](../images/Augmentations/RGB_image.png){#fig-dataset-augmentation-initial fig-align="center" layout-valign="top"}
 
-![Transformed image n°2](../images/Augmentations/RGB_image_transformed_2.png){#fig-dataset-augmentation-2 fig-align="center"}
+![Transformed image n°1](../images/Augmentations/RGB_image_transformed_1.png){#fig-dataset-augmentation-1 fig-align="center" layout-valign="top"}
 
-![Transformed image n°3](../images/Augmentations/RGB_image_transformed_3.png){#fig-dataset-augmentation-3 fig-align="center"}
+![Transformed image n°2](../images/Augmentations/RGB_image_transformed_2.png){#fig-dataset-augmentation-2 fig-align="center" layout-valign="top"}
 
-![Transformed image n°4](../images/Augmentations/RGB_image_transformed_4.png){#fig-dataset-augmentation-4 fig-align="center"}
+![Transformed image n°3](../images/Augmentations/RGB_image_transformed_3.png){#fig-dataset-augmentation-3 fig-align="center" layout-valign="top"}
 
-![Transformed image n°5](../images/Augmentations/RGB_image_transformed_5.png){#fig-dataset-augmentation-5 fig-align="center"}
+![Transformed image n°4](../images/Augmentations/RGB_image_transformed_4.png){#fig-dataset-augmentation-4 fig-align="center" layout-valign="top"}
 
-![Transformed image n°6](../images/Augmentations/RGB_image_transformed_6.png){#fig-dataset-augmentation-6 fig-align="center"}
+![Transformed image n°5](../images/Augmentations/RGB_image_transformed_5.png){#fig-dataset-augmentation-5 fig-align="center" layout-valign="top"}
 
-![Transformed image n°7](../images/Augmentations/RGB_image_transformed_7.png){#fig-dataset-augmentation-7 fig-align="center"}
+![Transformed image n°6](../images/Augmentations/RGB_image_transformed_6.png){#fig-dataset-augmentation-6 fig-align="center" layout-valign="top"}
 
-![Transformed image n°8](../images/Augmentations/RGB_image_transformed_8.png){#fig-dataset-augmentation-8 fig-align="center"}
+![Transformed image n°7](../images/Augmentations/RGB_image_transformed_7.png){#fig-dataset-augmentation-7 fig-align="center" layout-valign="top"}
 
-![Transformed image n°9](../images/Augmentations/RGB_image_transformed_9.png){#fig-dataset-augmentation-9 fig-align="center"}
+![Transformed image n°8](../images/Augmentations/RGB_image_transformed_8.png){#fig-dataset-augmentation-8 fig-align="center" layout-valign="top"}
 
-![Transformed image n°10](../images/Augmentations/RGB_image_transformed_10.png){#fig-dataset-augmentation-10 fig-align="center"}
+![Transformed image n°9](../images/Augmentations/RGB_image_transformed_9.png){#fig-dataset-augmentation-9 fig-align="center" layout-valign="top"}
 
-![Transformed image n°11](../images/Augmentations/RGB_image_transformed_11.png){#fig-dataset-augmentation-11 fig-align="center"}
+![Transformed image n°10](../images/Augmentations/RGB_image_transformed_10.png){#fig-dataset-augmentation-10 fig-align="center" layout-valign="top"}
 
-![Transformed image n°12](../images/Augmentations/RGB_image_transformed_12.png){#fig-dataset-augmentation-12 fig-align="center"}
+![Transformed image n°11](../images/Augmentations/RGB_image_transformed_11.png){#fig-dataset-augmentation-11 fig-align="center" layout-valign="top"}
 
-![Transformed image n°13](../images/Augmentations/RGB_image_transformed_13.png){#fig-dataset-augmentation-13 fig-align="center"}
+![Transformed image n°12](../images/Augmentations/RGB_image_transformed_12.png){#fig-dataset-augmentation-12 fig-align="center" layout-valign="top"}
 
-![Transformed image n°14](../images/Augmentations/RGB_image_transformed_14.png){#fig-dataset-augmentation-14 fig-align="center"}
+![Transformed image n°13](../images/Augmentations/RGB_image_transformed_13.png){#fig-dataset-augmentation-13 fig-align="center" layout-valign="top"}
 
-![Transformed image n°15](../images/Augmentations/RGB_image_transformed_15.png){#fig-dataset-augmentation-15 fig-align="center"}
+![Transformed image n°14](../images/Augmentations/RGB_image_transformed_14.png){#fig-dataset-augmentation-14 fig-align="center" layout-valign="top"}
+
+![Transformed image n°15](../images/Augmentations/RGB_image_transformed_15.png){#fig-dataset-augmentation-15 fig-align="center" layout-valign="top"}
 
 Examples of data augmentations on an RGB image with the probabilities used when training the model.
 :::
