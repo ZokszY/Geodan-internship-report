@@ -322,10 +322,10 @@ window.Quarto = {
 \]</span></p>
 <p>where <span class="math inline">\(T=\{t_1, t_2, \dots, t_N\}\)</span> is a list of IoU threshold values, <span class="math inline">\({TP}_t\)</span> are the true positives when the the IoU threshold is <span class="math inline">\(t\)</span>, <span class="math inline">\({FP}_t\)</span> are false positives and <span class="math inline">\({FN}_t\)</span> are false negatives. The reason why <span class="math inline">\(TP\)</span>, <span class="math inline">\(FP\)</span> and <span class="math inline">\(FN\)</span> depend on <span class="math inline">\(t\)</span> is that a bounding box is considered to be true if its IoU with one of the ground-truth bounding boxes is larger than <span class="math inline">\(t\)</span>.</p>
 <p>sortedAP is an improvement over this method because there is no need to select a list of IoU threshold values. Predicted bounding boxes are sorted according to their confidence score which allows to compute AP incrementally for any value of <span class="math inline">\(t\)</span>. Then, the area of the curve of the AP with respect to the IoU threshold is used as a metric, between 0 and 1, 1 being the best possible value. You can see in <a href="#fig-model-output-sortedAP" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> an example of the output of the sortedAP method. The curves represent the AP at any IoU threshold value. Then, the integral of this curve gives the value of sortedAP, which is displayed in the legend here.</p>
-<div id="fig-model-output-sortedAP" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H" data-fig-align="center">
+<div id="fig-model-output-sortedAP" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-model-output-sortedAP-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../data/ap_iou_test-set.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;4.1: Example of three sortedAP curves with the results of a model with three different data combinations"><img src="../data/ap_iou_test-set.png" class="img-fluid figure-img"></a>
+<a href="../data/ap_iou_test-set.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;4.1: Example of three sortedAP curves with the results of a model with three different data combinations"><img src="../data/ap_iou_test-set.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-output-sortedAP-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.1: Example of three sortedAP curves with the results of a model with three different data combinations
@@ -333,10 +333,10 @@ Figure&nbsp;4.1: Example of three sortedAP curves with the results of a model wi
 </figure>
 </div>
 <p>Finally, it is necessary to choose a fixed confidence threshold to compute the curve, because this value decides which boxes will be kept and how the predicted and ground-truth boxes will be matched. Therefore, the value of the best confidence threshold has a very high impact over the value of sortedAP, and cannot easily be determined during the training, as the confidence of the model evolves quickly. Therefore, computing sortedAP for different confidence threshold allows to always estimate the best performance it can have. <a href="#fig-model-output-sortedAP-confs" class="quarto-xref">Figure&nbsp;<span>4.2</span></a> shows how the value of sortedAP evolves and how the confidence threshold values in the previous figure (<a href="#fig-model-output-sortedAP" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>) were chosen.</p>
-<div id="fig-model-output-sortedAP-confs" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H" data-fig-align="center">
+<div id="fig-model-output-sortedAP-confs" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-model-output-sortedAP-confs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../data/sap_conf_test-set.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;4.2: Example of the values of sortedAP depending on the confidence threshold"><img src="../data/sap_conf_test-set.png" class="img-fluid figure-img"></a>
+<a href="../data/sap_conf_test-set.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;4.2: Example of the values of sortedAP depending on the confidence threshold"><img src="../data/sap_conf_test-set.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-output-sortedAP-confs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.2: Example of the values of sortedAP depending on the confidence threshold
@@ -793,7 +793,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","loop":false,"openEffect":"zoom","closeEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","descPosition":"bottom","loop":false,"closeEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

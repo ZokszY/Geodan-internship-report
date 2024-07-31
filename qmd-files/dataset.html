@@ -98,6 +98,35 @@ div.csl-indent {
   });
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -249,7 +278,7 @@ div.csl-indent {
 <p>As explained in <a href="sota.html#sec-sota-datasets-requirements" class="quarto-xref"><span>Section 1.2.1</span></a>, the main requirements of the dataset that I wanted to create were to contain at the same time LiDAR data, RGB data and CIR data, with simple bounding box annotations for all trees, including trees that are partially or completely covered by other trees (see <a href="objectives.html#sec-obj-covered_trees" class="quarto-xref"><span>Section 2.2</span></a>).</p>
 <p>Then, to make the most out of the point cloud resolution and the RGB images resolution, I decided to use a CHM resolution of 8&nbsp;cm, which is also the resolution of the RGB images. However, the resolution of CIR images is 25&nbsp;cm, which made it less optimal, but still usable.</p>
 <p>To be able to get results even with a small dataset, I decided to focus on one specific area, to limit the diversity of trees and environments to something that should still be learnt with a small dataset. Therefore, the whole dataset is currently inside of a 1 km&nbsp;×&nbsp;1&nbsp;km square around the Geodan office in Amsterdam. It contains 2726 annotated trees spread over 241 images of size 640&nbsp;px&nbsp;×&nbsp;640&nbsp;px i.e.&nbsp;51.2&nbsp;m&nbsp;×&nbsp;51.2&nbsp;m. All tree annotations have at least a bounding box, and some of them have a more accurate polygon representing the shape of the crown. There are four classes, which I will detail in the next section <a href="#sec-dataset-challenges" class="quarto-xref"><span>Section 3.3</span></a>, and each tree belongs to one class.</p>
-<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent on each tree depending on the complexity of the area. On <a href="#fig-dataset-gt-boxes" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>, you can see what the dataset finally looks like, with all data sources and bounding boxes.</p>
+<p>On <a href="#fig-dataset-gt-boxes" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>, you can see what the dataset finally looks like, with all data sources and bounding boxes.</p>
 <div id="fig-dataset-gt-boxes" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dataset-gt-boxes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -325,10 +354,87 @@ Figure&nbsp;3.1: One data instance with ground-truth bounding boxes
 </section>
 <section id="data-annotation-setup" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="data-annotation-setup"><span class="header-section-number">3.2</span> Data annotation setup</h2>
+<p>Annotating all these trees took me about 100 hours, with a very high variation of the time spent per tree depending on the complexity of the area. To make the most out of the different data types and fully use them, I mainly used four data sources and tools.</p>
+<p>The most important tool I used is QGIS <span class="citation" data-cites="QGIS_software">(<a href="references.html#ref-QGIS_software" role="doc-biblioref">QGIS Development Team, n.d.</a>)</span>. QGIS allowed me to visualize all types of data on the same map: images, point clouds, CHM rasters, boxes and polygons. I therefore used it to annotate the trees, switching between RGB images and LiDAR point clouds to detect individual trees. One very useful feature of QGIS is the possibility to filter the point cloud based on some properties of the points. I mainly used it to filter out all the points that were classified as buildings and to adapt the height interval to make the most out of the color gradient and get rid of the ground or the large trees. This way of removing part of the point cloud using height thresholds is also related to the idea of having multiple CHM layers fed into the model using height intervals of the point cloud.</p>
+<p>However, QGIS is mostly limited to 2D views from the top, which doesn’t benefit from the 3D aspect of the point cloud. To visualize the point cloud, I used the official viewer provided with the AHN4, called AHN-puntenwolkenviewer, which means AHN point cloud viewer <span class="citation" data-cites="AHN_point_cloud_viewer">(<a href="references.html#ref-AHN_point_cloud_viewer" role="doc-biblioref">Actueel Hoogtebestand Nederland, n.d.</a>)</span>. This viewer allows to navigate through the point cloud, see it from different angles and color the points according to different attributes. I found the intensity (intensiteit) to be a convenient way to display the point cloud, as it sometimes allow to differentiate between leaves and branches, and it breaks the homogeneity of using the height as color attribute. This viewer enabled me to make sense out of the 2D view of the point cloud I had in QGIS.</p>
+<p>Finally, I also used Google Street View <span class="citation" data-cites="google_street_view">(<a href="references.html#ref-google_street_view" role="doc-biblioref">Google 2024</a>)</span> to have visual information about the trees. This was mainly useful for the most difficult parts of the dataset, but it was only available for trees that were not too far from a street. Google Street View images helped me in dense areas with thin trees, where the point cloud doesn’t capture very well the structure of the trees and trees are mostly indistinguishable from above. Having the possibility to switch between different dates also enabled me to see the evolutions and have more chances to find a clear picture.</p>
+<p>In <a href="#fig-dataset-setup" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>, you can see what each data source looks like.</p>
+<div id="fig-dataset-setup" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dataset-setup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-setup" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div id="fig-dataset-setup-rgb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-dataset-setup-rgb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../images/Annotation_setup/RGB_image.png" class="lightbox" data-gallery="fig-dataset-setup" title="Figure&nbsp;3.2&nbsp;(a): RGB image "><img src="../images/Annotation_setup/RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-setup"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-setup-rgb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) RGB image
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 4.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-setup" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div id="fig-dataset-setup-lidar-2-20" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-dataset-setup-lidar-2-20-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../images/Annotation_setup/LiDAR_2_20.png" class="lightbox" data-gallery="fig-dataset-setup" title="Figure&nbsp;3.2&nbsp;(b): LiDAR point cloud from above, colored with height, filtered with 2 <= Z <= 20"><img src="../images/Annotation_setup/LiDAR_2_20.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-setup"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-setup-lidar-2-20-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) LiDAR point cloud from above, colored with height, filtered with <span class="math inline">\(2 &lt;= Z &lt;= 20\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-setup" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div id="fig-dataset-gt-boxes-chm" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-dataset-gt-boxes-chm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../images/Annotation_setup/StreetView.png" class="lightbox" data-gallery="fig-dataset-setup" title="Figure&nbsp;3.2&nbsp;(c): Google StreetView screenshot"><img src="../images/Annotation_setup/StreetView.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-setup"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-gt-boxes-chm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) <a href="https://www.google.com/maps/@52.3408338,4.9129711,3a,75y,106.88h,93.86t/data=!3m7!1e1!3m5!1sax3EJVrJNh8n-whQ1o3ZKg!2e0!5s20210301T000000!7i16384!8i8192?coh=205409&amp;entry=ttu">Google StreetView screenshot</a>
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 4.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-setup" style="flex-basis: 48.0%;justify-content: flex-start;">
+<div id="fig-dataset-gt-boxes-lidar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-dataset-gt-boxes-lidar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../images/Annotation_setup/LiDAR_3D.png" class="lightbox" data-gallery="fig-dataset-setup" title="Figure&nbsp;3.2&nbsp;(d): LiDAR point cloud with 3D navigation"><img src="../images/Annotation_setup/LiDAR_3D.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-setup"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-gt-boxes-lidar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) <a href="https://ns_hwh.fundaments.nl/hwh-ahn/AHN_POTREE/index.html?position=%5B122678.01;483764.93;6.70;%5D&amp;target=%5B123615.49;483474.88;-185.67;%5D">LiDAR point cloud with 3D navigation</a>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-setup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.2: Data sources used to annotate the trees
+</figcaption>
+</figure>
+</div>
 </section>
 <section id="sec-dataset-challenges" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="sec-dataset-challenges"><span class="header-section-number">3.3</span> Challenges and solutions</h2>
-<p>The creation of this dataset raised a number of challenges. The first one was the interval of time between the acquisition of the different types of data. While the point cloud data dated from 2020, the RGB images were acquired in 2023. It would have been possible to use images from 2021 or 2022 with the same resolution, but the quality of the 2023 images was much better, in the sense that trees were much more distinguishable. Consequently, there were a certain amount of changes regarding trees between these two periods of acquisition. Some large trees were cut, while small trees were planted, sometimes even at the position of old trees that were previously cut in the same time frame. For this reason, a non negligible number of trees were either present only in the point cloud, or only in the images. An example of such a situation can be found in <a href="#fig-dataset-tree-replaced" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>. To try to handle this situation, I created two new class labels corresponding to these situation. This amounted up to 4 class labels:</p>
+<p>The creation of this dataset raised a number of challenges. The first one was the interval of time between the acquisition of the different types of data. While the point cloud data dated from 2020, the RGB images were acquired in 2023. It would have been possible to use images from 2021 or 2022 with the same resolution, but the quality of the 2023 images was much better, in the sense that trees were much more distinguishable. Consequently, there were a certain amount of changes regarding trees between these two periods of acquisition. Some large trees were cut, while small trees were planted, sometimes even at the position of old trees that were previously cut in the same time frame. For this reason, a non negligible number of trees were either present only in the point cloud, or only in the images. An example of such a situation can be found in <a href="#fig-dataset-tree-replaced" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>. To try to handle this situation, I created two new class labels corresponding to these situation. This amounted up to 4 class labels:</p>
 <ul>
 <li>“Tree”: trees which are visible in the point cloud and the images</li>
 <li>“Tree_LiDAR”: trees which are visible in the point cloud only but would be visible in the images if they had been there during the acquisition</li>
@@ -343,7 +449,7 @@ Figure&nbsp;3.1: One data instance with ground-truth bounding boxes
 <div id="fig-dataset-tree-replaced-rgb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-tree-replaced-rgb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Data_discrepancies//RGB_image.png" class="lightbox" data-gallery="fig-dataset-tree-replaced" title="Figure&nbsp;3.2&nbsp;(a): RGB image"><img src="../images/Data_discrepancies//RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-tree-replaced"></a>
+<a href="../images/Data_discrepancies//RGB_image.png" class="lightbox" data-gallery="fig-dataset-tree-replaced" title="Figure&nbsp;3.3&nbsp;(a): RGB image"><img src="../images/Data_discrepancies//RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-tree-replaced"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-tree-replaced-rgb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) RGB image
@@ -358,7 +464,7 @@ Figure&nbsp;3.1: One data instance with ground-truth bounding boxes
 <div id="fig-dataset-tree-replaced-chm" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-tree-replaced-chm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Data_discrepancies/CHM_all_color.png" class="lightbox" data-gallery="fig-dataset-tree-replaced" title="Figure&nbsp;3.2&nbsp;(b): CHM raster"><img src="../images/Data_discrepancies/CHM_all_color.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-tree-replaced"></a>
+<a href="../images/Data_discrepancies/CHM_all_color.png" class="lightbox" data-gallery="fig-dataset-tree-replaced" title="Figure&nbsp;3.3&nbsp;(b): CHM raster"><img src="../images/Data_discrepancies/CHM_all_color.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-tree-replaced"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-tree-replaced-chm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) CHM raster
@@ -369,12 +475,12 @@ Figure&nbsp;3.1: One data instance with ground-truth bounding boxes
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-tree-replaced-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.2: A tree that was cut off and replaced
+Figure&nbsp;3.3: A tree that was cut off and replaced
 </figcaption>
 </figure>
 </div>
 <p>The next challenge was the misalignment of images and point cloud. This misalignment comes from the images not being perfectly orthogonal. Point clouds don’t have this problem, because the data is acquired and represented in 3D, but objects in images have to be projected to a 2D plane after being acquired with an angle that is not perfectly orthogonal to the plane. Despite the post-processing that was surely performed on the images, they are therefore not perfect, and there is a shift between the positions of each object in the point cloud and in the images. This shift cannot really be solved, because it depends on the position of the object relative to the sensor. Because of this misalignment, a choice had to be made as to where tree annotations should be placed, using either the point clouds or the RGB images. I chose to the RGB images as it is simpler to visualize and annotate, but there was not really a perfect choice.</p>
-<p>On the example below (<a href="#fig-dataset-shift" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>), you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.</p>
+<p>On <a href="#fig-dataset-shift" class="quarto-xref">Figure&nbsp;<span>3.4</span></a>, you can see two of the issues. First, you can see that a bounding box that is well-centered around the tree in the RGB image is completely off on the CIR image, and also not really centered on the CHM raster. Then, you can see that the bounding box is much smaller on the CHM, mainly for two reasons: the tree grew between the acquisition of the LiDAR point cloud and the RGB image and small branches on the outside of the tree are hard to capture for LiDAR beams.</p>
 <div id="fig-dataset-shift" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dataset-shift-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -383,7 +489,7 @@ Figure&nbsp;3.2: A tree that was cut off and replaced
 <div id="fig-dataset-shift-rgb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-shift-rgb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Data_shift/RGB_image.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.3&nbsp;(a): RGB image"><img src="../images/Data_shift/RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
+<a href="../images/Data_shift/RGB_image.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.4&nbsp;(a): RGB image"><img src="../images/Data_shift/RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-shift-rgb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) RGB image
@@ -398,7 +504,7 @@ Figure&nbsp;3.2: A tree that was cut off and replaced
 <div id="fig-dataset-shift-cir" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-shift-cir-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Data_shift/CIR_image.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.3&nbsp;(b): CIR image"><img src="../images/Data_shift/CIR_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
+<a href="../images/Data_shift/CIR_image.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.4&nbsp;(b): CIR image"><img src="../images/Data_shift/CIR_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-shift-cir-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) CIR image
@@ -417,7 +523,7 @@ Figure&nbsp;3.2: A tree that was cut off and replaced
 <div id="fig-dataset-shift-lidar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-shift-lidar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Data_shift/LiDAR.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.3&nbsp;(c): LiDAR point cloud"><img src="../images/Data_shift/LiDAR.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
+<a href="../images/Data_shift/LiDAR.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.4&nbsp;(c): LiDAR point cloud"><img src="../images/Data_shift/LiDAR.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-shift-lidar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) LiDAR point cloud
@@ -432,7 +538,7 @@ Figure&nbsp;3.2: A tree that was cut off and replaced
 <div id="fig-dataset-shift-chm" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-shift-chm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Data_shift/CHM_all_color.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.3&nbsp;(d): CHM raster"><img src="../images/Data_shift/CHM_all_color.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
+<a href="../images/Data_shift/CHM_all_color.png" class="lightbox" data-gallery="fig-dataset-shift" title="Figure&nbsp;3.4&nbsp;(d): CHM raster"><img src="../images/Data_shift/CHM_all_color.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-shift"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-shift-chm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (d) CHM raster
@@ -443,7 +549,7 @@ Figure&nbsp;3.2: A tree that was cut off and replaced
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-shift-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.3: Example of data misalignment
+Figure&nbsp;3.4: Example of data misalignment
 </figcaption>
 </figure>
 </div>
@@ -455,16 +561,16 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>As it was already explained in <a href="sota.html#sec-sota-dataset-augment" class="quarto-xref"><span>Section 1.2.4</span></a>, I used Albumentations <span class="citation" data-cites="albumentations">(<a href="references.html#ref-albumentations" role="doc-biblioref">Buslaev et al. 2020</a>)</span> to apply two types of augmentations: pixel-level and spatial-level.</p>
 <p>Spatial-level augmentations had to be in the exact same way to the whole dataset, to maintain the spatial coherence between RGB images, CIR images and the CHM layers. I used three different spatial transformations, applied with random parameters. The first one chooses one of the eight possible images when flipping and rotating by angles that are multiples of 90°. The second one adds a perspective effect to the images. The third one adds a small distortion to the image.</p>
 <p>On the contrary, pixel-level augmentations must be applied differently to RGB images and CHM layers because they represent different kinds of data, and the values of the pixels do not have the same meaning. In practice, a lot of transformations were conceived to reproduce camera effects on RGB images or to shift the color spectrum. Among others, I used random modifications of the brightness, the gamma value and added noise and a blurring effect randomly to RGB images. For both types of data, a channel dropout is also randomly applied, leaving a random number of channels and removing the others. A better way to augment the CHM data would have been to apply random displacements and deletions of points in the point cloud, before computing the CHM layers. However, these operations are too costly to be integrated in the training pipeline without consequently increasing the training time, so this idea was discarded.</p>
-<p>On <a href="#fig-dataset-augmentation" class="quarto-xref">Figure&nbsp;<span>3.4</span></a>, you can see an RGB image and 15 random augmentations of this image, generated with the transformations and the probabilities used during training. The most visible change happens when one or two color channels are dropped, which completely changes the color of the image.But other effects are also visible such as luminosity changes in images n°4 and 14, perspective changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in n°10 and 12. All these effects and some other less identifiable augmentations (like noise), are randomly combined to produce many different images, with bounding boxes being modified accordingly.</p>
+<p>On <a href="#fig-dataset-augmentation" class="quarto-xref">Figure&nbsp;<span>3.5</span></a>, you can see an RGB image and 15 random augmentations of this image, generated with the transformations and the probabilities used during training. The most visible change happens when one or two color channels are dropped, which completely changes the color of the image.But other effects are also visible such as luminosity changes in images n°4 and 14, perspective changes in n°5, 8 and 13, blurring in n°1 and 14, and distortions in n°10 and 12. All these effects and some other less identifiable augmentations (like noise), are randomly combined to produce many different images, with bounding boxes being modified accordingly.</p>
 <div id="fig-dataset-augmentation" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dataset-augmentation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-row">
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-initial" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-initial" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-initial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(a): Initial image"><img src="../images/Augmentations/RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(a): Initial image "><img src="../images/Augmentations/RGB_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-initial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Initial image
@@ -476,10 +582,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_1.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(b): Transformed image n°1"><img src="../images/Augmentations/RGB_image_transformed_1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_1.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(b): Transformed image n°1"><img src="../images/Augmentations/RGB_image_transformed_1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Transformed image n°1
@@ -491,10 +597,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_2.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(c): Transformed image n°2"><img src="../images/Augmentations/RGB_image_transformed_2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_2.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(c): Transformed image n°2"><img src="../images/Augmentations/RGB_image_transformed_2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Transformed image n°2
@@ -506,10 +612,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_3.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(d): Transformed image n°3"><img src="../images/Augmentations/RGB_image_transformed_3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_3.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(d): Transformed image n°3"><img src="../images/Augmentations/RGB_image_transformed_3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (d) Transformed image n°3
@@ -518,17 +624,12 @@ Figure&nbsp;3.3: Example of data misalignment
 </div>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-row">
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-4" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_4.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(e): Transformed image n°4"><img src="../images/Augmentations/RGB_image_transformed_4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_4.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(e): Transformed image n°4"><img src="../images/Augmentations/RGB_image_transformed_4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (e) Transformed image n°4
@@ -540,10 +641,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-5" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-5" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_5.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(f): Transformed image n°5"><img src="../images/Augmentations/RGB_image_transformed_5.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_5.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(f): Transformed image n°5"><img src="../images/Augmentations/RGB_image_transformed_5.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (f) Transformed image n°5
@@ -555,10 +656,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-6" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-6" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_6.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(g): Transformed image n°6"><img src="../images/Augmentations/RGB_image_transformed_6.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_6.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(g): Transformed image n°6"><img src="../images/Augmentations/RGB_image_transformed_6.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (g) Transformed image n°6
@@ -570,10 +671,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-7" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-7" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_7.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(h): Transformed image n°7"><img src="../images/Augmentations/RGB_image_transformed_7.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_7.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(h): Transformed image n°7"><img src="../images/Augmentations/RGB_image_transformed_7.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (h) Transformed image n°7
@@ -582,17 +683,12 @@ Figure&nbsp;3.3: Example of data misalignment
 </div>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-row">
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-8" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-8" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_8.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(i): Transformed image n°8"><img src="../images/Augmentations/RGB_image_transformed_8.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_8.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(i): Transformed image n°8"><img src="../images/Augmentations/RGB_image_transformed_8.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (i) Transformed image n°8
@@ -604,10 +700,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-9" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-9" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-9-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_9.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(j): Transformed image n°9"><img src="../images/Augmentations/RGB_image_transformed_9.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_9.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(j): Transformed image n°9"><img src="../images/Augmentations/RGB_image_transformed_9.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-9-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (j) Transformed image n°9
@@ -619,10 +715,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-10" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-10" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_10.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(k): Transformed image n°10"><img src="../images/Augmentations/RGB_image_transformed_10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_10.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(k): Transformed image n°10"><img src="../images/Augmentations/RGB_image_transformed_10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (k) Transformed image n°10
@@ -634,10 +730,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-11" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-11" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-11-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_11.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(l): Transformed image n°11"><img src="../images/Augmentations/RGB_image_transformed_11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_11.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(l): Transformed image n°11"><img src="../images/Augmentations/RGB_image_transformed_11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-11-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (l) Transformed image n°11
@@ -646,17 +742,12 @@ Figure&nbsp;3.3: Example of data misalignment
 </div>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-row">
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-12" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-12" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_12.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(m): Transformed image n°12"><img src="../images/Augmentations/RGB_image_transformed_12.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_12.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(m): Transformed image n°12"><img src="../images/Augmentations/RGB_image_transformed_12.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (m) Transformed image n°12
@@ -668,10 +759,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-13" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-13" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-13-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_13.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(n): Transformed image n°13"><img src="../images/Augmentations/RGB_image_transformed_13.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_13.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(n): Transformed image n°13"><img src="../images/Augmentations/RGB_image_transformed_13.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-13-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (n) Transformed image n°13
@@ -683,10 +774,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-14" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-14" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_14.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(o): Transformed image n°14"><img src="../images/Augmentations/RGB_image_transformed_14.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_14.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(o): Transformed image n°14"><img src="../images/Augmentations/RGB_image_transformed_14.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (o) Transformed image n°14
@@ -698,10 +789,10 @@ Figure&nbsp;3.3: Example of data misalignment
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-dataset-augmentation" style="flex-basis: 23.5%;justify-content: flex-start;">
-<div id="fig-dataset-augmentation-15" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-dataset-augmentation-15" class="quarto-float quarto-figure quarto-figure-center anchored" data-layout-valign="top" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-dataset-augmentation-15-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Augmentations/RGB_image_transformed_15.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.4&nbsp;(p): Transformed image n°15"><img src="../images/Augmentations/RGB_image_transformed_15.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-dataset-augmentation"></a>
+<a href="../images/Augmentations/RGB_image_transformed_15.png" class="lightbox" data-gallery="fig-dataset-augmentation" title="Figure&nbsp;3.5&nbsp;(p): Transformed image n°15"><img src="../images/Augmentations/RGB_image_transformed_15.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-layout-valign="top" data-ref-parent="fig-dataset-augmentation"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-dataset-augmentation-15-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (p) Transformed image n°15
@@ -712,15 +803,24 @@ Figure&nbsp;3.3: Example of data misalignment
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dataset-augmentation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.4: Examples of data augmentations on an RGB image with the probabilities used when training the model.
+Figure&nbsp;3.5: Examples of data augmentations on an RGB image with the probabilities used when training the model.
 </figcaption>
 </figure>
 </div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-AHN_point_cloud_viewer" class="csl-entry" role="listitem">
+Actueel Hoogtebestand Nederland. n.d. <span>“<span class="nocase">AHN-puntenwolkenviewer (AHN point cloud viewer)</span>.”</span> <a href="https://www.ahn.nl/ahn-puntenwolkenviewer">https://www.ahn.nl/ahn-puntenwolkenviewer</a>.
+</div>
 <div id="ref-albumentations" class="csl-entry" role="listitem">
 Buslaev, Alexander, Vladimir I. Iglovikov, Eugene Khvedchenya, Alex Parinov, Mikhail Druzhinin, and Alexandr A. Kalinin. 2020. <span>“Albumentations: Fast and Flexible Image Augmentations.”</span> <em>Information</em> 11 (2). <a href="https://doi.org/10.3390/info11020125">https://doi.org/10.3390/info11020125</a>.
+</div>
+<div id="ref-google_street_view" class="csl-entry" role="listitem">
+Google. 2024. <span>“Google Street View.”</span> <a href="https://www.google.com/streetview/">https://www.google.com/streetview/</a>.
+</div>
+<div id="ref-QGIS_software" class="csl-entry" role="listitem">
+QGIS Development Team. n.d. <em>QGIS Geographic Information System</em>. QGIS Association. <a href="https://www.qgis.org">https://www.qgis.org</a>.
 </div>
 <div id="ref-DeepForestBefore" class="csl-entry" role="listitem">
 Weinstein, Ben G., Sergio Marconi, Stephanie Bohlman, Alina Zare, and Ethan White. 2019. <span>“Individual Tree-Crown Detection in RGB Imagery Using Semi-Supervised Deep Learning Neural Networks.”</span> <em>Remote Sensing</em> 11 (11). <a href="https://doi.org/10.3390/rs11111309">https://doi.org/10.3390/rs11111309</a>.
@@ -1162,7 +1262,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","openEffect":"zoom","loop":false,"closeEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","loop":false,"descPosition":"bottom","openEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

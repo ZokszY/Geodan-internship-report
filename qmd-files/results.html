@@ -265,34 +265,26 @@ window.Quarto = {
 </ul>
 <p>As you can see on <a href="#fig-training-parameters-experiments" class="quarto-xref">Figure&nbsp;<span>5.1</span></a>, sortedAP reaches at best values just above 0.3. Since the dataset is small, the training process overfits quickly, and the model doesn’t have enough training steps to have confidence scores which reach very high values. As a consequence, it is difficult to know beforehand which confidence threshold to choose. Therefore, the sortedAP metric is computed over several different confidence thresholds, and the one that gives the best value of sortedAP is kept. This is why the name of the column is “Best sortedAP”, as the highest sortedAP value over several confidence thresholds is displayed.</p>
 <p>This experiment shows that a learning rate of 0.01 seems to make the training too much unstable, while 0.001 doesn’t give very high score. Moreover, the training process seems very unstable in general, which mostly comes from the dataset being too small. However, a learning rate between 0.0025 and 0.006 seems to give the most stable results, when the drop probability is 0. This seems to show that the idea of randomly dropping one of the two inputs doesn’t really help the model to learn.</p>
-<div id="cell-fig-training-parameters-experiments" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display">
 <div id="fig-training-parameters-experiments" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="results_files/figure-html/fig-training-parameters-experiments-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;5.1: Results with different training parameters for all experiments"><img src="results_files/figure-html/fig-training-parameters-experiments-output-1.png" width="841" height="566" class="figure-img"></a>
+<a href="../images/Quarto_generated/fig-training-parameters-experiments.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;5.1: Results with different training parameters for all experiments"><img src="../images/Quarto_generated/fig-training-parameters-experiments.svg" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-experiments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5.1: Results with different training parameters for all experiments
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
 <p>The next graph (<a href="#fig-training-parameters-data" class="quarto-xref">Figure&nbsp;<span>5.2</span></a>) displays more results for the same experiments. Here, the results are colored according to the data that used to evaluate the model. In blue are the values of sortedAP when the model is evaluated with the CHM layers data and dummy zero arrays as RGB/CIR data. These dummy arrays are also those that are used as input when one of the channel is dropped during training, when we have a drop probability larger than 0. Not many conclusions can be drawn from this plot. One interesting observation is that randomly dropping one of the two inputs with the same probability seems to have a much larger influence over the results using RGB/CIR than CHM. While CHM gives better results than RGB/CIR when always training using everything, RGB/CIR seems to perform better alone when also trained alone, even outperforming the combination of both inputs in certain cases. This behavior is not desired, as having mode data should not make the results worse. The explanation is probably related to the speed of the training, which might be much quicker for RGB only than for CHM only or both together. Then, if the training stops early, which is the case when the learning rate is high, RGB only can output the best results.</p>
-<div id="cell-fig-training-parameters-data" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
 <div id="fig-training-parameters-data" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="results_files/figure-html/fig-training-parameters-data-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;5.2: Results with different training parameters for all evaluation data setups"><img src="results_files/figure-html/fig-training-parameters-data-output-1.png" width="953" height="480" class="figure-img"></a>
+<a href="../images/Quarto_generated/fig-training-parameters-data.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;5.2: Results with different training parameters for all evaluation data setups"><img src="../images/Quarto_generated/fig-training-parameters-data.svg" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-parameters-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5.2: Results with different training parameters for all evaluation data setups
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 <p>From the results of this experiment, I decided to pick the following parameters for the next experiments:</p>
 <ul>
@@ -310,21 +302,17 @@ Figure&nbsp;5.2: Results with different training parameters for all evaluation d
 \end{array}
 \]</span></p>
 <p>The results of this experiment can be found in <a href="#fig-chm-layers" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>. To experiment on other parameters, half of the models were trained to be agnostic while the other half was not, to see if the way trees are separated in the four classes has an impact on performance, either facilitating the learning or hindering the generalization. On this plot, the borders correspond to the list of height thresholds <span class="math inline">\([t_1, t_2, \cdots, t_n]\)</span>.</p>
-<div id="cell-fig-chm-layers" class="cell" data-fig-width="5" data-execution_count="3">
-<div class="cell-output cell-output-display">
 <div id="fig-chm-layers" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-chm-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="results_files/figure-html/fig-chm-layers-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;5.3: Results with different CHM layers"><img src="results_files/figure-html/fig-chm-layers-output-1.png" width="945" height="603" class="figure-img"></a>
+<a href="../images/Quarto_generated/fig-chm-layers.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;5.3: Results with different CHM layers"><img src="../images/Quarto_generated/fig-chm-layers.svg" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chm-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5.3: Results with different CHM layers
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
-<p>These results are difficult to interpret. The first clear effect that we can notice for the agnostic models is that in the disjoint method (first row starting from the top), when separating the LiDAR point cloud in too many layers, the model doesn’t manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in <a href="dataset.html#fig-dataset-augmentation" class="quarto-xref">Figure&nbsp;<span>3.4</span></a>. But when there is only one channel, this channel is never dropped, which doesn’t force the model to learn how to use only part of the data.</p>
+<p>These results are difficult to interpret. The first clear effect that we can notice for the agnostic models is that in the disjoint method (first row starting from the top), when separating the LiDAR point cloud in too many layers, the model doesn’t manage to make extract information from the CHM. When using only one CHM layer on the whole point cloud (which corresponds to (Borders = [])), we can see that the model performs poorly when using only one data type, but as well as the other models when using both. The explanation for this may be related to the data augmentation pipeline, because there is random channel dropout during the training. When there are multiple channels in the input, almost all of them can be randomly dropped out, with the limitation that at least one channel will always remain. This is the reason why there are red, green and blue (two channels dropped) but also purple and cyan (one channel dropped) images in <a href="dataset.html#fig-dataset-augmentation" class="quarto-xref">Figure&nbsp;<span>3.5</span></a>. But when there is only one channel, this channel is never dropped, which doesn’t force the model to learn how to use only part of the data.</p>
 <p>The other correlation that is visible relates to how models perform using only RGB/CIR or CHM when being agnostic or not. It is logical for this parameter to have an impact on the results, since teaching the model to either make a difference between some of the trees or not will have an impact on what it learns and what it has to focus on to identify the right class when not being agnostic. From what we see here in <a href="#fig-chm-layers" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>, it looks like having to make a difference between the different classes is significantly hinders its performance whatever combination of input data is used, even though it is more prevalent when using only one input.</p>
 <p>Besides these observations, it is hard to draw anymore conclusion from the rest of the experiments. There is too much variation in the results, which shows how unstable the training process is. From these results and the previous paragraph, one interpretation could be that the augmentation pipeline is related to this instability, as the results with the basic CHM layer have a much smaller variance.</p>
 </section>
@@ -450,7 +438,7 @@ Figure&nbsp;5.4: sortedAP curve with different CHM layers on training/validation
 <div id="fig-results-visual-gt-train" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-results-visual-gt-train-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../images/Exp2_results/Ground_truth/Pred_boxes_train.png" class="lightbox" data-gallery="fig-results-visual" title="Figure&nbsp;5.5&nbsp;(a): Ground-truth boxes on one training set instance"><img src="../images/Exp2_results/Ground_truth/Pred_boxes_train.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-results-visual"></a>
+<a href="../images/Exp2_results/Ground_truth/Pred_boxes_train.png" class="lightbox" data-gallery="fig-results-visual" title="Figure&nbsp;5.5&nbsp;(a): Ground-truth boxes on one training set instance "><img src="../images/Exp2_results/Ground_truth/Pred_boxes_train.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-results-visual"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-results-visual-gt-train-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Ground-truth boxes on one training set instance
@@ -1032,7 +1020,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":false,"openEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","loop":false,"descPosition":"bottom","closeEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
