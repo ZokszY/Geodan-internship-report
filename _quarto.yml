@@ -4,7 +4,7 @@ project:
 book:
   title: Internship Report
   subtitle: Tree object detection using airborne images and LiDAR point clouds
-  date: today
+  date: 2024-06-31
   date-format: "MMMM YYYY"
   author:
     - name: Alexandre Bry
